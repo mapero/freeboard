@@ -237,16 +237,20 @@ function DialogBox(contentElement, title, okTitle, cancelTitle, closeCallback)
 	var modal_width = 900;
 
 	// Initialize our modal overlay
-	var overlay = $('<div id="modal_overlay" style="display:none;"></div>');
+	var overlay = $('<div id="modal_overlay"></div>');
 
 	var modalDialog = $('<div class="modal"></div>');
 
 	function closeModal()
 	{
-		overlay.fadeOut(200, function()
-		{
-			$(this).remove();
-		});
+		if (window.freeboard.browsername.indexOf("ie") != -1) {
+			overlay.remove();
+		} else {
+			overlay.removeClass("show").addClass("hide");
+			_.delay(function() {
+				overlay.remove();
+			}, 300);
+		}
 	}
 
 	// Create our header
@@ -285,7 +289,10 @@ function DialogBox(contentElement, title, okTitle, cancelTitle, closeCallback)
 
 	overlay.append(modalDialog);
 	$("body").append(overlay);
-	overlay.fadeIn(200);
+	if (window.freeboard.browsername.indexOf("ie") != -1)
+		;
+	else
+		overlay.removeClass("hide").addClass("show");
 
 	// ValidationEngine initialize
 	$.validationEngine.defaults.autoPositionUpdate = true;

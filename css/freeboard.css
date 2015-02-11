@@ -2157,6 +2157,17 @@ a:focus {
 	width: 100%;
 	background: rgba(0, 0, 0, 0.8);
 	overflow-y: auto;
+	-webkit-transition: opacity 0.2s ease-in-out;
+	-moz-transition: opacity 0.2s ease-in-out;
+	transition: opacity 0.2s ease-in-out;
+}
+
+#modal_overlay.show {
+	opacity: 1;
+}
+
+#modal_overlay.hide {
+	opacity: 0;
 }
 
 a:hover,
@@ -3673,7 +3684,6 @@ html.boardtools-opening #hamburger:after
 	left: 50%;
 	margin-left: -100px;
 	z-index: 2000;
-	opacity: 0;
 	-webkit-transition: opacity 0.2s ease-in-out;
 	-moz-transition: opacity 0.2s ease-in-out;
 	transition: opacity 0.2s ease-in-out;
