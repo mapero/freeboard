@@ -740,6 +740,56 @@ a:focus {
 	outline-offset: -2px;
 }
 
+@keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@-moz-keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@-webkit-keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@-ms-keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@-o-keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@keyframes fadeout {
+	from { opacity: 1; }
+	to   { opacity: 0; }
+}
+
+@-moz-keyframes fadeout {
+	from { opacity: 1; }
+	to   { opacity: 0; }
+}
+
+@-webkit-keyframes fadeout {
+	from { opacity: 1; }
+	to   { opacity: 0; }
+}
+
+@-ms-keyframes fadeout {
+	from { opacity: 1; }
+	to   { opacity: 0; }
+}
+
+@-o-keyframes fadeout {
+	from { opacity: 1; }
+	to   { opacity: 0; }
+}
+
 #modal_overlay {
 	position: fixed;
 	z-index: 100;
@@ -749,17 +799,23 @@ a:focus {
 	width: 100%;
 	background: rgba(0, 0, 0, 0.8);
 	overflow-y: auto;
-	-webkit-transition: opacity 0.2s ease-in-out;
-	-moz-transition: opacity 0.2s ease-in-out;
-	transition: opacity 0.2s ease-in-out;
 }
 
 #modal_overlay.show {
-	opacity: 1;
+	-webkit-animation: fadein 0.2s;
+	-moz-animation: fadein 0.2s;
+	-ms-animation: fadein 0.2s;
+	-o-animation: fadein 0.2s;
+	animation: fadein 0.2s;
 }
 
 #modal_overlay.hide {
-	opacity: 0;
+	-webkit-animation: fadeout 0.2s;
+	-moz-animation: fadeout 0.2s;
+	-ms-animation: fadeout 0.2s;
+	-o-animation: fadeout 0.2s;
+	animation: fadeout 0.2s;
+	opacity:0;
 }
 
 a:hover,
@@ -2276,17 +2332,23 @@ html.boardtools-opening #hamburger:after
 	left: 50%;
 	margin-left: -100px;
 	z-index: 2000;
-	-webkit-transition: opacity 0.2s ease-in-out;
-	-moz-transition: opacity 0.2s ease-in-out;
-	transition: opacity 0.2s ease-in-out;
 }
 
 .show.wrapperloading {
-	opacity: 1;
+	-webkit-animation: fadein 0.2s;
+	-moz-animation: fadein 0.2s;
+	-ms-animation: fadein 0.2s;
+	-o-animation: fadein 0.2s;
+	animation: fadein 0.2s;
 }
 
 .hide.wrapperloading {
-	opacity: 0;
+	-webkit-animation: fadeout 0.2s;
+	-moz-animation: fadeout 0.2s;
+	-ms-animation: fadeout 0.2s;
+	-o-animation: fadeout 0.2s;
+	animation: fadeout 0.2s;
+	opacity:0;
 }
 
 .wrapperloading .loading.up {
