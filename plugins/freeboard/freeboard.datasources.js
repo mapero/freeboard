@@ -861,8 +861,8 @@
 	});
 
 	freeboard.loadDatasourcePlugin({
-		type_name  : "JSON WebSocket",
-		display_name : "JSON WebSocket",
+		type_name  : "WebSocket",
+		display_name : "WebSocket",
 		description : "ブラウザ内蔵のWebSocket APIを使用しJSON形式のデータを取得します。",
 		settings   : [
 			{

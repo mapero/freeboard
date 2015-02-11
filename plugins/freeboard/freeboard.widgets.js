@@ -410,7 +410,7 @@
 				currentSettings = newSettings;
 			}
 
-			titleElement.html(newSettings.title);
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -473,7 +473,7 @@
 			{
 				name: "units",
 				display_name: "単位",
-				validate: "optional,maxSize[20]",
+				validate: "optional,maxSize[20],custom[illegalEscapeChar]",
 				style: "width:150px",
 				type: "text",
 				description: "最大20文字"
@@ -671,8 +671,8 @@
 				triangle.attr("fill", newSettings.pointer_color);
 			}
 
-			titleElement.html(newSettings.title);
-			unitsDiv.html(newSettings.units);
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			unitsDiv.html((_.isUndefined(newSettings.units) ? "" : newSettings.units));
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {

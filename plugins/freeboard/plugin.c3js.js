@@ -66,12 +66,6 @@
 		var chart;
 		var chartdata;
 
-		function setTitle(title) {
-			if (_.isUndefined(title))
-				return;
-			titleElement.html(title);
-		}
-
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
@@ -94,7 +88,7 @@
 
 			if (!_.isUndefined(chartsettings.options)) {
 				try {
-					options = JSON.parse(chartsettings.options, function(k,v) {
+					options = JSON.parse(chartsettings.options.replace(/'/g, "\\\""), function(k,v) {
 						var ret;
 						var str = v.toString();
 						if (str.indexOf('function') === 0)
@@ -207,7 +201,7 @@
 
 		this.render = function (element) {
 			$(element).append(titleElement).append(chartElement);
-			setTitle(currentSettings.title);
+			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
 			setBlocks(currentSettings.blocks);
 		}
 
@@ -216,7 +210,7 @@
 				currentSettings = newSettings;
 				return;
 			}
-			setTitle(newSettings.title);
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
 			setBlocks(newSettings.blocks);
 			if (newSettings.options != currentSettings.options)
 				createWidget(chartdata, newSettings);
