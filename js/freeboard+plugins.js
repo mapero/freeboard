@@ -42,8 +42,7 @@ DatasourceModel = function(theFreeboardModel, datasourcePlugins) {
 
 		self.latestData(newData);
 
-		var now = new Date();
-		self.last_updated(now.toLocaleTimeString());
+		self.last_updated(moment().format("HH:mm:ss"));
 	}
 
 	this.type = ko.observable();
@@ -3455,9 +3454,9 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 			var data = {
 				numeric_value: now.unix(),
-				full_string_value: now.format("YYYY/MM/DD hh:mm:ss"),
+				full_string_value: now.format("YYYY/MM/DD HH:mm:ss"),
 				date_string_value: now.format("YYYY/MM/DD"),
-				time_string_value: now.format("hh:mm:ss"),
+				time_string_value: now.format("HH:mm:ss"),
 				date_object: now.toDate()
 			};
 
