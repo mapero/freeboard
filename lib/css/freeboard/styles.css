@@ -909,23 +909,6 @@ header h1 {
 	color: #d3d4d4;
 }
 
-#datasources {
-	display: none;
-	position: fixed;
-	top: 0;
-	right: -400px;
-	width: 400px;
-	height: 100%;
-	background: #8b8b8b;
-	background: rgba(49, 49, 49, 0.8);
-	-webkit-box-shadow: 0 0 5px #000;
-	box-shadow: 0 0 5px #000;
-	z-index: 100;
-	-webkit-transition: -webkit-transform 0.25s;
-	-moz-transition: -moz-transform 0.25s;
-	transition: transform 0.25s;
-}
-
 #cam {
 	height: 100%;
 	background-size: cover;
@@ -1724,10 +1707,23 @@ input.table-row-value {
 }
 
 .datasource-container {
-	padding: 10px 13px 10px 13px;
+	display: none;
+	position: fixed;
+	top: 0;
+	right: -400px;
+	width: 400px;
+	height: 100%;
+	background: #8b8b8b;
+	background: rgba(49, 49, 49, 0.8);
+	-webkit-box-shadow: 0 0 5px #000;
+	box-shadow: 0 0 5px #000;
+	z-index: 100;	-webkit-transition: -webkit-transform 0.25s;
+	-moz-transition: -moz-transform 0.25s;
+	transition: transform 0.25s;
 }
 
 .datasource-container-header {
+	padding: 10px 13px 0px 13px;
 }
 
 .datasource-container-header.title {
@@ -1741,15 +1737,25 @@ input.table-row-value {
 	overflow:hidden;
 }
 
-.datasource-list-container {
+.datasource-container-list {
+	padding: 0px 13px 0px 13px;
 	max-height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
 	border-bottom: solid 1px #3d3d3d;
 }
 
+.datasource-container-list table th.lastupdate {
+	width: 62px;
+}
+
+.datasource-container-list table th.toolbar {
+	width: 70px;
+}
+
 .datasource-toolbar {
-	width: 100%;
+	width: 97%;
+	padding-top: 5px;
 	vertical-align: middle;
 	text-align: right;
 }
