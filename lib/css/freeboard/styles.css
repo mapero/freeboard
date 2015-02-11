@@ -307,6 +307,11 @@ input {
 
 button,
 select {
+	-webkit-appearance:none;
+	-moz-appearance:none;
+	appearance:none;
+	text-indent: .01px;
+	text-overflow: "";
 	text-transform: none;
 }
 
