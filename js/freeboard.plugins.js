@@ -861,8 +861,8 @@
 	});
 
 	freeboard.loadDatasourcePlugin({
-		type_name  : "JSON WebSocket",
-		display_name : "JSON WebSocket",
+		type_name  : "WebSocket",
+		display_name : "WebSocket",
 		description : "ブラウザ内蔵のWebSocket APIを使用しJSON形式のデータを取得します。",
 		settings   : [
 			{
@@ -1601,7 +1601,7 @@
 				currentSettings = newSettings;
 			}
 
-			titleElement.html(newSettings.title);
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -1664,7 +1664,7 @@
 			{
 				name: "units",
 				display_name: "単位",
-				validate: "optional,maxSize[20]",
+				validate: "optional,maxSize[20],custom[illegalEscapeChar]",
 				style: "width:150px",
 				type: "text",
 				description: "最大20文字"
@@ -1862,8 +1862,8 @@
 				triangle.attr("fill", newSettings.pointer_color);
 			}
 
-			titleElement.html(newSettings.title);
-			unitsDiv.html(newSettings.units);
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			unitsDiv.html((_.isUndefined(newSettings.units) ? "" : newSettings.units));
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -2418,12 +2418,6 @@
 		var chart;
 		var chartdata;
 
-		function setTitle(title) {
-			if (_.isUndefined(title))
-				return;
-			titleElement.html(title);
-		}
-
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
@@ -2446,7 +2440,7 @@
 
 			if (!_.isUndefined(chartsettings.options)) {
 				try {
-					options = JSON.parse(chartsettings.options, function(k,v) {
+					options = JSON.parse(chartsettings.options.replace(/'/g, "\\\""), function(k,v) {
 						var ret;
 						var str = v.toString();
 						if (str.indexOf('function') === 0)
@@ -2559,7 +2553,7 @@
 
 		this.render = function (element) {
 			$(element).append(titleElement).append(chartElement);
-			setTitle(currentSettings.title);
+			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
 			setBlocks(currentSettings.blocks);
 		}
 
@@ -2568,7 +2562,7 @@
 				currentSettings = newSettings;
 				return;
 			}
-			setTitle(newSettings.title);
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
 			setBlocks(newSettings.blocks);
 			if (newSettings.options != currentSettings.options)
 				createWidget(chartdata, newSettings);

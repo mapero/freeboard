@@ -1326,8 +1326,8 @@ JSEditor = function () {
 
 		switch (mode) {
 			case 'javascript':
-				exampleText = "// 例: 摂氏から華氏へ変換、小数点2桁以下切り捨て。\n// return (datasources[\"MyDatasource\"].sensor.tempInF * 1.8 + 32).toFixed(2);";
-				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance">このJavaScriptは、参照データソースが更新されるたびに再評価されます。そして<span class="cm-keyword">戻り値</span>はウィジェットに表示されます。あなたは関数<code><span class="cm-keyword">function</span>(<span class="cm-def">datasources</span>)</code>の中身をJavaScriptで記述することができます。引数datasourcesは追加したデータソースの配列です。</div>');
+				exampleText = '// 例: return datasouces["test"]["value"];';
+				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance">このJavaScriptは、参照データソースが更新されるたびに再評価され、<span class="cm-keyword">戻り値</span>がウィジェットに表示されます。関数 <code><span class="cm-keyword">function</span>(<span class="cm-def">datasources</span>)</code> の内部をJavaScriptで記述することができます。引数 <span class="cm-def">datasources</span> は追加したデータソースの配列です。</div>');
 
 				// If value is empty, go ahead and suggest something
 				if (!value)
@@ -1347,7 +1347,7 @@ JSEditor = function () {
 				break;
 			case 'json':
 				exampleText = '// 例: {\n//    "title": "タイトル"\n//    "value": 10\n}';
-				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance"><span class="cm-keyword">"(ダブルクォーテーション)</span>で括った文字列の中では適切なエスケープシーケンスを使用して下さい。<br>例: "function(label, series){return (\\\"ID:\\\"+label);}" </div>');
+				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance"><span class="cm-keyword">JSON</span>形式のデータを入力して下さい。</div>');
 
 				config = {
 					value: value,
@@ -1659,16 +1659,12 @@ PluginEditor = function(jsEditor, valueEditor)
 			{
 				// Set a default value if one doesn't exist
 				if(!_.isUndefined(settingDef.default_value) && _.isUndefined(currentSettingsValues[settingDef.name]))
-				{
 					currentSettingsValues[settingDef.name] = settingDef.default_value;
-				}
 
 				var displayName = settingDef.name;
 
 				if(!_.isUndefined(settingDef.display_name))
-				{
 					displayName = settingDef.display_name;
-				}
 
 				settingDef.style = _.isUndefined(settingDef.style) ? '' : settingDef.style;
 
@@ -1678,6 +1674,10 @@ PluginEditor = function(jsEditor, valueEditor)
 						displayName = "* " + displayName;
 					}
 				}
+
+				// unescape text value
+				if (settingDef.type == "text")
+					currentSettingsValues[settingDef.name] = _.unescape(currentSettingsValues[settingDef.name]);
 
 				var valueCell = createSettingRow(settingDef.name, displayName);
 
@@ -2007,10 +2007,14 @@ PluginEditor = function(jsEditor, valueEditor)
 		new DialogBox(form, title, "保存", "キャンセル", function(okcancel)
 		{
 			if (okcancel == "ok") {
+				// escape text value
+				_.each(selectedType.settings, function(def) {
+					if (def.type == "text")
+						newSettings.settings[def.name] = _.escape(newSettings.settings[def.name]);
+				});
+
 				if(_.isFunction(settingsSavedCallback))
-				{
 					settingsSavedCallback(newSettings);
-				}
 			}
 
 			// Remove colorpick dom objects
@@ -3146,7 +3150,6 @@ var freeboard = (function()
 	 *  Get the Browser name
 	 *
 	 *  @return     browsername(ie6、ie7、ie8、ie9、ie10、ie11、chrome、safari、opera、firefox、unknown)
-	 *
 	 */
 	var getBrowser = function(){
 		var ua = window.navigator.userAgent.toLowerCase();
@@ -3186,7 +3189,6 @@ var freeboard = (function()
 	 *
 	 *  @param  browsers    supported browser name in the array(ie6、ie7、ie8、ie9、ie10、ie11、chrome、safari、opera、firefox)
 	 *  @return             returns whether support is in true / false
-	 *
 	 */
 	var isSupported = function(browsers){
 		var thusBrowser = getBrowser();
@@ -3301,9 +3303,10 @@ var freeboard = (function()
 			plugin.settings.unshift({
 				name : "name",
 				display_name : "名前",
-				validate: "funcCall[freeboard.isUniqueDatasourceName],required,maxSize[100]",
+				validate: "funcCall[freeboard.isUniqueDatasourceName],required,custom[illegalEscapeChar],maxSize[20]",
 				type: "text",
-				description: "最大100文字まで"
+				escape: true,
+				description: "最大20文字まで"
 			});
 
 			theFreeboardModel.addPluginSource(plugin.source);
@@ -4282,8 +4285,8 @@ $.extend(freeboard, jQuery.eventEmitter);
 	});
 
 	freeboard.loadDatasourcePlugin({
-		type_name  : "JSON WebSocket",
-		display_name : "JSON WebSocket",
+		type_name  : "WebSocket",
+		display_name : "WebSocket",
 		description : "ブラウザ内蔵のWebSocket APIを使用しJSON形式のデータを取得します。",
 		settings   : [
 			{
@@ -5022,7 +5025,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 				currentSettings = newSettings;
 			}
 
-			titleElement.html(newSettings.title);
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -5085,7 +5088,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			{
 				name: "units",
 				display_name: "単位",
-				validate: "optional,maxSize[20]",
+				validate: "optional,maxSize[20],custom[illegalEscapeChar]",
 				style: "width:150px",
 				type: "text",
 				description: "最大20文字"
@@ -5283,8 +5286,8 @@ $.extend(freeboard, jQuery.eventEmitter);
 				triangle.attr("fill", newSettings.pointer_color);
 			}
 
-			titleElement.html(newSettings.title);
-			unitsDiv.html(newSettings.units);
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			unitsDiv.html((_.isUndefined(newSettings.units) ? "" : newSettings.units));
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -5839,12 +5842,6 @@ $.extend(freeboard, jQuery.eventEmitter);
 		var chart;
 		var chartdata;
 
-		function setTitle(title) {
-			if (_.isUndefined(title))
-				return;
-			titleElement.html(title);
-		}
-
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
@@ -5867,7 +5864,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 			if (!_.isUndefined(chartsettings.options)) {
 				try {
-					options = JSON.parse(chartsettings.options, function(k,v) {
+					options = JSON.parse(chartsettings.options.replace(/'/g, "\\\""), function(k,v) {
 						var ret;
 						var str = v.toString();
 						if (str.indexOf('function') === 0)
@@ -5980,7 +5977,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 		this.render = function (element) {
 			$(element).append(titleElement).append(chartElement);
-			setTitle(currentSettings.title);
+			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
 			setBlocks(currentSettings.blocks);
 		}
 
@@ -5989,7 +5986,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 				currentSettings = newSettings;
 				return;
 			}
-			setTitle(newSettings.title);
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
 			setBlocks(newSettings.blocks);
 			if (newSettings.options != currentSettings.options)
 				createWidget(chartdata, newSettings);

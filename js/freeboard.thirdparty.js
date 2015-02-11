@@ -19625,7 +19625,6 @@ Ct[X]=Ct[H]=Ct[Q]=Ct[nt]=Ct[tt]=Ct[rt]=Ct[et]=Ct[ut]=Ct[ot]=true,Ct[z]=Ct[D]=Ct[
                     "alertText": "* 『HELLO』と入力してください"
                 },
                 "zip": {
-                    // credit: jquery.h5validate.js / orefalo
                     "regex": /^\d{3}-\d{4}$|^\d{7}$/,
                     "alertText": "* 郵便番号が正しくありません"
                 },
@@ -19635,6 +19634,10 @@ Ct[X]=Ct[H]=Ct[Q]=Ct[nt]=Ct[tt]=Ct[rt]=Ct[et]=Ct[ut]=Ct[ot]=true,Ct[z]=Ct[D]=Ct[
                 },
                 "alreadyusedname" : {
                     "alertText": "* 既に使用されている名前です。"
+                },
+                "illegalEscapeChar" : {
+                    "regex": /^[\w\{\|\}~:\^_\[\]:;=\?#\$%()\*\+,\-\.\/]+$/,
+                    "alertText": "* 次の特殊文字は入力不可です。\& \< \> \" \'"
                 }
             };
 
