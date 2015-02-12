@@ -19636,7 +19636,7 @@ Ct[X]=Ct[H]=Ct[Q]=Ct[nt]=Ct[tt]=Ct[rt]=Ct[et]=Ct[ut]=Ct[ot]=true,Ct[z]=Ct[D]=Ct[
                     "alertText": "* 既に使用されている名前です。"
                 },
                 "illegalEscapeChar" : {
-                    "regex": /^[\w\{\|\}~:\^_\[\]:;=\?#\$%()\*\+,\-\.\/]+$/,
+                    "regex": /[^\&\<\>\"\']+$/,
                     "alertText": "* 次の特殊文字は入力不可です。\& \< \> \" \'"
                 }
             };

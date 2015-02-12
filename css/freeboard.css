@@ -1720,6 +1720,11 @@ input {
 
 button,
 select {
+	-webkit-appearance:none;
+	-moz-appearance:none;
+	appearance:none;
+	text-indent: .01px;
+	text-overflow: "";
 	text-transform: none;
 }
 
@@ -2148,6 +2153,56 @@ a:focus {
 	outline-offset: -2px;
 }
 
+@keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@-moz-keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@-webkit-keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@-ms-keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@-o-keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@keyframes fadeout {
+	from { opacity: 1; }
+	to   { opacity: 0; }
+}
+
+@-moz-keyframes fadeout {
+	from { opacity: 1; }
+	to   { opacity: 0; }
+}
+
+@-webkit-keyframes fadeout {
+	from { opacity: 1; }
+	to   { opacity: 0; }
+}
+
+@-ms-keyframes fadeout {
+	from { opacity: 1; }
+	to   { opacity: 0; }
+}
+
+@-o-keyframes fadeout {
+	from { opacity: 1; }
+	to   { opacity: 0; }
+}
+
 #modal_overlay {
 	position: fixed;
 	z-index: 100;
@@ -2157,17 +2212,23 @@ a:focus {
 	width: 100%;
 	background: rgba(0, 0, 0, 0.8);
 	overflow-y: auto;
-	-webkit-transition: opacity 0.2s ease-in-out;
-	-moz-transition: opacity 0.2s ease-in-out;
-	transition: opacity 0.2s ease-in-out;
 }
 
 #modal_overlay.show {
-	opacity: 1;
+	-webkit-animation: fadein 0.2s;
+	-moz-animation: fadein 0.2s;
+	-ms-animation: fadein 0.2s;
+	-o-animation: fadein 0.2s;
+	animation: fadein 0.2s;
 }
 
 #modal_overlay.hide {
-	opacity: 0;
+	-webkit-animation: fadeout 0.2s;
+	-moz-animation: fadeout 0.2s;
+	-ms-animation: fadeout 0.2s;
+	-o-animation: fadeout 0.2s;
+	animation: fadeout 0.2s;
+	opacity:0;
 }
 
 a:hover,
@@ -2279,11 +2340,45 @@ header h1 {
 	display: none;
 }
 
+.show.pane-tools {
+	-webkit-animation: fadein 0.2s;
+	-moz-animation: fadein 0.2s;
+	-ms-animation: fadein 0.2s;
+	-o-animation: fadein 0.2s;
+	animation: fadein 0.2s;
+}
+
+.hide.pane-tools {
+	-webkit-animation: fadeout 0.2s;
+	-moz-animation: fadeout 0.2s;
+	-ms-animation: fadeout 0.2s;
+	-o-animation: fadeout 0.2s;
+	animation: fadeout 0.2s;
+	opacity:0;
+}
+
 .sub-section-tools {
 	top: 0px;
 	right: 0px;
 	position: absolute;
 	display: none;
+}
+
+.show.sub-section-tools {
+	-webkit-animation: fadein 0.2s;
+	-moz-animation: fadein 0.2s;
+	-ms-animation: fadein 0.2s;
+	-o-animation: fadein 0.2s;
+	animation: fadein 0.2s;
+}
+
+.hide.sub-section-tools {
+	-webkit-animation: fadeout 0.2s;
+	-moz-animation: fadeout 0.2s;
+	-ms-animation: fadeout 0.2s;
+	-o-animation: fadeout 0.2s;
+	animation: fadeout 0.2s;
+	opacity:0;
 }
 
 .datasource-edit-btn {
@@ -2422,6 +2517,23 @@ ul, ol {
 	left: 0;
 	right: 0;
 	top: 5px;
+}
+
+#column-tools.show {
+	-webkit-animation: fadein 0.2s;
+	-moz-animation: fadein 0.2s;
+	-ms-animation: fadein 0.2s;
+	-o-animation: fadein 0.2s;
+	animation: fadein 0.2s;
+}
+
+#column-tools.hide {
+	-webkit-animation: fadeout 0.2s;
+	-moz-animation: fadeout 0.2s;
+	-ms-animation: fadeout 0.2s;
+	-o-animation: fadeout 0.2s;
+	animation: fadeout 0.2s;
+	opacity:0;
 }
 
 #column-tools .left-columns {
@@ -3684,17 +3796,23 @@ html.boardtools-opening #hamburger:after
 	left: 50%;
 	margin-left: -100px;
 	z-index: 2000;
-	-webkit-transition: opacity 0.2s ease-in-out;
-	-moz-transition: opacity 0.2s ease-in-out;
-	transition: opacity 0.2s ease-in-out;
 }
 
 .show.wrapperloading {
-	opacity: 1;
+	-webkit-animation: fadein 0.2s;
+	-moz-animation: fadein 0.2s;
+	-ms-animation: fadein 0.2s;
+	-o-animation: fadein 0.2s;
+	animation: fadein 0.2s;
 }
 
 .hide.wrapperloading {
-	opacity: 0;
+	-webkit-animation: fadeout 0.2s;
+	-moz-animation: fadeout 0.2s;
+	-ms-animation: fadeout 0.2s;
+	-o-animation: fadeout 0.2s;
+	animation: fadeout 0.2s;
+	opacity:0;
 }
 
 .wrapperloading .loading.up {
