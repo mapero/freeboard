@@ -927,11 +927,45 @@ header h1 {
 	display: none;
 }
 
+.show.pane-tools {
+	-webkit-animation: fadein 0.2s;
+	-moz-animation: fadein 0.2s;
+	-ms-animation: fadein 0.2s;
+	-o-animation: fadein 0.2s;
+	animation: fadein 0.2s;
+}
+
+.hide.pane-tools {
+	-webkit-animation: fadeout 0.2s;
+	-moz-animation: fadeout 0.2s;
+	-ms-animation: fadeout 0.2s;
+	-o-animation: fadeout 0.2s;
+	animation: fadeout 0.2s;
+	opacity:0;
+}
+
 .sub-section-tools {
 	top: 0px;
 	right: 0px;
 	position: absolute;
 	display: none;
+}
+
+.show.sub-section-tools {
+	-webkit-animation: fadein 0.2s;
+	-moz-animation: fadein 0.2s;
+	-ms-animation: fadein 0.2s;
+	-o-animation: fadein 0.2s;
+	animation: fadein 0.2s;
+}
+
+.hide.sub-section-tools {
+	-webkit-animation: fadeout 0.2s;
+	-moz-animation: fadeout 0.2s;
+	-ms-animation: fadeout 0.2s;
+	-o-animation: fadeout 0.2s;
+	animation: fadeout 0.2s;
+	opacity:0;
 }
 
 .datasource-edit-btn {
@@ -1070,6 +1104,23 @@ ul, ol {
 	left: 0;
 	right: 0;
 	top: 5px;
+}
+
+#column-tools.show {
+	-webkit-animation: fadein 0.2s;
+	-moz-animation: fadein 0.2s;
+	-ms-animation: fadein 0.2s;
+	-o-animation: fadein 0.2s;
+	animation: fadein 0.2s;
+}
+
+#column-tools.hide {
+	-webkit-animation: fadeout 0.2s;
+	-moz-animation: fadeout 0.2s;
+	-ms-animation: fadeout 0.2s;
+	-o-animation: fadeout 0.2s;
+	animation: fadeout 0.2s;
+	opacity:0;
 }
 
 #column-tools .left-columns {
