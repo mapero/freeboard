@@ -111,151 +111,118 @@
 	var valueStyle = freeboard.getStyleString("values");
 
 	freeboard.addStyle('.widget-big-text', valueStyle + "font-size:75px;");
-
-	freeboard.addStyle('.tw-display', 'width: 100%; height:100%; display:table; table-layout:fixed;');
-
-	freeboard.addStyle('.tw-tr',
-		'display:table-row;');
-
-	freeboard.addStyle('.tw-tg',
-		'display:table-row-group;');
-
-	freeboard.addStyle('.tw-tc',
-		'display:table-caption;');
-
-	freeboard.addStyle('.tw-td',
-		'display:table-cell;');
-
-	freeboard.addStyle('.tw-value',
-		valueStyle +
-		'overflow: hidden;' +
-		'display: inline-block;' +
-		'text-overflow: ellipsis;');
-
-	freeboard.addStyle('.tw-unit',
-		'display: inline-block;' +
-		'padding-left: 10px;' +
-		'padding-bottom: 1.1em;' +
-		'vertical-align: bottom;');
-
-	freeboard.addStyle('.tw-value-wrapper',
-		'position: relative;' +
-		'vertical-align: middle;' +
-		'height:100%;');
-
-	freeboard.addStyle('.tw-sparkline',
-		'height:20px;');
+	freeboard.addStyle('.tw-container', 'position:relative;');
+	freeboard.addStyle('.tw-value-block', 'display:table;')
+	freeboard.addStyle('.tw-value', valueStyle + 'vertical-align:middle; display:table-cell; text-overflow: ellipsis;');
+	freeboard.addStyle('.tw-units', 'display:table-cell; padding-left: 10px; vertical-align:middle;');
+	freeboard.addStyle('.tw-sparkline', 'position:absolute; height:20px; width:100%;');
 
 	var textWidget = function (settings) {
 
 		var self = this;
 
 		var currentSettings = settings;
-		var displayElement = $('<div class="tw-display"></div>');
-		var titleElement = $('<h2 class="section-title tw-title tw-td"></h2>');
+		var titleElement = $('<h2 class="section-title"></h2>');
+		var containerElement = $('<div class="tw-container"></div>');
+		var valueBlockElement = $('<div class="tw-value-block"></div>');
 		var valueElement = $('<div class="tw-value"></div>');
-		var unitsElement = $('<div class="tw-unit"></div>');
-		var sparklineElement = $('<div class="tw-sparkline tw-td"></div>');
+		var unitsElement = $('<div class="tw-units"></div>');
+		var sparklineElement = $('<div class="tw-sparkline"></div>');
 
-		function updateValueSizing()
-		{
-			if(!_.isUndefined(currentSettings.units) && currentSettings.units != "") // If we're displaying our units
-			{
-				valueElement.css("max-width", (displayElement.innerWidth() - unitsElement.outerWidth(true)) + "px");
+		function getNumOfBlock() {
+			return (currentSettings.size == "big" || currentSettings.sparkline) ? 2 : 1;
+		}
+
+		function recalcLayout() {
+			var titlemargin;
+			titlemargin = (titleElement.css('display') == 'none') ? 0 : titleElement.outerHeight();
+
+			var height = 60 * getNumOfBlock() - titlemargin - 10;
+			containerElement.css({
+				"height": height + "px",
+				"width": "100%"
+			});
+
+			var sparkmargin;
+			sparkmargin = (sparklineElement.css('display') == 'none') ? 0 : sparklineElement.outerHeight();
+
+			valueBlockElement.css({
+				"height": height - sparkmargin + "px"
+			});
+
+			var padding = 0.7;
+			if (currentSettings.size == "big") {
+				padding = 3.0;
+				if(currentSettings.sparkline)
+					padding = 2.4
 			}
-			else
-			{
-				valueElement.css("max-width", "100%");
-			}
+			unitsElement.css({
+				"padding-top": padding + "em"
+			});
 		}
 
 		this.render = function (element) {
 			$(element).empty();
 
-			$(displayElement)
-				.append($('<div class="tw-tr"></div>').append(titleElement))
-				.append($('<div class="tw-tr"></div>').append($('<div class="tw-value-wrapper tw-td"></div>').append(valueElement).append(unitsElement)))
-				.append($('<div class="tw-tr"></div>').append(sparklineElement));
+			$(containerElement)
+				.append($(valueBlockElement).append(valueElement).append(unitsElement))
+				.append(sparklineElement);
 
-			$(element).append(displayElement);
+			$(element).append(titleElement).append(containerElement);
 
-			updateValueSizing();
+			recalcLayout();
 		}
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 
 			var shouldDisplayTitle = (!_.isUndefined(newSettings.title) && newSettings.title != "");
-			var shouldDisplayUnits = (!_.isUndefined(newSettings.units) && newSettings.units != "");
-
-			if(newSettings.sparkline)
-			{
-				sparklineElement.attr("style", null);
+			if (shouldDisplayTitle) {
+				titleElement.html(newSettings.title);
+				titleElement.attr("style", null);
+			} else {
+				titleElement.empty();
+				titleElement.hide();
 			}
-			else
-			{
+
+			if (newSettings.sparkline) {
+				sparklineElement.attr("style", null);
+			} else {
 				delete sparklineElement.data().values;
 				sparklineElement.empty();
 				sparklineElement.hide();
 			}
 
-			if(shouldDisplayTitle)
-			{
-				titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-				titleElement.attr("style", null);
-			}
-			else
-			{
-				titleElement.empty();
-				titleElement.hide();
-			}
-
-			if(shouldDisplayUnits)
-			{
+			var shouldDisplayUnits = (!_.isUndefined(newSettings.units) && newSettings.units != "");
+			if (shouldDisplayUnits) {
 				unitsElement.html((_.isUndefined(newSettings.units) ? "" : newSettings.units));
 				unitsElement.attr("style", null);
-			}
-			else
-			{
+			} else {
 				unitsElement.empty();
 				unitsElement.hide();
 			}
 
 			var valueFontSize = 30;
 
-			if(newSettings.size == "big")
-			{
+			if (newSettings.size == "big") {
 				valueFontSize = 75;
-
 				if(newSettings.sparkline)
-				{
 					valueFontSize = 60;
-				}
 			}
-
 			valueElement.css({"font-size" : valueFontSize + "px"});
 
-			updateValueSizing();
-		}
-
-		this.onSizeChanged = function()
-		{
-			updateValueSizing();
+			recalcLayout();
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (settingName == "value") {
-
-				if (currentSettings.animate) {
+				if (currentSettings.animate)
 					easeTransitionText(newValue, valueElement, 500);
-				}
-				else {
+				else
 					valueElement.text(newValue);
-				}
 
-				if (currentSettings.sparkline) {
+				if (currentSettings.sparkline)
 					addValueToSparkline(sparklineElement, newValue);
-				}
 			}
 		}
 
@@ -264,12 +231,7 @@
 		}
 
 		this.getHeight = function () {
-			if (currentSettings.size == "big" || currentSettings.sparkline) {
-				return 2;
-			}
-			else {
-				return 1;
-			}
+			return getNumOfBlock();
 		}
 
 		this.onSettingsChanged(settings);
