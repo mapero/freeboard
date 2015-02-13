@@ -555,7 +555,6 @@
 		var self = this;
 
 		const CIRCLE_WIDTH = 3;
-//		const LR_MARGIN = 10;
 
 		var currentID = _.uniqueId("pointer_");
 		var titleElement = $('<h2 class="section-title"></h2>');
@@ -627,7 +626,7 @@
 			pointer.attr("d", getPointerPath(r));
 
 			textValue.attr("font-size", calcValueFontSize(r) + "px");
-			textUnits.attr("dy", parseInt(textValue.node().getBBox().height/2.4) + "px");
+			textUnits.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px");
 		}
 
 		function createWidget() {
@@ -660,7 +659,7 @@
 				.text(currentSettings.units)
 				.style("fill", fontcolor)
 				.style("text-anchor", "middle")
-				.attr("dy", parseInt(textValue.node().getBBox().height/2.4) + "px")
+				.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px")
 				.attr("font-size", "14px")
 				.attr("font-family", fontfamily);
 
