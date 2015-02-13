@@ -4970,7 +4970,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 		}
 
 		this.onSettingsChanged = function (newSettings) {
-			if (titleElement.outerHeight() == 0) {
+			if (_.isUndefined(gaugeObject)) {
 				titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
 				currentSettings = newSettings;
 				return;
@@ -5528,6 +5528,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 		var currentSettings = settings;
 		var map;
 		var marker;
+		var poly;
 		var mapElement = $('<div></div>')
 		var currentPosition = {};
 
@@ -5535,6 +5536,8 @@ $.extend(freeboard, jQuery.eventEmitter);
 			if (map && marker && currentPosition.lat && currentPosition.lon) {
 				var newLatLon = new google.maps.LatLng(currentPosition.lat, currentPosition.lon);
 				marker.setPosition(newLatLon);
+				if (currentSettings.drawpath)
+					poly.getPath().push(newLatLon);
 				map.panTo(newLatLon);
 			}
 		}
@@ -5562,6 +5565,15 @@ $.extend(freeboard, jQuery.eventEmitter);
 				};
 
 				map = new google.maps.Map(mapElement[0], mapOptions);
+
+				var polyOptions = {
+					strokeColor: '#0091D1',
+					strokeOpacity: 1.0,
+					strokeWeight: 3
+				};
+
+				poly = new google.maps.Polyline(polyOptions);
+				poly.setMap(map);
 
 				google.maps.event.addDomListener(mapElement[0], 'mouseenter', function (e) {
 					e.cancelBubble = true;
@@ -5604,12 +5616,14 @@ $.extend(freeboard, jQuery.eventEmitter);
 		}
 
 		this.onSettingsChanged = function (newSettings) {
-			if (_.isNull(map)) {
+			if (_.isUndefined(map)) {
 				currentSettings = newSettings;
 				return;
 			}
 			if (newSettings.blocks != currentSettings.blocks)
 				setBlocks(newSettings.blocks);
+			if (!newSettings.drawpath)
+				poly.getPath().clear();
 			currentSettings = newSettings;
 		}
 
@@ -5626,6 +5640,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			// for memoryleak
 			map = null;
 			marker = null;
+			poly = null;
 		}
 
 		this.getHeight = function () {
@@ -5662,6 +5677,12 @@ $.extend(freeboard, jQuery.eventEmitter);
 				style: "width:100px",
 				default_value: 4,
 				description: "1ブロック60ピクセル。20ブロックまで"
+			},
+			{
+				name: "drawpath",
+				display_name: "移動経路の表示",
+				type: "boolean",
+				default_value: false
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {

@@ -1533,7 +1533,7 @@
 		}
 
 		this.onSettingsChanged = function (newSettings) {
-			if (titleElement.outerHeight() == 0) {
+			if (_.isUndefined(gaugeObject)) {
 				titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
 				currentSettings = newSettings;
 				return;
@@ -2091,6 +2091,7 @@
 		var currentSettings = settings;
 		var map;
 		var marker;
+		var poly;
 		var mapElement = $('<div></div>')
 		var currentPosition = {};
 
@@ -2098,6 +2099,8 @@
 			if (map && marker && currentPosition.lat && currentPosition.lon) {
 				var newLatLon = new google.maps.LatLng(currentPosition.lat, currentPosition.lon);
 				marker.setPosition(newLatLon);
+				if (currentSettings.drawpath)
+					poly.getPath().push(newLatLon);
 				map.panTo(newLatLon);
 			}
 		}
@@ -2125,6 +2128,15 @@
 				};
 
 				map = new google.maps.Map(mapElement[0], mapOptions);
+
+				var polyOptions = {
+					strokeColor: '#0091D1',
+					strokeOpacity: 1.0,
+					strokeWeight: 3
+				};
+
+				poly = new google.maps.Polyline(polyOptions);
+				poly.setMap(map);
 
 				google.maps.event.addDomListener(mapElement[0], 'mouseenter', function (e) {
 					e.cancelBubble = true;
@@ -2167,12 +2179,14 @@
 		}
 
 		this.onSettingsChanged = function (newSettings) {
-			if (_.isNull(map)) {
+			if (_.isUndefined(map)) {
 				currentSettings = newSettings;
 				return;
 			}
 			if (newSettings.blocks != currentSettings.blocks)
 				setBlocks(newSettings.blocks);
+			if (!newSettings.drawpath)
+				poly.getPath().clear();
 			currentSettings = newSettings;
 		}
 
@@ -2189,6 +2203,7 @@
 			// for memoryleak
 			map = null;
 			marker = null;
+			poly = null;
 		}
 
 		this.getHeight = function () {
@@ -2225,6 +2240,12 @@
 				style: "width:100px",
 				default_value: 4,
 				description: "1ブロック60ピクセル。20ブロックまで"
+			},
+			{
+				name: "drawpath",
+				display_name: "移動経路の表示",
+				type: "boolean",
+				default_value: false
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {
