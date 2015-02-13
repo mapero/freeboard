@@ -560,7 +560,6 @@
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var widgetElement = $('<div class="pointer-widget" id="' + currentID + '"></div>');
 		var currentSettings = settings;
-		var fontfamily = freeboard.getStyleObject("values")['font-family-light'];
 		var fontcolor = freeboard.getStyleObject("values")['color'];
 
 		// d3 variables
@@ -653,7 +652,7 @@
 				.style("text-anchor", "middle")
 				.attr("dy", ".3em")
 				.attr("font-size", calcValueFontSize(r) + "px")
-				.attr("font-family", fontfamily);
+				.attr("class", "ultralight-text");
 
 			textUnits = center.append("text")
 				.text(currentSettings.units)
@@ -661,7 +660,7 @@
 				.style("text-anchor", "middle")
 				.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px")
 				.attr("font-size", "14px")
-				.attr("font-family", fontfamily);
+				.attr("class", "ultralight-text");
 
 			arc_bg = center.append("path")
 				.datum({endAngle: τ})
@@ -717,7 +716,7 @@
 					.transition()
 					.duration(500)
 					.tween("text", function() {
-						var i = d3.interpolate(this.textContent, newValue);
+						var i = d3.interpolate(this.textContent, Number(newValue));
 						return function(t) {
 							this.textContent = i(t).toFixed(1);
 						};
