@@ -549,99 +549,189 @@
 		}
 	});
 
-	freeboard.addStyle('.pointer-widget-wrapper', "width:100%; height:214px; text-align:center;");
-	freeboard.addStyle('.pointer-widget', "width:280px; height:100%; display: inline-block;");
-	freeboard.addStyle('.pointer-value', "position:absolute; height:93px; margin:auto; top:0px; left:0px; bottom:0px; width:100%; text-align:center;");
+	freeboard.addStyle('.pointer-widget', "width:100%;");
 
 	var pointerWidget = function (settings) {
 		var self = this;
-		var paper;
-		var strokeWidth = 3;
-		var circle = null;
-		var triangle = null;
-		var width, height;
-		var currentValue = 0;
 
+		const CIRCLE_WIDTH = 3;
+//		const LR_MARGIN = 10;
+
+		var currentID = _.uniqueId("pointer_");
 		var titleElement = $('<h2 class="section-title"></h2>');
-		var widgetwrapperElement = $('<div class="pointer-widget-wrapper"></div>');
-		var widgetElement = $('<div class="pointer-widget"></div>');
-		var valueElement = $('<div class="pointer-value"></div>');
-		var valueDiv = $('<div class="widget-big-text"></div>');
-		var unitsDiv = $('<div></div>');
-
+		var widgetElement = $('<div class="pointer-widget" id="' + currentID + '"></div>');
 		var currentSettings = settings;
+		var fontfamily = freeboard.getStyleObject("values")['font-family-light'];
+		var fontcolor = freeboard.getStyleObject("values")['color'];
+
+		// d3 variables
+		var widgetRect;
+		var τ = 2 * Math.PI
+		var svg, arc, center, pointer, textValue, textUnits;
+
+		function setBlocks(blocks) {
+			if (_.isUndefined(blocks))
+				return;
+			var height = 60 * blocks - titleElement.outerHeight() - 7;
+			widgetElement.css({
+				"height": height + "px",
+				"width": "100%"
+			});
+		}
 
 		function polygonPath(points) {
 			if (!points || points.length < 2)
 				return [];
-			var path = []; //will use path object type
-			path.push(['m', points[0], points[1]]);
+			var path;
+			path = 'M'+points[0]+','+points[1];
 			for (var i = 2; i < points.length; i += 2) {
-				path.push(['l', points[i], points[i + 1]]);
+				path += 'L'+points[i]+','+points[i+1];
 			}
-			path.push(['z']);
+			path += 'Z';
 			return path;
 		}
 
+		function getCenteringTransform(height, width) {
+			return "translate(" + (width/2) + "," + (height/2) + ")"
+		}
+
+		function getArcR(height, width) {
+			return Math.min(height, width) / 2 - CIRCLE_WIDTH * 2;
+		}
+
+		function calcValueFontSize(arcR) {
+			return parseInt(arcR-35);
+		}
+
+		function getPointerPath(arcR) {
+			return polygonPath([0, - arcR + CIRCLE_WIDTH, 15, -(arcR-20), -15, -(arcR-20)])
+		}
+
+		function resize() {
+			if (_.isUndefined(svg))
+				return;
+
+			widgetRect = widgetElement[0].getBoundingClientRect();
+
+			svg.attr("height", widgetRect.height);
+			svg.attr("width", widgetRect.width);
+
+			center.attr("transform", getCenteringTransform(widgetRect.height, widgetRect.width));
+
+			var r = getArcR(widgetRect.height, widgetRect.width);
+
+			arc.innerRadius(r-CIRCLE_WIDTH)
+			arc.outerRadius(r);
+
+			arc_bg.attr("d", arc);
+			pointer.attr("d", getPointerPath(r));
+
+			textValue.attr("font-size", calcValueFontSize(r) + "px");
+			textUnits.attr("dy", parseInt(textValue.node().getBBox().height/2.4) + "px");
+		}
+
+		function createWidget() {
+
+			widgetRect = widgetElement[0].getBoundingClientRect();
+
+			svg = d3.select("#" + currentID)
+				.append("svg")
+				.attr("width", widgetRect.width)
+				.attr("height", widgetRect.height);
+
+			center = svg.append("g")
+				.attr("transform", getCenteringTransform(widgetRect.height, widgetRect.width));
+
+			var r = getArcR(widgetRect.height, widgetRect.width);
+			arc = d3.svg.arc()
+				.innerRadius(r-CIRCLE_WIDTH)
+				.outerRadius(r)
+				.startAngle(0);
+
+			textValue = center.append("text")
+				.text("0")
+				.style("fill", fontcolor)
+				.style("text-anchor", "middle")
+				.attr("dy", ".3em")
+				.attr("font-size", calcValueFontSize(r) + "px")
+				.attr("font-family", fontfamily);
+
+			textUnits = center.append("text")
+				.text(currentSettings.units)
+				.style("fill", fontcolor)
+				.style("text-anchor", "middle")
+				.attr("dy", parseInt(textValue.node().getBBox().height/2.4) + "px")
+				.attr("font-size", "14px")
+				.attr("font-family", fontfamily);
+
+			arc_bg = center.append("path")
+				.datum({endAngle: τ})
+				.style("fill", currentSettings.circle_color)
+				.attr("d", arc);
+
+			pointer = center.append("path")
+				.style("fill", currentSettings.pointer_color)
+				.attr("d", getPointerPath(r));
+
+			// svg chart fit to container
+			widgetElement.resize(_.debounce(function() {
+				resize();
+			}, 500));
+		}
+
 		this.render = function (element) {
-			$(element).append(titleElement);
-			$(element).append(widgetwrapperElement.append(widgetElement).append(valueElement.append(valueDiv).append(unitsDiv)));
-
-			width = widgetElement.width();
-			height = widgetElement.height();
-
-			var radius = Math.min(width, height) / 2 - strokeWidth * 2;
-
-			paper = Raphael(widgetElement[0], width, height);
-			circle = paper.circle(width / 2, height / 2, radius);
-			circle.attr("stroke", currentSettings.circle_color);
-			circle.attr("stroke-width", strokeWidth);
-
-			triangle = paper.path(polygonPath([width / 2, (height / 2) - radius + strokeWidth, 15, 20, -30, 0]));
-			triangle.attr("stroke-width", 0);
-			triangle.attr("fill", "#fff");
+			$(element).append(titleElement).append(widgetElement);
+			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
+			setBlocks(currentSettings.blocks);
+			createWidget();
 		}
 
 		this.onSettingsChanged = function (newSettings) {
-			currentSettings = newSettings;
-
-			if (circle) {
-				circle.attr("stroke", newSettings.circle_color);
-			}
-			if (triangle) {
-				triangle.attr("fill", newSettings.pointer_color);
+			if (_.isUndefined(svg)) {
+				currentSettings = newSettings;
+				return;
 			}
 
 			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-			unitsDiv.html((_.isUndefined(newSettings.units) ? "" : newSettings.units));
+			arc_bg.style("fill", newSettings.circle_color);
+			pointer.style("fill", newSettings.pointer_color);
+			textUnits.text((_.isUndefined(newSettings.units) ? "" : newSettings.units))
+			setBlocks(newSettings.blocks);
+
+			currentSettings = newSettings;
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
+			if (_.isUndefined(svg))
+				return;
 			if (settingName == "direction") {
-				if (!_.isUndefined(triangle)) {
-					var direction = "r";
-
-					var oppositeCurrent = currentValue + 180;
-
-					if (oppositeCurrent < newValue) {
-						//direction = "l";
-					}
-
-					triangle.animate({transform: "r" + newValue + "," + (width / 2) + "," + (height / 2)}, 250, "bounce");
-				}
-
-				currentValue = newValue;
-			}
-			else if (settingName == "value_text") {
-				valueDiv.html(newValue);
+				pointer.transition()
+					.duration(250)
+					.ease("bounce")
+					.attrTween("transform", function(d, i, a) {
+						return d3.interpolateString(a, "rotate(" + parseInt(newValue) + ", 0, 0)");
+					});
+			} else if (settingName == "value_text") {
+				if (_.isUndefined(newValue))
+					return;
+				textValue
+					.transition()
+					.duration(500)
+					.tween("text", function() {
+						var i = d3.interpolate(this.textContent, newValue);
+						return function(t) {
+							this.textContent = i(t).toFixed(1);
+						};
+					});
 			}
 		}
 
 		this.onDispose = function () {
+			svg = arc_bg = arc = center = pointer = null;
 		}
 
 		this.getHeight = function () {
-			return 4;
+			return currentSettings.blocks;
 		}
 
 		this.onSettingsChanged(settings);
@@ -651,7 +741,7 @@
 		type_name: "pointer",
 		display_name: "ポインタ",
 		"external_scripts" : [
-			"plugins/thirdparty/raphael.2.1.0.min.js"
+			"http://d3js.org/d3.v3.min.js",
 		],
 		settings: [
 			{
@@ -660,6 +750,15 @@
 				validate: "optional,maxSize[100]",
 				type: "text",
 				description: "最大100文字"
+			},
+			{
+				name: "blocks",
+				display_name: "高さ (ブロック数)",
+				validate: "required,custom[integer],min[4],max[10]",
+				type: "number",
+				style: "width:100px",
+				default_value: 4,
+				description: "1ブロック60ピクセル。10ブロックまで"
 			},
 			{
 				name: "direction",
@@ -793,6 +892,15 @@
 				description: "最大100文字"
 			},
 			{
+				name: "blocks",
+				display_name: "高さ (ブロック数)",
+				validate: "required,custom[integer],min[4],max[20]",
+				type: "number",
+				style: "width:100px",
+				default_value: 4,
+				description: "1ブロック60ピクセル。20ブロックまで"
+			},
+			{
 				name: "src",
 				display_name: "画像URL",
 				validate: "optional,maxSize[2000]",
@@ -807,15 +915,6 @@
 				name: "number",
 				suffix: "秒",
 				description:"更新する必要がない場合は空白のまま"
-			},
-			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[4],max[20]",
-				type: "number",
-				style: "width:100px",
-				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {
@@ -1046,6 +1145,15 @@
 		fill_size: true,
 		settings: [
 			{
+				name: "blocks",
+				display_name: "高さ (ブロック数)",
+				validate: "required,custom[integer],min[4],max[20]",
+				type: "number",
+				style: "width:100px",
+				default_value: 4,
+				description: "1ブロック60ピクセル。20ブロックまで"
+			},
+			{
 				name: "lat",
 				display_name: "緯度",
 				validate: "optional,maxSize[2000]",
@@ -1058,15 +1166,6 @@
 				validate: "optional,maxSize[2000]",
 				type: "calculated",
 				description: "最大2000文字"
-			},
-			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[4],max[20]",
-				type: "number",
-				style: "width:100px",
-				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
 			},
 			{
 				name: "drawpath",
