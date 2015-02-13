@@ -129,15 +129,11 @@
 		var unitsElement = $('<div class="tw-units"></div>');
 		var sparklineElement = $('<div class="tw-sparkline"></div>');
 
-		function getNumOfBlock() {
-			return (currentSettings.size == "big" || currentSettings.sparkline) ? 2 : 1;
-		}
-
 		function recalcLayout() {
 			var titlemargin;
 			titlemargin = (titleElement.css('display') == 'none') ? 0 : titleElement.outerHeight();
 
-			var height = 60 * getNumOfBlock() - titlemargin - 10;
+			var height = 60 * self.getHeight() - titlemargin - 10;
 			containerElement.css({
 				"height": height + "px",
 				"width": "100%"
@@ -231,7 +227,7 @@
 		}
 
 		this.getHeight = function () {
-			return getNumOfBlock();
+			return (currentSettings.size == "big" || currentSettings.sparkline) ? 2 : 1;
 		}
 
 		this.onSettingsChanged(settings);
@@ -298,36 +294,30 @@
 		}
 	});
 
-	var gaugeID = 0;
-	freeboard.addStyle('.gauge-widget-wrapper', "width: 100%;text-align: center;");
-	freeboard.addStyle('.gauge-widget', "width:280px;height:214px;display:inline-block;");
+	freeboard.addStyle('.gauge-widget-wrapper', "width:100%; height:214px; text-align:center;");
+	freeboard.addStyle('.gauge-widget', "width:280px; height:100%; display:inline-block;");
 
 	var gaugeWidget = function (settings) {
 		var self = this;
 
-		var thisGaugeID = "gauge-" + gaugeID++;
+		var currentID = _.uniqueId("gauge-");
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var wrapperElement = $('<div class="gauge-widget-wrapper"></div>');
-		var gaugeElement = $('<div class="gauge-widget" id="' + thisGaugeID + '"></div>');
-
+		var gaugeElement = $('<div class="gauge-widget" id="' + currentID + '"></div>');
 		var gaugeObject;
-		var rendered = false;
 
 		var currentSettings = settings;
 
 		function createGauge() {
-			if (!rendered) {
-				return;
-			}
+			currentSettings.shape = Number(currentSettings.shape);
 
-			currentSettings.shape = parseInt(currentSettings.shape);
+			if (!_.isUndefined(gaugeObject))
+				gaugeObject = null;
 
 			gaugeElement.empty();
 
-			var valueStyle = freeboard.getStyleObject("values");
-
 			gaugeObject = new JustGage({
-				id: thisGaugeID,
+				id: currentID,
 				value: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
 				min: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
 				max: (_.isUndefined(currentSettings.max_value) ? 0 : currentSettings.max_value),
@@ -337,41 +327,28 @@
 				levelColors: [ currentSettings.gauge_lower_color, currentSettings.gauge_mid_color, currentSettings.gauge_upper_color ],
 				gaugeWidthScale: currentSettings.gauge_widthscale/100.0,
 				gaugeColor: currentSettings.gauge_color,
-				labelFontFamily: valueStyle['font-family-light'],
+				labelFontFamily: freeboard.getStyleObject("values")['font-family-light'],
 				labelFontColor: currentSettings.value_fontcolor,
 				valueFontColor: currentSettings.value_fontcolor
 			});
 		}
 
 		this.render = function (element) {
-			rendered = true;
 			$(element).append(titleElement).append(wrapperElement.append(gaugeElement));
-
 			// for justgauge redraw bug.
-			var timerID = setTimeout(function() {
+			_.delay(function() {
 				createGauge();
-				clearTimeout(timerID);
 			}, 500);
 		}
 
 		this.onSettingsChanged = function (newSettings) {
-			if (newSettings.min_value != currentSettings.min_value ||
-				newSettings.max_value != currentSettings.max_value ||
-				newSettings.units != currentSettings.units ||
-				newSettings.shape != currentSettings.shape ||
-				newSettings.gauge_widthscale != currentSettings.gauge_widthscale ||
-				newSettings.value_fontcolor != currentSettings.value_fontcolor ||
-				newSettings.gauge_upper_color != currentSettings.gauge_upper_color ||
-				newSettings.gauge_mid_color != currentSettings.gauge_mid_color ||
-				newSettings.gauge_lower_color != currentSettings.gauge_lower_color ||
-				newSettings.gauge_color != currentSettings.gauge_color) {
+			if (titleElement.outerHeight() == 0) {
+				titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
 				currentSettings = newSettings;
-				createGauge();
+				return;
 			}
-			else {
-				currentSettings = newSettings;
-			}
-
+			currentSettings = newSettings;
+			createGauge();
 			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
 		}
 
@@ -382,6 +359,8 @@
 		}
 
 		this.onDispose = function () {
+			if (!_.isUndefined(gaugeObject))
+				gaugeObject = null;
 		}
 
 		this.getHeight = function () {
