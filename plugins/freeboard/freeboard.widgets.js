@@ -327,7 +327,7 @@
 				levelColors: [ currentSettings.gauge_lower_color, currentSettings.gauge_mid_color, currentSettings.gauge_upper_color ],
 				gaugeWidthScale: currentSettings.gauge_widthscale/100.0,
 				gaugeColor: currentSettings.gauge_color,
-				labelFontFamily: freeboard.getStyleObject("values")['font-family-light'],
+				labelClass: "ultralight-text",
 				labelFontColor: currentSettings.value_fontcolor,
 				valueFontColor: currentSettings.value_fontcolor
 			});
