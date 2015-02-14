@@ -563,9 +563,8 @@
 		var fontcolor = freeboard.getStyleObject("values")['color'];
 
 		// d3 variables
-		var widgetRect;
 		var τ = 2 * Math.PI
-		var svg, arc, center, pointer, textValue, textUnits;
+		var svg, center, pointer, textValue, textUnits, circle;
 
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
@@ -589,39 +588,36 @@
 			return path;
 		}
 
-		function getCenteringTransform(height, width) {
-			return "translate(" + (width/2) + "," + (height/2) + ")"
+		function getCenteringTransform(rc) {
+			return "translate(" + (rc.width/2) + "," + (rc.height/2) + ")"
 		}
 
-		function getArcR(height, width) {
-			return Math.min(height, width) / 2 - CIRCLE_WIDTH * 2;
+		function getRadius(rc) {
+			return Math.min(rc.height, rc.width) / 2 - CIRCLE_WIDTH * 2;
 		}
 
-		function calcValueFontSize(arcR) {
-			return parseInt(arcR-35);
+		function calcValueFontSize(r) {
+			return parseInt(r-35);
 		}
 
-		function getPointerPath(arcR) {
-			return polygonPath([0, - arcR + CIRCLE_WIDTH, 15, -(arcR-20), -15, -(arcR-20)])
+		function getPointerPath(r) {
+			return polygonPath([0, - r + CIRCLE_WIDTH, 15, -(r-20), -15, -(r-20)])
 		}
 
 		function resize() {
 			if (_.isUndefined(svg))
 				return;
 
-			widgetRect = widgetElement[0].getBoundingClientRect();
+			var rc = widgetElement[0].getBoundingClientRect();
 
-			svg.attr("height", widgetRect.height);
-			svg.attr("width", widgetRect.width);
+			svg.attr("height", rc.height);
+			svg.attr("width", rc.width);
 
-			center.attr("transform", getCenteringTransform(widgetRect.height, widgetRect.width));
+			center.attr("transform", getCenteringTransform(rc));
 
-			var r = getArcR(widgetRect.height, widgetRect.width);
+			var r = getRadius(rc);
+			circle.attr("r", r);
 
-			arc.innerRadius(r-CIRCLE_WIDTH)
-			arc.outerRadius(r);
-
-			arc_bg.attr("d", arc);
 			pointer.attr("d", getPointerPath(r));
 
 			textValue.attr("font-size", calcValueFontSize(r) + "px");
@@ -630,21 +626,22 @@
 
 		function createWidget() {
 
-			widgetRect = widgetElement[0].getBoundingClientRect();
+			var rc = widgetElement[0].getBoundingClientRect();
 
 			svg = d3.select("#" + currentID)
 				.append("svg")
-				.attr("width", widgetRect.width)
-				.attr("height", widgetRect.height);
+				.attr("width", rc.width)
+				.attr("height", rc.height);
 
 			center = svg.append("g")
-				.attr("transform", getCenteringTransform(widgetRect.height, widgetRect.width));
+				.attr("transform", getCenteringTransform(rc));
 
-			var r = getArcR(widgetRect.height, widgetRect.width);
-			arc = d3.svg.arc()
-				.innerRadius(r-CIRCLE_WIDTH)
-				.outerRadius(r)
-				.startAngle(0);
+			var r = getRadius(rc);
+			circle = center.append("circle")
+				.attr("r", r)
+				.style("fill", "rgba(0, 0, 0, 0)")
+				.style("stroke-width", CIRCLE_WIDTH)
+				.style("stroke", currentSettings.circle_color)
 
 			textValue = center.append("text")
 				.text("0")
@@ -661,11 +658,6 @@
 				.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px")
 				.attr("font-size", "14px")
 				.attr("class", "ultralight-text");
-
-			arc_bg = center.append("path")
-				.datum({endAngle: τ})
-				.style("fill", currentSettings.circle_color)
-				.attr("d", arc);
 
 			pointer = center.append("path")
 				.style("fill", currentSettings.pointer_color)
@@ -691,7 +683,7 @@
 			}
 
 			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-			arc_bg.style("fill", newSettings.circle_color);
+			circle.style("stroke", newSettings.circle_color);
 			pointer.style("fill", newSettings.pointer_color);
 			textUnits.text((_.isUndefined(newSettings.units) ? "" : newSettings.units))
 			setBlocks(newSettings.blocks);
@@ -712,8 +704,7 @@
 			} else if (settingName == "value_text") {
 				if (_.isUndefined(newValue))
 					return;
-				textValue
-					.transition()
+				textValue.transition()
 					.duration(500)
 					.tween("text", function() {
 						var i = d3.interpolate(this.textContent, Number(newValue));
@@ -725,7 +716,7 @@
 		}
 
 		this.onDispose = function () {
-			svg = arc_bg = arc = center = pointer = null;
+			svg = circle = center = pointer = textValue = textUnits = null;
 		}
 
 		this.getHeight = function () {
