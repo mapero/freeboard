@@ -2506,6 +2506,15 @@ header h1 {
 	letter-spacing: 1px;
 }
 
+.ultralight-text {
+	color: #d3d4d4;
+	font-weight: 100;
+	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Helvetica Neue", "Open Sans", Meiryo, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, Arial, sans-serif;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	letter-spacing: 1px;
+}
+
 ul, ol {
 	list-style: none;
 }
