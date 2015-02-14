@@ -1745,7 +1745,7 @@
 	var pointerWidget = function (settings) {
 		var self = this;
 
-		const CIRCLE_WIDTH = 3;
+		var CIRCLE_WIDTH = 3;
 
 		var currentID = _.uniqueId("pointer_");
 		var titleElement = $('<h2 class="section-title"></h2>');

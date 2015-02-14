@@ -156,7 +156,7 @@ DeveloperConsole = function(theFreeboardModel)
 			var tableRow = $('<tr></tr>');
 			var tableOperations = $('<ul class="board-toolbar"></ul>');
 			var scriptInput = $('<input class="table-row-value" style="width:100%;" type="text">');
-			var deleteOperation = $('<li><i class="icon-trash icon-white"></i></li>').click(function(e){
+			var deleteOperation = $('<li><i class="fa-w fa-trash"></i></li>').click(function(e){
 				pluginScriptsInputs = _.without(pluginScriptsInputs, scriptInput);
 				tableRow.remove();
 			});
@@ -727,7 +727,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		if(!editing)
 		{
 			freeboardUI.disableGrid();
-			$("#toggle-header-icon").addClass("icon-wrench").removeClass("icon-chevron-up");
+			$("#toggle-header-icon").addClass("fa-wrench").removeClass("fa-chevron-up");
 			$(".gridster .gs_w").css({cursor: "default"});
 
 			if (freeboard.browsername.indexOf("ie") == -1) {
@@ -745,7 +745,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		else
 		{
 			$("#admin-menu").css("display", "block");
-			$("#toggle-header-icon").addClass("icon-chevron-up").removeClass("icon-wrench");
+			$("#toggle-header-icon").addClass("fa-chevron-up").removeClass("fa-wrench");
 			$(".gridster .gs_w").css({cursor: "pointer"});
 
 			if (freeboard.browsername.indexOf("ie") == -1) {
@@ -1613,14 +1613,14 @@ PluginEditor = function(jsEditor, valueEditor)
 
 		wrapperDiv.append(input).append(datasourceToolbox);
 
-		var datasourceTool = $('<li><i class="icon-plus icon-white"></i><label>データソース</label></li>')
+		var datasourceTool = $('<li><i class="fa-w fa-plus"></i><label>データソース</label></li>')
 			.mousedown(function(e) {
 				e.preventDefault();
 				$(input).val("").focus().insertAtCaret("datasources[\"").trigger("freeboard-eval");
 			});
 		datasourceToolbox.append(datasourceTool);
 
-		var jsEditorTool = $('<li><i class="icon-fullscreen icon-white"></i><label>.JS EDITOR</label></li>')
+		var jsEditorTool = $('<li><i class="fa-w fa-edit"></i><label>.JS EDITOR</label></li>')
 			.mousedown(function(e) {
 				e.preventDefault();
 				jsEditor.displayJSEditor(input.val(), 'javascript', function(result) {
@@ -1631,7 +1631,7 @@ PluginEditor = function(jsEditor, valueEditor)
 		datasourceToolbox.append(jsEditorTool);
 
 		if(includeRemove) {
-			var removeButton = $('<li class="remove-setting-row"><i class="icon-minus icon-white"></i><label></label></li>')
+			var removeButton = $('<li class="remove-setting-row"><i class="fa-w fa-minus"></i><label></label></li>')
 				.mousedown(function(e) {
 					e.preventDefault();
 					wrapperDiv.remove();
@@ -1771,7 +1771,7 @@ PluginEditor = function(jsEditor, valueEditor)
 								});
 							});
 
-							subsettingRow.append($('<td class="table-row-operation"></td>').append($('<ul class="board-toolbar"></ul>').append($('<li></li>').append($('<i class="icon-trash icon-white"></i>').click(function()
+							subsettingRow.append($('<td class="table-row-operation"></td>').append($('<ul class="board-toolbar"></ul>').append($('<li></li>').append($('<i class="fa-w fa-trash"></i>').click(function()
 												{
 													var subSettingIndex = newSettings.settings[settingDef.name].indexOf(newSetting);
 
@@ -1939,7 +1939,7 @@ PluginEditor = function(jsEditor, valueEditor)
 
 						var datasourceToolbox = $('<ul class="board-toolbar datasource-input-suffix"></ul>');
 
-						var jsEditorTool = $('<li><i class="icon-fullscreen icon-white"></i><label>.JSON EDITOR</label></li>').mousedown(function(e)
+						var jsEditorTool = $('<li><i class="fa-w fa-edit"></i><label>.JSON EDITOR</label></li>').mousedown(function(e)
 						{
 							e.preventDefault();
 
@@ -1975,7 +1975,7 @@ PluginEditor = function(jsEditor, valueEditor)
 							}
 
 							if(settingDef.multi_input) {
-								var inputAdder = $('<ul class="board-toolbar"><li class="add-setting-row"><i class="icon-plus icon-white"></i><label>追加</label></li></ul>')
+								var inputAdder = $('<ul class="board-toolbar"><li class="add-setting-row"><i class="fa-w fa-plus"></i><label>追加</label></li></ul>')
 									.mousedown(function(e) {
 										e.preventDefault();
 										_appendCalculatedSettingRow(valueCell, newSettings, settingDef, null, true);
@@ -5182,7 +5182,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 	var pointerWidget = function (settings) {
 		var self = this;
 
-		const CIRCLE_WIDTH = 3;
+		var CIRCLE_WIDTH = 3;
 
 		var currentID = _.uniqueId("pointer_");
 		var titleElement = $('<h2 class="section-title"></h2>');

@@ -727,7 +727,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		if(!editing)
 		{
 			freeboardUI.disableGrid();
-			$("#toggle-header-icon").addClass("icon-wrench").removeClass("icon-chevron-up");
+			$("#toggle-header-icon").addClass("fa-wrench").removeClass("fa-chevron-up");
 			$(".gridster .gs_w").css({cursor: "default"});
 
 			if (freeboard.browsername.indexOf("ie") == -1) {
@@ -745,7 +745,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		else
 		{
 			$("#admin-menu").css("display", "block");
-			$("#toggle-header-icon").addClass("icon-chevron-up").removeClass("icon-wrench");
+			$("#toggle-header-icon").addClass("fa-chevron-up").removeClass("fa-wrench");
 			$(".gridster .gs_w").css({cursor: "pointer"});
 
 			if (freeboard.browsername.indexOf("ie") == -1) {
@@ -1620,7 +1620,7 @@ PluginEditor = function(jsEditor, valueEditor)
 			});
 		datasourceToolbox.append(datasourceTool);
 
-		var jsEditorTool = $('<li><i class="fa-w fa-file-open"></i><label>.JS EDITOR</label></li>')
+		var jsEditorTool = $('<li><i class="fa-w fa-edit"></i><label>.JS EDITOR</label></li>')
 			.mousedown(function(e) {
 				e.preventDefault();
 				jsEditor.displayJSEditor(input.val(), 'javascript', function(result) {
@@ -1771,7 +1771,7 @@ PluginEditor = function(jsEditor, valueEditor)
 								});
 							});
 
-							subsettingRow.append($('<td class="table-row-operation"></td>').append($('<ul class="board-toolbar"></ul>').append($('<li></li>').append($('<i class="icon-trash icon-white"></i>').click(function()
+							subsettingRow.append($('<td class="table-row-operation"></td>').append($('<ul class="board-toolbar"></ul>').append($('<li></li>').append($('<i class="fa-w fa-trash"></i>').click(function()
 												{
 													var subSettingIndex = newSettings.settings[settingDef.name].indexOf(newSetting);
 
@@ -1939,7 +1939,7 @@ PluginEditor = function(jsEditor, valueEditor)
 
 						var datasourceToolbox = $('<ul class="board-toolbar datasource-input-suffix"></ul>');
 
-						var jsEditorTool = $('<li><i class="icon-fullscreen icon-white"></i><label>.JSON EDITOR</label></li>').mousedown(function(e)
+						var jsEditorTool = $('<li><i class="fa-w fa-edit"></i><label>.JSON EDITOR</label></li>').mousedown(function(e)
 						{
 							e.preventDefault();
 
