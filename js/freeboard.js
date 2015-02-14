@@ -156,7 +156,7 @@ DeveloperConsole = function(theFreeboardModel)
 			var tableRow = $('<tr></tr>');
 			var tableOperations = $('<ul class="board-toolbar"></ul>');
 			var scriptInput = $('<input class="table-row-value" style="width:100%;" type="text">');
-			var deleteOperation = $('<li><i class="icon-trash icon-white"></i></li>').click(function(e){
+			var deleteOperation = $('<li><i class="fa-w fa-trash"></i></li>').click(function(e){
 				pluginScriptsInputs = _.without(pluginScriptsInputs, scriptInput);
 				tableRow.remove();
 			});
@@ -1613,14 +1613,14 @@ PluginEditor = function(jsEditor, valueEditor)
 
 		wrapperDiv.append(input).append(datasourceToolbox);
 
-		var datasourceTool = $('<li><i class="icon-plus icon-white"></i><label>データソース</label></li>')
+		var datasourceTool = $('<li><i class="fa-w fa-plus"></i><label>データソース</label></li>')
 			.mousedown(function(e) {
 				e.preventDefault();
 				$(input).val("").focus().insertAtCaret("datasources[\"").trigger("freeboard-eval");
 			});
 		datasourceToolbox.append(datasourceTool);
 
-		var jsEditorTool = $('<li><i class="icon-fullscreen icon-white"></i><label>.JS EDITOR</label></li>')
+		var jsEditorTool = $('<li><i class="fa-w fa-file-open"></i><label>.JS EDITOR</label></li>')
 			.mousedown(function(e) {
 				e.preventDefault();
 				jsEditor.displayJSEditor(input.val(), 'javascript', function(result) {
@@ -1631,7 +1631,7 @@ PluginEditor = function(jsEditor, valueEditor)
 		datasourceToolbox.append(jsEditorTool);
 
 		if(includeRemove) {
-			var removeButton = $('<li class="remove-setting-row"><i class="icon-minus icon-white"></i><label></label></li>')
+			var removeButton = $('<li class="remove-setting-row"><i class="fa-w fa-minus"></i><label></label></li>')
 				.mousedown(function(e) {
 					e.preventDefault();
 					wrapperDiv.remove();
@@ -1975,7 +1975,7 @@ PluginEditor = function(jsEditor, valueEditor)
 							}
 
 							if(settingDef.multi_input) {
-								var inputAdder = $('<ul class="board-toolbar"><li class="add-setting-row"><i class="icon-plus icon-white"></i><label>追加</label></li></ul>')
+								var inputAdder = $('<ul class="board-toolbar"><li class="add-setting-row"><i class="fa-w fa-plus"></i><label>追加</label></li></ul>')
 									.mousedown(function(e) {
 										e.preventDefault();
 										_appendCalculatedSettingRow(valueCell, newSettings, settingDef, null, true);

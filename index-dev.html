@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="viewport" content = "width = device-width, initial-scale = 1, user-scalable = no" />
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="lib/css/thirdparty/jquery.gridster.min.css" rel="stylesheet" />
     <link href="lib/css/thirdparty/codemirror.css" rel="stylesheet" />
     <link href="lib/css/thirdparty/codemirror-ambiance.css" rel="stylesheet" />
@@ -85,16 +86,16 @@
                 <div id="board-actions">
                     <h2 id="menutitle" class="title menu">Menu</h2>
                     <ul class="board-toolbar collapse">
-                        <li data-bind="click: loadDashboardFromLocalFile"><i id="full-screen-icon" class="icon-folder-open icon-white"></i><label id="full-screen">ロード</label></li>
-                        <li data-bind="click: saveDashboard"><i class="icon-download-alt icon-white"></i><label>保存</label></li>
-                        <li id="add-pane" data-bind="click: createPane"><i class="icon-plus icon-white"></i><label>ペイン追加</label></li>
+                        <li data-bind="click: loadDashboardFromLocalFile"><i id="full-screen-icon" class="fa-w fa-folder-open"></i><label id="full-screen">ロード</label></li>
+                        <li data-bind="click: saveDashboard"><i class="fa-w fa-download"></i><label>保存</label></li>
+                        <li id="add-pane" data-bind="click: createPane"><i class="fa-w fa-plus"></i><label>ペイン追加</label></li>
                     </ul>
                 </div>
             </div>
             <div id="board-configs">
                 <div id="board-actions-right">
                     <ul class="board-toolbar collapse">
-                        <li id="toggle-datasources" data-bind="click: toggleDatasources"><i class="icon-globe icon-white"></i><label>データソース</label></li>
+                        <li id="toggle-datasources" data-bind="click: toggleDatasources"><i class="fa-w fa-globe"></i><label>データソース</label></li>
                     </ul>
                 </div>
             </div>
@@ -102,16 +103,16 @@
     </div>
     <div id="column-tools" class="responsive-column-width">
         <ul class="board-toolbar left-columns">
-            <li class="column-tool add" data-bind="click: addGridColumnLeft"><span class="column-icon right"></span><i class="icon-arrow-left icon-white"></i></li>
-            <li class="column-tool sub" data-bind="click: subGridColumnLeft"><span class="column-icon left"></span><i class="icon-arrow-right icon-white"></i></li>
+            <li class="column-tool add" data-bind="click: addGridColumnLeft"><span class="column-icon right"></span><i class="fa-w fa-arrow-left"></i></li>
+            <li class="column-tool sub" data-bind="click: subGridColumnLeft"><span class="column-icon left"></span><i class="fa-w fa-arrow-right"></i></li>
         </ul>
         <ul class="board-toolbar right-columns">
-            <li class="column-tool sub" data-bind="click: subGridColumnRight"><span class="column-icon right"></span><i class="icon-arrow-left icon-white"></i></li>
-            <li class="column-tool add" data-bind="click: addGridColumnRight"><span class="column-icon left"></span><i class="icon-arrow-right icon-white"></i></li>
+            <li class="column-tool sub" data-bind="click: subGridColumnRight"><span class="column-icon right"></span><i class="fa-w fa-arrow-left"></i></li>
+            <li class="column-tool add" data-bind="click: addGridColumnRight"><span class="column-icon left"></span><i class="fa-w fa-arrow-right"></i></li>
         </ul>
     </div>
     <div id="toggle-header" data-bind="click: toggleEditing">
-        <i id="toggle-header-icon" class="icon-wrench icon-white"></i>
+        <i id="toggle-header-icon" class="fa-w fa-wrench"></i>
     </div>
 </header>
 
@@ -128,7 +129,7 @@
         <h2 class="datasource-container-header title">データソース</h2>
         <div>
             <ul class="board-toolbar collapse">
-                <li data-bind="click: toggleDatasources"><i class="icon-remove icon-white"></i></li>
+                <li data-bind="click: toggleDatasources"><i class="fa-w fa-remove"></i></li>
             </ul>
         </div>
     </div>
@@ -149,9 +150,9 @@
                 <td data-bind="text: last_updated"></td>
                 <td>
                     <ul class="board-toolbar">
-                        <li data-bind="click: updateNow"><i class="icon-refresh icon-white"></i></li>
+                        <li data-bind="click: updateNow"><i class="fa-w fa-refresh"></i></li>
                         <li data-bind="pluginEditor: {operation: 'delete', type: 'datasource'}">
-                            <i class="icon-trash icon-white"></i></li>
+                            <i class="fa-w fa-trash"></i></li>
                     </ul>
                 </td>
             </tr>
@@ -160,7 +161,7 @@
     </div>
     <div class="datasource-toolbar">
         <ul class="board-toolbar collapse">
-            <li data-bind="pluginEditor: {operation: 'add', type: 'datasource'}"><i class="icon-plus icon-white"></i><label>追加</label></li>
+            <li data-bind="pluginEditor: {operation: 'add', type: 'datasource'}"><i class="fa-w fa-plus"></i><label>追加</label></li>
         </ul>
     </div>
 </div>
@@ -176,13 +177,13 @@
             <h1 data-bind="html: title"></h1>
             <ul class="board-toolbar pane-tools">
                 <li data-bind="pluginEditor: {operation: 'add', type: 'widget'}">
-                    <i class="icon-plus icon-white"></i>
+                    <i class="fa-w fa-plus"></i>
                 </li>
                 <li data-bind="pluginEditor: {operation: 'edit', type: 'pane'}">
-                    <i class="icon-wrench icon-white"></i>
+                    <i class="fa-w fa-wrench"></i>
                 </li>
                 <li data-bind="pluginEditor: {operation: 'delete', type: 'pane'}">
-                    <i class="icon-trash icon-white"></i>
+                    <i class="fa-w fa-trash"></i>
                 </li>
             </ul>
         </header>
@@ -192,13 +193,13 @@
                 <div class="sub-section-tools">
                     <ul class="board-toolbar">
                         <!-- ko if:$parent.widgetCanMoveUp($data) -->
-                        <li data-bind="click:$parent.moveWidgetUp"><i class="icon-chevron-up icon-white"></i></li>
+                        <li data-bind="click:$parent.moveWidgetUp"><i class="fa-w fa-chevron-up"></i></li>
                         <!-- /ko -->
                         <!-- ko if:$parent.widgetCanMoveDown($data) -->
-                        <li data-bind="click:$parent.moveWidgetDown"><i class="icon-chevron-down icon-white"></i></li>
+                        <li data-bind="click:$parent.moveWidgetDown"><i class="fa-w fa-chevron-down"></i></li>
                         <!-- /ko -->
-                        <li data-bind="pluginEditor: {operation: 'edit', type: 'widget'}"><i class="icon-wrench icon-white"></i></li>
-                        <li data-bind="pluginEditor: {operation: 'delete', type: 'widget'}"><i class="icon-trash icon-white"></i></li>
+                        <li data-bind="pluginEditor: {operation: 'edit', type: 'widget'}"><i class="fa-w fa-wrench"></i></li>
+                        <li data-bind="pluginEditor: {operation: 'delete', type: 'widget'}"><i class="fa-w fa-trash"></i></li>
                     </ul>
                 </div>
             </div>
