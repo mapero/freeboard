@@ -81,6 +81,7 @@
 	freeboard.loadDatasourcePlugin({
 		type_name: "websocket",
 		display_name: "WebSocket",
+		description: "WebSocket APIを使用し、JSONデータを受信します。",
 		settings: [
 			{
 				name: "uri",

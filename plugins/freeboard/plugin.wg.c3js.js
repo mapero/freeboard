@@ -1,61 +1,12 @@
-// # c3js Freeboard Plugin
-//
-// Copyright © 2015 Daisuke Tanaka.(https://github.com/tanaka0323)
-// Licensed under the MIT license.
-//
-// -------------------
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
-
-	freeboard.loadWidgetPlugin({
-		type_name: "c3js",
-		display_name: "C3チャート",
-		"external_scripts" : [
-			"http://d3js.org/d3.v3.min.js",
-			"plugins/thirdparty/c3.min.js"
-		],
-		settings: [
-			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
-			},
-			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[2],max[20]",
-				type: "number",
-				style: "width:100px",
-				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
-			},
-			{
-				name: "value",
-				display_name: "値",
-				validate: "optional,maxSize[5000]",
-				type: "calculated",
-				description: "最大5000文字"
-			},
-			{
-				name: "options",
-				display_name: "チャートオプション",
-				validate: "optional,maxSize[5000]",
-				type: "json",
-				default_value: '{\n\
-	"data": {\n\
-		"type": "line"\n\
-	}\n\
-}',
-				description: "最大5000文字<br>JSON形式文字列。 参考URL: <a href='http://c3js.org/' target='_blank'>http://c3js.org/</a>"
-			}
-		],
-
-		newInstance: function (settings, newInstanceCallback) {
-			newInstanceCallback(new c3jsWidget(settings));
-		}
-	});
 
 	var c3jsWidget = function (settings) {
 		var self = this;
@@ -242,4 +193,55 @@
 
 		this.onSettingsChanged(settings);
 	};
+
+	freeboard.loadWidgetPlugin({
+		type_name: "c3js",
+		display_name: "C3チャート",
+		description: "様々な形式のチャートを表示するウィジェットです。詳細は <a href='http://c3js.org/' target='_blank'>http://c3js.org/</a>",
+		external_scripts : [
+			"plugins/thirdparty/d3.v3.min.js",
+			"plugins/thirdparty/c3.min.js"
+		],
+		settings: [
+			{
+				name: "title",
+				display_name: "タイトル",
+				validate: "optional,maxSize[100]",
+				type: "text",
+				description: "最大100文字"
+			},
+			{
+				name: "blocks",
+				display_name: "高さ (ブロック数)",
+				validate: "required,custom[integer],min[2],max[20]",
+				type: "number",
+				style: "width:100px",
+				default_value: 4,
+				description: "1ブロック60ピクセル。20ブロックまで"
+			},
+			{
+				name: "value",
+				display_name: "値",
+				validate: "optional,maxSize[5000]",
+				type: "calculated",
+				description: "最大5000文字"
+			},
+			{
+				name: "options",
+				display_name: "チャートオプション",
+				validate: "optional,maxSize[5000]",
+				type: "json",
+				default_value: '{\n\
+	"data": {\n\
+		"type": "line"\n\
+	}\n\
+}',
+				description: "最大5000文字 JSON形式文字列。"
+			}
+		],
+
+		newInstance: function (settings, newInstanceCallback) {
+			newInstanceCallback(new c3jsWidget(settings));
+		}
+	});
 }());
