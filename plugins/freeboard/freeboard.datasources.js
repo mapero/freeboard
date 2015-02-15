@@ -1,12 +1,12 @@
 // ┌────────────────────────────────────────────────────────────────────┐ \\
-// │ F R E E B O A R D                                                  │ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
-// │ Copyright © 2013 Jim Heising (https://github.com/jheising)         │ \\
-// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)               │ \\
-// │ Copyright © 2014 Hugo Sequeira (https://github.com/hugocore)       │ \\
-// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)    │ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2014 Hugo Sequeira (https://github.com/hugocore)                                                                           │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
-// │ Licensed under the MIT license.                                    │ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function () {
@@ -468,75 +468,6 @@
 		}
 	});
 
-	var jsonWebSocketDatasource = function(settings, updateCallback)
-	{
-		var self = this;
-		var currentSettings = settings;
-		var ws;
-
-		var onOpen = function()
-		{
-			console.info("WebSocket(%s) Opened", currentSettings.url);
-		}
-
-		var onClose = function()
-		{
-			console.info("WebSocket Closed");
-		}
-
-		var onMessage = function(event)
-		{
-			var data = event.data;
-
-			console.info("WebSocket received %s",data);
-
-			var objdata = JSON.parse(data);
-
-			if(typeof objdata == "object")
-			{
-				updateCallback(objdata);
-			}
-			else
-			{
-				updateCallback(data);
-			}
-
-		}
-
-		function createWebSocket()
-		{
-			if(ws) {
-				ws.close();
-			}
-
-			var url = currentSettings.url;
-			ws = new WebSocket(url);
-
-			ws.onopen = onOpen;
-			ws.onclose = onClose;
-			ws.onmessage = onMessage;
-		}
-
-		createWebSocket();
-
-		this.updateNow = function()
-		{
-			createWebSocket();
-		}
-
-		this.onDispose = function()
-		{
-			ws.close();
-		}
-
-		this.onSettingsChanged = function(newSettings)
-		{
-			currentSettings = newSettings;
-
-			createWebSocket();
-		}
-	};
-
 	var jsonDatasource = function (settings, updateCallback) {
 		var self = this;
 		var updateTimer = null;
@@ -860,25 +791,6 @@
 		}
 	});
 
-	freeboard.loadDatasourcePlugin({
-		type_name  : "WebSocket",
-		display_name : "WebSocket",
-		description : "ブラウザ内蔵のWebSocket APIを使用しJSON形式のデータを取得します。",
-		settings   : [
-			{
-				name: "url",
-				display_name: "DNSホスト名",
-				validate: "required,maxSize[1000]",
-				type: "text",
-				description: "最大1000文字"
-			}
-		],
-		newInstance: function(settings, newInstanceCallback, updateCallback)
-		{
-			newInstanceCallback( new jsonWebSocketDatasource(settings, updateCallback));
-		}
-	});
-
 	var nodeJSDatasource = function(settings, updateCallback) {
 
 		var self = this,
@@ -993,7 +905,7 @@
 		settings : [
 			{
 				name: "url",
-				display_name: "DNSホスト名",
+				display_name: "サーバーURL",
 				validate: "required,maxSize[1000]",
 				type: "text",
 				description: "最大1000文字 (オプション) カスタム名前空間を使用する場合、URLの最後に名前空間を追加して下さい。<br>例: http://localhost/chat"
@@ -1039,59 +951,57 @@
 		var currentSettings = settings;
 		var client;
 		var dispose = false;
-		var CONNECTION_DELAY = 1000;
+		var CONNECTION_DELAY = 3000;
 
 		function onConnect(frame) {
-			console.info("MQTT Connected to %s", currentSettings.url);
-			self.client.subscribe(_.isUndefined(currentSettings.topic) ? "" : currentSettings.topic);
+			console.info("MQTT Connected to %s", currentSettings.hostname);
+			client.subscribe(_.isUndefined(currentSettings.topic) ? "" : currentSettings.topic);
 		}
 
 		function onConnectionLost(responseObject) {
-			console.info("MQTT ConnectionLost %s %s", currentSettings.url, responseObject.errorMessage);
-			if (dispose == false && currentSettings.reconnect == true) {
-				_.delay(function() {
-					connectToServer();
-				}, CONNECTION_DELAY);
+			console.info("MQTT ConnectionLost %s %s", currentSettings.hostname, responseObject.errorMessage);
+			if (dispose == false) {
+				if (dispose == false && currentSettings.reconnect == true) {
+					_.delay(function() {
+						connect();
+					}, CONNECTION_DELAY);
+				}
 			}
 		}
 
 		function onConnectFailure(error) {
-			self.client = null;
-			console.error("MQTT Failed Connect to %s", currentSettings.url);
+			client = null;
+			console.error("MQTT Failed Connect to %s", currentSettings.hostname);
 		}
 
 		function onMessageArrived(message) {
-			console.info("MQTT Received %s from %s", message,  currentSettings.url);
+			console.info("MQTT Received %s from %s", message,  currentSettings.hostname);
 
 			var objdata = JSON.parse(message.payloadString);
-			if (typeof objdata == "object") {
+			if (_.isObject("object")) {
 				updateCallback(objdata);
 			} else {
 				updateCallback(message.payloadString);
 			}
 		}
 
-		function discardSocket() {
-			// Disconnect datasource MQTT
-			if (self.client) {
-				self.client.disconnect();
-				self.client = null;
+		function disconnect() {
+			if (client) {
+				client.disconnect();
+				client = null;
 			}
 		}
 
-		function connectToServer() {
-
+		function connect() {
 			try {
-				discardSocket();
-
-				self.client = new Paho.MQTT.Client(
-					_.isUndefined(currentSettings.url) ? "" : currentSettings.url,
+				client = new Paho.MQTT.Client(
+					_.isUndefined(currentSettings.hostname) ? "" : currentSettings.hostname,
 					_.isUndefined(currentSettings.port) ? "" : currentSettings.port,
 					_.isUndefined(currentSettings.clientID) ? "" : currentSettings.clientID);
-				self.client.onConnect = onConnect;
-				self.client.onMessageArrived = onMessageArrived;
-				self.client.onConnectionLost = onConnectionLost;
-				self.client.connect({
+				client.onConnect = onConnect;
+				client.onMessageArrived = onMessageArrived;
+				client.onConnectionLost = onConnectionLost;
+				client.connect({
 					userName: _.isUndefined(currentSettings.username) ? "" : currentSettings.username,
 					password: _.isUndefined(currentSettings.password) ? "" : currentSettings.password,
 					onSuccess: onConnect,
@@ -1102,27 +1012,28 @@
 			}
 		}
 
-
-		function initializeDataSource() {
-			connectToServer();
-		}
-
 		this.updateNow = function() {
-			// Just seat back, relax and wait for incoming events
-			return;
 		};
 
 		this.onDispose = function() {
 			dispose = true;
-			discardSocket();
+			disconnect();
 		};
 
 		this.onSettingsChanged = function(newSettings) {
-			currentSettings = newSettings;
-			discardSocket();
+			var reconnect = newSettings.reconnect;
+
+			// Set to not reconnect
+			currentSettings.reconnect = false;
+			disconnect();
+			_.delay(function() {
+				currentSettings = newSettings;
+				currentSettings.reconnect = reconnect;
+				connect();
+			}, CONNECTION_DELAY);
 		};
 
-		initializeDataSource();
+		connect();
 	};
 
 	freeboard.loadDatasourcePlugin({
@@ -1132,7 +1043,7 @@
 		external_scripts : [ "plugins/thirdparty/mqttws31.js" ],
 		settings : [
 			{
-				name : "url",
+				name : "hostname",
 				display_name : "DNSホスト名",
 				validate: "required,maxSize[1000]",
 				type: "text",
@@ -1177,11 +1088,11 @@
 				description: "最大100文字<br>必要ない場合は空白。"
 			},
 			{
-				name : "reconnect",
-				display_name : "自動再接続",
+				name: "reconnect",
+				display_name: "自動再接続",
 				type: "boolean",
-				description : "接続が切れた場合、自動的に再接続します。",
-				default_value: true
+				default_value: true,
+				description: "接続が切れた際自動的に再接続します。"
 			}
 		],
 		newInstance : function(settings, newInstanceCallback, updateCallback) {
