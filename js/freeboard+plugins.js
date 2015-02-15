@@ -484,7 +484,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 				self.panes.push(pane);
 			});
 
-			if(self.allow_edit() && self.panes().length == 0)
+			if(self.allow_edit() && self.panes().length == 0 && self.datasources().length == 0)
 			{
 				self.setEditing(true);
 			}
@@ -735,7 +735,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 				$("#board-content").css("transform", "translateY(20px)");
 				_.delay(function() {
 					$("#admin-menu").css("display", "none");
-				}, 300);
+				}, 200);
 			} else {
 				$("#main-header").css("top", "-" + barHeight + "px");
 				$("#board-content").css("top", "20px");
@@ -1643,7 +1643,7 @@ PluginEditor = function(jsEditor, valueEditor)
 		$(valueCell).append(wrapperDiv);
 	}
 
-	function createPluginEditor(title, pluginTypes, currentTypeName, currentSettingsValues, settingsSavedCallback)
+	function createPluginEditor(title, pluginTypes, currentTypeName, currentSettingsValues, settingsSavedCallback, cancelCallback)
 	{
 		var newSettings = {
 			type    : currentTypeName,
@@ -2028,8 +2028,10 @@ PluginEditor = function(jsEditor, valueEditor)
 
 				if(_.isFunction(settingsSavedCallback))
 					settingsSavedCallback(newSettings);
+			} else if (okcancel == "cancel") {
+				if(_.isFunction(cancelCallback))
+					cancelCallback();
 			}
-
 			// Remove colorpick dom objects
 			colorPickerID = 0;
 			$("[id^=collorpicker]").remove();
@@ -3057,8 +3059,7 @@ var freeboard = (function()
 						}
 					}
 
-					pluginEditor.createPluginEditor(title, types, instanceType, settings, function(newSettings)
-					{
+					var saveSettingCallback = function(newSettings) {
 						if(options.operation == 'add')
 						{
 							if(options.type == 'datasource')
@@ -3106,7 +3107,16 @@ var freeboard = (function()
 								viewModel.settings(newSettings.settings);
 							}
 						}
-					});
+					}
+
+					var cancelCallback = function() {
+						if (options.operation == 'edit') {
+							if (options.type == 'widget' || options.type == 'datasource')
+								viewModel.isEditing(false);
+						}
+					}
+
+					pluginEditor.createPluginEditor(title, types, instanceType, settings, saveSettingCallback, cancelCallback);
 				}
 			});
 		}
@@ -3436,17 +3446,16 @@ var freeboard = (function()
 $.extend(freeboard, jQuery.eventEmitter);
 
 // ┌────────────────────────────────────────────────────────────────────┐ \\
-// │ F R E E B O A R D                                                  │ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
-// │ Copyright © 2013 Jim Heising (https://github.com/jheising)         │ \\
-// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)               │ \\
-// │ Copyright © 2014 Hugo Sequeira (https://github.com/hugocore)       │ \\
-// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)    │ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
-// │ Licensed under the MIT license.                                    │ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
 // └────────────────────────────────────────────────────────────────────┘ \\
 
-(function () {
+(function() {
 
 	var clockDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -3904,75 +3913,19 @@ $.extend(freeboard, jQuery.eventEmitter);
 			newInstanceCallback(new clockDatasource(settings, updateCallback));
 		}
 	});
+}());
 
-	var jsonWebSocketDatasource = function(settings, updateCallback)
-	{
-		var self = this;
-		var currentSettings = settings;
-		var ws;
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
 
-		var onOpen = function()
-		{
-			console.info("WebSocket(%s) Opened", currentSettings.url);
-		}
-
-		var onClose = function()
-		{
-			console.info("WebSocket Closed");
-		}
-
-		var onMessage = function(event)
-		{
-			var data = event.data;
-
-			console.info("WebSocket received %s",data);
-
-			var objdata = JSON.parse(data);
-
-			if(typeof objdata == "object")
-			{
-				updateCallback(objdata);
-			}
-			else
-			{
-				updateCallback(data);
-			}
-
-		}
-
-		function createWebSocket()
-		{
-			if(ws) {
-				ws.close();
-			}
-
-			var url = currentSettings.url;
-			ws = new WebSocket(url);
-
-			ws.onopen = onOpen;
-			ws.onclose = onClose;
-			ws.onmessage = onMessage;
-		}
-
-		createWebSocket();
-
-		this.updateNow = function()
-		{
-			createWebSocket();
-		}
-
-		this.onDispose = function()
-		{
-			ws.close();
-		}
-
-		this.onSettingsChanged = function(newSettings)
-		{
-			currentSettings = newSettings;
-
-			createWebSocket();
-		}
-	};
+(function() {
 
 	var jsonDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -4150,171 +4103,184 @@ $.extend(freeboard, jQuery.eventEmitter);
 			newInstanceCallback(new jsonDatasource(settings, updateCallback));
 		}
 	});
+}());
 
-	var openWeatherMapDatasource = function (settings, updateCallback) {
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
+
+(function() {
+
+	var mqttDatasource = function(settings, updateCallback) {
+
 		var self = this;
-		var updateTimer = null;
 		var currentSettings = settings;
+		var client;
+		var dispose = false;
+		var CONNECTION_DELAY = 3000;
 
-		function updateRefresh(refreshTime) {
-			if (updateTimer) {
-				clearInterval(updateTimer);
-			}
-
-			updateTimer = setInterval(function () {
-				self.updateNow();
-			}, refreshTime);
+		function onConnect(frame) {
+			console.info("MQTT Connected to %s", currentSettings.hostname);
+			client.subscribe(_.isUndefined(currentSettings.topic) ? "" : currentSettings.topic);
 		}
 
-		function toTitleCase(str) {
-			return str.replace(/\w\S*/g, function (txt) {
-				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-			});
-		}
-
-		updateRefresh(currentSettings.refresh * 1000);
-
-		this.updateNow = function () {
-			$.ajax({
-				url: "http://api.openweathermap.org/data/2.5/weather?q=" + encodeURIComponent(currentSettings.location) + "&units=" + currentSettings.units,
-				dataType: "JSONP",
-				success: function (data) {
-					// Rejigger our data into something easier to understand
-					var newData = {
-						place_name: data.name,
-						latitude: data.coord.lat,
-						longitude: data.coord.lon,
-						sunrise: (new Date(data.sys.sunrise * 1000)).toLocaleTimeString(),
-						sunset: (new Date(data.sys.sunset * 1000)).toLocaleTimeString(),
-						conditions: toTitleCase(data.weather[0].description),
-						current_temp: data.main.temp,
-						high_temp: data.main.temp_max,
-						low_temp: data.main.temp_min,
-						pressure: data.main.pressure,
-						humidity: data.main.humidity,
-						wind_speed: data.wind.speed,
-						wind_direction: data.wind.deg
-					};
-
-					updateCallback(newData);
-				},
-				error: function (xhr, status, error) {
+		function onConnectionLost(responseObject) {
+			console.info("MQTT ConnectionLost %s %s", currentSettings.hostname, responseObject.errorMessage);
+			if (dispose == false) {
+				if (dispose == false && currentSettings.reconnect == true) {
+					_.delay(function() {
+						connect();
+					}, CONNECTION_DELAY);
 				}
-			});
+			}
 		}
 
-		this.onDispose = function () {
-			clearInterval(updateTimer);
-			updateTimer = null;
+		function onConnectFailure(error) {
+			client = null;
+			console.error("MQTT Failed Connect to %s", currentSettings.hostname);
 		}
 
-		this.onSettingsChanged = function (newSettings) {
-			currentSettings = newSettings;
-			self.updateNow();
-			updateRefresh(currentSettings.refresh * 1000);
+		function onMessageArrived(message) {
+			console.info("MQTT Received %s from %s", message,  currentSettings.hostname);
+
+			var objdata = JSON.parse(message.payloadString);
+			if (_.isObject("object")) {
+				updateCallback(objdata);
+			} else {
+				updateCallback(message.payloadString);
+			}
 		}
+
+		function disconnect() {
+			if (client) {
+				client.disconnect();
+				client = null;
+			}
+		}
+
+		function connect() {
+			try {
+				client = new Paho.MQTT.Client(
+					_.isUndefined(currentSettings.hostname) ? "" : currentSettings.hostname,
+					_.isUndefined(currentSettings.port) ? "" : currentSettings.port,
+					_.isUndefined(currentSettings.clientID) ? "" : currentSettings.clientID);
+				client.onConnect = onConnect;
+				client.onMessageArrived = onMessageArrived;
+				client.onConnectionLost = onConnectionLost;
+				client.connect({
+					userName: _.isUndefined(currentSettings.username) ? "" : currentSettings.username,
+					password: _.isUndefined(currentSettings.password) ? "" : currentSettings.password,
+					onSuccess: onConnect,
+					onFailure: onConnectFailure
+				});
+			} catch (e) {
+				console.error(e);
+			}
+		}
+
+		this.updateNow = function() {
+		};
+
+		this.onDispose = function() {
+			dispose = true;
+			disconnect();
+		};
+
+		this.onSettingsChanged = function(newSettings) {
+			var reconnect = newSettings.reconnect;
+
+			// Set to not reconnect
+			currentSettings.reconnect = false;
+			disconnect();
+			_.delay(function() {
+				currentSettings = newSettings;
+				currentSettings.reconnect = reconnect;
+				connect();
+			}, CONNECTION_DELAY);
+		};
+
+		connect();
 	};
 
 	freeboard.loadDatasourcePlugin({
-		type_name: "openweathermap",
-		display_name: "Open Weather Map API",
-		description: "天候や予測履歴を含む各種気象データを受信します。",
-		settings: [
+		type_name : "mqtt",
+		display_name : "MQTT over Websocket",
+		description : "<a href='http://mqtt.org/', target='_blank'>MQTT</a>プロトコルをWebSocketを介し、MQTTブローカーサーバーからJSONデータを受信します。",
+		external_scripts : [ "plugins/thirdparty/mqttws31.min.js" ],
+		settings : [
 			{
-				name: "location",
-				display_name: "場所",
-				validate: "required,maxSize[200]",
-				type: "text",
-				description: "最大200文字<br>例: London, UK"
-			},
-			{
-				name: "units",
-				display_name: "単位",
-				style: "width:200px",
-				type: "option",
-				default_value: "metric",
-				options: [
-					{
-						name: "メトリック",
-						value: "metric"
-					},
-					{
-						name: "インペリアル",
-						value: "imperial"
-					}
-				]
-			},
-			{
-				name: "refresh",
-				display_name: "更新頻度",
-				validate: "required,custom[integer],min[1]",
-				style: "width:100px",
-				type: "number",
-				suffix: "秒",
-				default_value: 5
-			}
-		],
-		newInstance: function (settings, newInstanceCallback, updateCallback) {
-			newInstanceCallback(new openWeatherMapDatasource(settings, updateCallback));
-		}
-	});
-
-	freeboard.loadDatasourcePlugin({
-		"type_name": "playback",
-		"display_name": "Playback",
-		"description": "指定された間隔で連続したデータを再生します。オブジェクトの配列を含む有効なJSONファイルを待ち受けします。",
-		"settings": [
-			{
-				name: "datafile",
-				display_name: "データファイルURL",
-				validate: "required,custom[url]",
-				type: "text",
-				description: "JSON配列データへのリンク"
-			},
-			{
-				name: "is_jsonp",
-				display_name: "JSONP使用",
-				type: "boolean"
-			},
-			{
-				name: "loop",
-				display_name: "ループ再生",
-				type: "boolean",
-				description: "巻戻しとループ再生時終了"
-			},
-			{
-				name: "refresh",
-				display_name: "更新頻度",
-				validate: "required,custom[integer],min[1]",
-				style: "width:100px",
-				type: "number",
-				suffix: "秒",
-				default_value: 5
-			}
-		],
-		newInstance: function (settings, newInstanceCallback, updateCallback) {
-			newInstanceCallback(new playbackDatasource(settings, updateCallback));
-		}
-	});
-
-	freeboard.loadDatasourcePlugin({
-		type_name  : "WebSocket",
-		display_name : "WebSocket",
-		description : "ブラウザ内蔵のWebSocket APIを使用しJSON形式のデータを取得します。",
-		settings   : [
-			{
-				name: "url",
-				display_name: "DNSホスト名",
+				name : "hostname",
+				display_name : "DNSホスト名",
 				validate: "required,maxSize[1000]",
 				type: "text",
-				description: "最大1000文字"
+				description: "最大1000文字<br>MQTTブローカーサーバーのDNSホスト名を設定して下さい。<br>例: location.hostname"
+			},
+			{
+				name : "port",
+				display_name : "ポート番号",
+				validate: "required,custom[integer],min[1]",
+				type: "number",
+				style: "width:100px",
+				default_value: 8080
+			},
+			{
+				name : "clientID",
+				display_name : "クライアントID",
+				validate: "required,maxSize[23]",
+				type: "text",
+				description: "最大23文字<br>任意のクライアントID文字列",
+				default_value: "SensorCorpus"
+			},
+			{
+				name : "topic",
+				display_name : "トピック",
+				validate: "required,maxSize[500]",
+				type: "text",
+				description: "最大500文字<br>購読するトピック名を設定して下さい。<br>例: my/topic",
+				default_value: ""
+			},
+			{
+				name : "username",
+				display_name : "(オプション) ユーザー名",
+				validate: "optional,maxSize[100]",
+				type: "text",
+				description: "最大100文字<br>必要ない場合は空白。"
+			},
+			{
+				name : "password",
+				display_name : "(オプション) パスワード",
+				validate: "optional,maxSize[100]",
+				type: "text",
+				description: "最大100文字<br>必要ない場合は空白。"
+			},
+			{
+				name: "reconnect",
+				display_name: "自動再接続",
+				type: "boolean",
+				default_value: true,
+				description: "接続が切れた際自動的に再接続します。"
 			}
 		],
-		newInstance: function(settings, newInstanceCallback, updateCallback)
-		{
-			newInstanceCallback( new jsonWebSocketDatasource(settings, updateCallback));
+		newInstance : function(settings, newInstanceCallback, updateCallback) {
+			newInstanceCallback(new mqttDatasource(settings, updateCallback));
 		}
 	});
+}());
+
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2014 Hugo Sequeira (https://github.com/hugocore)                                                                           │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
+
+(function() {
 
 	var nodeJSDatasource = function(settings, updateCallback) {
 
@@ -4425,12 +4391,12 @@ $.extend(freeboard, jQuery.eventEmitter);
 	freeboard.loadDatasourcePlugin({
 		type_name : "node_js",
 		display_name : "Node.js (Socket.io)",
-		description : "<a href='http://socket.io/', target='_blank'>Socket.io</a>を使用したnode.jsサーバーからデータソースをリアルタイムでストリーミングします。",
+		description : "<a href='http://socket.io/', target='_blank'>Socket.io</a>を使用したnode.jsサーバーからJSONデータを受信します。",
 		external_scripts : [ "https://cdn.socket.io/socket.io-1.2.1.js" ],
 		settings : [
 			{
 				name: "url",
-				display_name: "DNSホスト名",
+				display_name: "サーバーURL",
 				validate: "required,maxSize[1000]",
 				type: "text",
 				description: "最大1000文字 (オプション) カスタム名前空間を使用する場合、URLの最後に名前空間を追加して下さい。<br>例: http://localhost/chat"
@@ -4469,174 +4435,1501 @@ $.extend(freeboard, jQuery.eventEmitter);
 			newInstanceCallback(new nodeJSDatasource(settings, updateCallback));
 		}
 	});
+}());
 
-	var mqttDatasource = function(settings, updateCallback) {
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
 
+(function () {
+
+	var openWeatherMapDatasource = function (settings, updateCallback) {
+		var self = this;
+		var updateTimer = null;
+		var currentSettings = settings;
+
+		function updateRefresh(refreshTime) {
+			if (updateTimer) {
+				clearInterval(updateTimer);
+			}
+
+			updateTimer = setInterval(function () {
+				self.updateNow();
+			}, refreshTime);
+		}
+
+		function toTitleCase(str) {
+			return str.replace(/\w\S*/g, function (txt) {
+				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+			});
+		}
+
+		updateRefresh(currentSettings.refresh * 1000);
+
+		this.updateNow = function () {
+			$.ajax({
+				url: "http://api.openweathermap.org/data/2.5/weather?q=" + encodeURIComponent(currentSettings.location) + "&units=" + currentSettings.units,
+				dataType: "JSONP",
+				success: function (data) {
+					// Rejigger our data into something easier to understand
+					var newData = {
+						place_name: data.name,
+						latitude: data.coord.lat,
+						longitude: data.coord.lon,
+						sunrise: (new Date(data.sys.sunrise * 1000)).toLocaleTimeString(),
+						sunset: (new Date(data.sys.sunset * 1000)).toLocaleTimeString(),
+						conditions: toTitleCase(data.weather[0].description),
+						current_temp: data.main.temp,
+						high_temp: data.main.temp_max,
+						low_temp: data.main.temp_min,
+						pressure: data.main.pressure,
+						humidity: data.main.humidity,
+						wind_speed: data.wind.speed,
+						wind_direction: data.wind.deg
+					};
+
+					updateCallback(newData);
+				},
+				error: function (xhr, status, error) {
+				}
+			});
+		}
+
+		this.onDispose = function () {
+			clearInterval(updateTimer);
+			updateTimer = null;
+		}
+
+		this.onSettingsChanged = function (newSettings) {
+			currentSettings = newSettings;
+			self.updateNow();
+			updateRefresh(currentSettings.refresh * 1000);
+		}
+	};
+
+	freeboard.loadDatasourcePlugin({
+		type_name: "openweathermap",
+		display_name: "Open Weather Map API",
+		description: "天候や予測履歴を含む各種気象データを受信します。",
+		settings: [
+			{
+				name: "location",
+				display_name: "場所",
+				validate: "required,maxSize[200]",
+				type: "text",
+				description: "最大200文字<br>例: London, UK"
+			},
+			{
+				name: "units",
+				display_name: "単位",
+				style: "width:200px",
+				type: "option",
+				default_value: "metric",
+				options: [
+					{
+						name: "メトリック",
+						value: "metric"
+					},
+					{
+						name: "インペリアル",
+						value: "imperial"
+					}
+				]
+			},
+			{
+				name: "refresh",
+				display_name: "更新頻度",
+				validate: "required,custom[integer],min[1]",
+				style: "width:100px",
+				type: "number",
+				suffix: "秒",
+				default_value: 5
+			}
+		],
+		newInstance: function (settings, newInstanceCallback, updateCallback) {
+			newInstanceCallback(new openWeatherMapDatasource(settings, updateCallback));
+		}
+	});
+}());
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
+
+(function () {
+
+	var playbackDatasource = function (settings, updateCallback) {
 		var self = this;
 		var currentSettings = settings;
-		var client;
+		var currentDataset = [];
+		var currentIndex = 0;
+		var currentTimeout;
+
+		function moveNext() {
+			if (currentDataset.length > 0) {
+				if (currentIndex < currentDataset.length) {
+					updateCallback(currentDataset[currentIndex]);
+					currentIndex++;
+				}
+
+				if (currentIndex >= currentDataset.length && currentSettings.loop) {
+					currentIndex = 0;
+				}
+
+				if (currentIndex < currentDataset.length) {
+					currentTimeout = setTimeout(moveNext, currentSettings.refresh * 1000);
+				}
+			}
+			else {
+				updateCallback({});
+			}
+		}
+
+		function stopTimeout() {
+			currentDataset = [];
+			currentIndex = 0;
+
+			if (currentTimeout) {
+				clearTimeout(currentTimeout);
+				currentTimeout = null;
+			}
+		}
+
+		this.updateNow = function () {
+			stopTimeout();
+
+			$.ajax({
+				url: currentSettings.datafile,
+				dataType: (currentSettings.is_jsonp) ? "JSONP" : "JSON",
+				success: function (data) {
+					if (_.isArray(data)) {
+						currentDataset = data;
+					}
+					else {
+						currentDataset = [];
+					}
+
+					currentIndex = 0;
+
+					moveNext();
+				},
+				error: function (xhr, status, error) {
+				}
+			});
+		}
+
+		this.onDispose = function () {
+			stopTimeout();
+		}
+
+		this.onSettingsChanged = function (newSettings) {
+			currentSettings = newSettings;
+			self.updateNow();
+		}
+	};
+
+	freeboard.loadDatasourcePlugin({
+		type_name: "playback",
+		display_name: "Playback",
+		description: "指定された間隔で連続したデータを再生します。オブジェクトの配列を含む有効なJSONファイルを受信します。",
+		settings: [
+			{
+				name: "datafile",
+				display_name: "データファイルURL",
+				validate: "required,custom[url]",
+				type: "text",
+				description: "JSON配列データへのリンク"
+			},
+			{
+				name: "is_jsonp",
+				display_name: "JSONP使用",
+				type: "boolean"
+			},
+			{
+				name: "loop",
+				display_name: "ループ再生",
+				type: "boolean",
+				description: "巻戻しとループ再生時終了"
+			},
+			{
+				name: "refresh",
+				display_name: "更新頻度",
+				validate: "required,custom[integer],min[1]",
+				style: "width:100px",
+				type: "number",
+				suffix: "秒",
+				default_value: 5
+			}
+		],
+		newInstance: function (settings, newInstanceCallback, updateCallback) {
+			newInstanceCallback(new playbackDatasource(settings, updateCallback));
+		}
+	});
+}());
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
+
+(function() {
+
+	var wsDatasource = function(settings, updateCallback) {
+		var self = this;
+
+		var currentSettings = settings;
+		var ws;
 		var dispose = false;
-		var CONNECTION_DELAY = 1000;
+		var CONNECTION_DELAY = 3000;
 
-		function onConnect(frame) {
-			console.info("MQTT Connected to %s", currentSettings.url);
-			self.client.subscribe(_.isUndefined(currentSettings.topic) ? "" : currentSettings.topic);
-		}
+		function wsOpen() {
+			ws = new WebSocket(currentSettings.uri);
 
-		function onConnectionLost(responseObject) {
-			console.info("MQTT ConnectionLost %s %s", currentSettings.url, responseObject.errorMessage);
-			if (dispose == false && currentSettings.reconnect == true) {
-				_.delay(function() {
-					connectToServer();
-				}, CONNECTION_DELAY);
+			ws.onopen = function(evt) {
+				console.info("WebSocket Connected to %s", ws.url);
+				retryCount = 0;
+			};
+
+			ws.onclose = function(evt) {
+				console.info("WebSocket Disconnected from %s", evt.srcElement.url);
+				if (dispose == false && currentSettings.reconnect == true) {
+					_.delay(function() {
+						wsOpen();
+					}, CONNECTION_DELAY);
+				}
+			}
+
+			ws.onmessage = function(evt) {
+				try {
+					var obj = JSON.parse(evt.data);
+					updateCallback(obj);
+				} catch (e) {
+					console.error("WebSocket Bad parse", evt.data);
+				}
+			}
+
+			ws.onerror = function(evt) {
+				console.error("WebSocket Error", evt);
 			}
 		}
 
-		function onConnectFailure(error) {
-			self.client = null;
-			console.error("MQTT Failed Connect to %s", currentSettings.url);
-		}
-
-		function onMessageArrived(message) {
-			console.info("MQTT Received %s from %s", message,  currentSettings.url);
-
-			var objdata = JSON.parse(message.payloadString);
-			if (typeof objdata == "object") {
-				updateCallback(objdata);
-			} else {
-				updateCallback(message.payloadString);
+		function wsClose() {
+			if (ws) {
+				ws.close();
+				ws = null;
 			}
 		}
 
-		function discardSocket() {
-			// Disconnect datasource MQTT
-			if (self.client) {
-				self.client.disconnect();
-				self.client = null;
-			}
+		this.updateNow = function() {
 		}
 
-		function connectToServer() {
+		this.onDispose = function() {
+			dispose = true;
+			wsClose();
+		}
+
+		this.onSettingsChanged = function(newSettings) {
+			var reconnect = newSettings.reconnect;
+
+			// Set to not reconnect
+			currentSettings.reconnect = false;
+			wsClose();
+			_.delay(function() {
+				currentSettings = newSettings;
+				currentSettings.reconnect = reconnect;
+				wsOpen();
+			}, CONNECTION_DELAY);
+		}
+
+		wsOpen();
+	};
+
+	freeboard.loadDatasourcePlugin({
+		type_name: "websocket",
+		display_name: "WebSocket",
+		description: "WebSocket APIを使用し、JSONデータを受信します。",
+		settings: [
+			{
+				name: "uri",
+				display_name: "サーバーURI",
+				validate: "required,maxSize[1000]",
+				type: "text",
+				description: "最大1000文字 例: ws://server:port/path "
+			},
+			{
+				name: "reconnect",
+				display_name: "自動再接続",
+				type: "boolean",
+				default_value: true,
+				description: "接続が切れた際自動的に再接続します。"
+			}
+		],
+		newInstance: function(settings, newInstanceCallback, updateCallback) {
+			newInstanceCallback(new wsDatasource(settings, updateCallback));
+		}
+	});
+}());
+
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
+
+(function() {
+
+	var c3jsWidget = function (settings) {
+		var self = this;
+		var currentID = _.uniqueId("c3js_");
+		var titleElement = $('<h2 class="section-title"></h2>');
+		var chartElement = $('<div id="' + currentID + '"></div>');
+		var currentSettings;
+		var chart;
+		var chartdata;
+
+		function setBlocks(blocks) {
+			if (_.isUndefined(blocks))
+				return;
+			var height = 60 * blocks - titleElement.outerHeight() - 7;
+			chartElement.css({
+				"max-height": height + "px",
+				"height": height + "px",
+				"width": "100%"
+			});
+		}
+
+		function createWidget(data, chartsettings) {
+
+			var options;
+
+			// No need for the first load
+			data = _.omit(data, '_op');
+
+			Function.prototype.toJSON = Function.prototype.toString;
+
+			if (!_.isUndefined(chartsettings.options)) {
+				try {
+					options = JSON.parse(chartsettings.options.replace(/'/g, "\\\""), function(k,v) {
+						var ret;
+						var str = v.toString();
+						if (str.indexOf('function') === 0)
+							ret = eval('('+v+')');
+						else if (str.indexOf('d3.') === 0)
+							ret = eval('('+v+')');
+						else
+							ret = v;
+						return ret;
+					});
+				} catch (e) {
+					alert("チャートオプションが不正です。 " + e);
+					console.error(e);
+					return;
+				}
+			}
+
+			if (!_.isUndefined(chart)) {
+				chartElement.resize(null);
+				chart.destroy();
+				chart = null;
+			}
+
+			var bind = {
+				bindto: '#' + currentID,
+			};
+			options = _.merge(bind, _.merge(data, options));
 
 			try {
-				discardSocket();
+				chart = c3.generate(options);
+				// svg chart fit to container
+				chartElement.resize(_.debounce(function() {
+					chart.resize();
+				}, 500));
+			} catch (e) {
+				console.error(e);
+				return;
+			}
+		}
 
-				self.client = new Paho.MQTT.Client(
-					_.isUndefined(currentSettings.url) ? "" : currentSettings.url,
-					_.isUndefined(currentSettings.port) ? "" : currentSettings.port,
-					_.isUndefined(currentSettings.clientID) ? "" : currentSettings.clientID);
-				self.client.onConnect = onConnect;
-				self.client.onMessageArrived = onMessageArrived;
-				self.client.onConnectionLost = onConnectionLost;
-				self.client.connect({
-					userName: _.isUndefined(currentSettings.username) ? "" : currentSettings.username,
-					password: _.isUndefined(currentSettings.password) ? "" : currentSettings.password,
-					onSuccess: onConnect,
-					onFailure: onConnectFailure
-				});
+		function plotData(data) {
+			if (_.isUndefined(chart))
+				return;
+
+			var op = data._op;
+			data = _.omit(data, '_op');
+
+			try {
+				switch (op) {
+					case 'load':
+						chart.load(data);
+						break;
+					case 'unload':
+						chart.unload(data);
+						break;
+					case 'groups':
+						chart.groups(data);
+						break;
+					case 'flow':
+						chart.flow(data);
+						break;
+					case 'data.names':
+						chart.data.names(data);
+						break;
+					case 'data.colors':
+						chart.data.colors(data);
+						break;
+					case 'axis.labels':
+						chart.axis.labels(data);
+						break;
+					case 'axis.max':
+						chart.axis.max(data);
+						break;
+					case 'axis.min':
+						chart.axis.min(data);
+						break;
+					case 'axis.range':
+						chart.axis.range(data);
+						break;
+					case 'xgrids':
+						if (!_.isUndefined(data.xgrids))
+							chart.xgrids(data.xgrids);
+						break;
+					case 'xgrids.add':
+						if (!_.isUndefined(data.xgrids))
+							chart.xgrids.add(data.xgrids);
+						break;
+					case 'xgrids.remove':
+						if (!_.isUndefined(data.xgrids))
+							chart.xgrids.remove(data.xgrids);
+						else
+							chart.xgrids.remove();
+						break;
+					case 'transform':
+						if (!_.isUndefined(data.type)) {
+							if (!_.isUndefined(data.name))
+								chart.transform(data.type, data.name);
+							else
+								chart.transform(data.type);
+						}
+						break;
+					default:
+						chart.load(data);
+						break;
+				}
 			} catch (e) {
 				console.error(e);
 			}
 		}
 
-
-		function initializeDataSource() {
-			connectToServer();
+		this.render = function (element) {
+			$(element).append(titleElement).append(chartElement);
+			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
+			setBlocks(currentSettings.blocks);
 		}
 
-		this.updateNow = function() {
-			// Just seat back, relax and wait for incoming events
-			return;
-		};
-
-		this.onDispose = function() {
-			dispose = true;
-			discardSocket();
-		};
-
-		this.onSettingsChanged = function(newSettings) {
+		this.onSettingsChanged = function (newSettings) {
+			if (titleElement.outerHeight() == 0) {
+				currentSettings = newSettings;
+				return;
+			}
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			setBlocks(newSettings.blocks);
+			if (newSettings.options != currentSettings.options)
+				createWidget(chartdata, newSettings);
 			currentSettings = newSettings;
-			discardSocket();
-		};
+		}
 
-		initializeDataSource();
+		this.onCalculatedValueChanged = function (settingName, newValue) {
+			if (!_.isObject(newValue))
+				return;
+
+			if (_.isUndefined(chart))
+				createWidget(newValue, currentSettings);
+			else
+				plotData(newValue);
+
+			chartdata = newValue;
+		}
+
+		this.onDispose = function () {
+			if (!_.isUndefined(chart)) {
+				chart.destroy();
+				chart = null;
+			}
+		}
+
+		this.getHeight = function () {
+			return currentSettings.blocks;
+		}
+
+		this.onSettingsChanged(settings);
 	};
 
-	freeboard.loadDatasourcePlugin({
-		type_name : "mqtt",
-		display_name : "MQTT over Websocket",
-		description : "<a href='http://mqtt.org/', target='_blank'>MQTT</a>プロトコルをWebSocketを介し使用し、MQTTブローカーサーバーからデータソースをリアルタイムで取得します。",
-		external_scripts : [ "plugins/thirdparty/mqttws31.js" ],
-		settings : [
+	freeboard.loadWidgetPlugin({
+		type_name: "c3js",
+		display_name: "C3チャート",
+		description: "様々な形式のチャートを表示するウィジェットです。詳細は <a href='http://c3js.org/' target='_blank'>http://c3js.org/</a>",
+		external_scripts : [
+			"plugins/thirdparty/d3.v3.min.js",
+			"plugins/thirdparty/c3.min.js"
+		],
+		settings: [
 			{
-				name : "url",
-				display_name : "DNSホスト名",
-				validate: "required,maxSize[1000]",
+				name: "title",
+				display_name: "タイトル",
+				validate: "optional,maxSize[100]",
 				type: "text",
-				description: "最大1000文字<br>MQTTブローカーサーバーのDNSホスト名を設定して下さい。<br>例: location.hostname"
+				description: "最大100文字"
 			},
 			{
-				name : "port",
-				display_name : "ポート番号",
-				validate: "required,custom[integer],min[1]",
+				name: "blocks",
+				display_name: "高さ (ブロック数)",
+				validate: "required,custom[integer],min[2],max[20]",
 				type: "number",
 				style: "width:100px",
-				default_value: 8080
+				default_value: 4,
+				description: "1ブロック60ピクセル。20ブロックまで"
 			},
 			{
-				name : "clientID",
-				display_name : "クライアントID",
-				validate: "required,maxSize[23]",
-				type: "text",
-				description: "最大23文字<br>任意のクライアントID文字列",
-				default_value: "SensorCorpus"
+				name: "value",
+				display_name: "値",
+				validate: "optional,maxSize[5000]",
+				type: "calculated",
+				description: "最大5000文字"
 			},
 			{
-				name : "topic",
-				display_name : "トピック",
-				validate: "required,maxSize[500]",
-				type: "text",
-				description: "最大500文字<br>購読するトピック名を設定して下さい。<br>例: my/topic",
-				default_value: ""
-			},
-			{
-				name : "username",
-				display_name : "(オプション) ユーザー名",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字<br>必要ない場合は空白。"
-			},
-			{
-				name : "password",
-				display_name : "(オプション) パスワード",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字<br>必要ない場合は空白。"
-			},
-			{
-				name : "reconnect",
-				display_name : "自動再接続",
-				type: "boolean",
-				description : "接続が切れた場合、自動的に再接続します。",
-				default_value: true
+				name: "options",
+				display_name: "チャートオプション",
+				validate: "optional,maxSize[5000]",
+				type: "json",
+				default_value: '{\n\
+	"data": {\n\
+		"type": "line"\n\
+	}\n\
+}',
+				description: "最大5000文字 JSON形式文字列。"
 			}
 		],
-		newInstance : function(settings, newInstanceCallback, updateCallback) {
-			newInstanceCallback(new mqttDatasource(settings, updateCallback));
+
+		newInstance: function (settings, newInstanceCallback) {
+			newInstanceCallback(new c3jsWidget(settings));
 		}
-	})
+	});
 }());
+
 // ┌────────────────────────────────────────────────────────────────────┐ \\
-// │ F R E E B O A R D                                                  │ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
-// │ Copyright © 2013 Jim Heising (https://github.com/jheising)         │ \\
-// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)               │ \\
-// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)    │ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
-// │ Licensed under the MIT license.                                    │ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
 // └────────────────────────────────────────────────────────────────────┘ \\
 
-(function () {
+(function() {
+
+	freeboard.addStyle('.gauge-widget-wrapper', "width:100%; height:214px; text-align:center;");
+	freeboard.addStyle('.gauge-widget', "width:280px; height:100%; display:inline-block;");
+
+	var gaugeWidget = function (settings) {
+		var self = this;
+
+		var currentID = _.uniqueId("gauge-");
+		var titleElement = $('<h2 class="section-title"></h2>');
+		var wrapperElement = $('<div class="gauge-widget-wrapper"></div>');
+		var gaugeElement = $('<div class="gauge-widget" id="' + currentID + '"></div>');
+		var gaugeObject;
+
+		var currentSettings = settings;
+
+		function createGauge() {
+			currentSettings.shape = Number(currentSettings.shape);
+
+			if (!_.isUndefined(gaugeObject))
+				gaugeObject = null;
+
+			gaugeElement.empty();
+
+			gaugeObject = new JustGage({
+				id: currentID,
+				value: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
+				min: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
+				max: (_.isUndefined(currentSettings.max_value) ? 0 : currentSettings.max_value),
+				label: currentSettings.units,
+				showInnerShadow: false,
+				shape: currentSettings.shape,
+				levelColors: [ currentSettings.gauge_lower_color, currentSettings.gauge_mid_color, currentSettings.gauge_upper_color ],
+				gaugeWidthScale: currentSettings.gauge_widthscale/100.0,
+				gaugeColor: currentSettings.gauge_color,
+				labelClass: "ultralight-text",
+				labelFontColor: currentSettings.value_fontcolor,
+				valueFontColor: currentSettings.value_fontcolor
+			});
+		}
+
+		this.render = function (element) {
+			$(element).append(titleElement).append(wrapperElement.append(gaugeElement));
+			// for justgauge redraw bug.
+			_.delay(function() {
+				createGauge();
+			}, 500);
+		}
+
+		this.onSettingsChanged = function (newSettings) {
+			if (_.isUndefined(gaugeObject)) {
+				titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+				currentSettings = newSettings;
+				return;
+			}
+			currentSettings = newSettings;
+			createGauge();
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+		}
+
+		this.onCalculatedValueChanged = function (settingName, newValue) {
+			if (!_.isUndefined(gaugeObject)) {
+				gaugeObject.refresh(Number(newValue));
+			}
+		}
+
+		this.onDispose = function () {
+			if (!_.isUndefined(gaugeObject))
+				gaugeObject = null;
+		}
+
+		this.getHeight = function () {
+			return 4;
+		}
+
+		this.onSettingsChanged(settings);
+	};
+
+	freeboard.loadWidgetPlugin({
+		type_name: "gauge",
+		display_name: "ゲージ",
+		description: "ゲージを表示するウィジェットです。",
+		external_scripts : [
+			"plugins/thirdparty/raphael.2.1.0.min.js",
+			"plugins/thirdparty/justgage.min.js"
+		],
+		settings: [
+			{
+				name: "title",
+				display_name: "タイトル",
+				validate: "optional,maxSize[100]",
+				type: "text",
+				description: "最大100文字"
+			},
+			{
+				name: "value",
+				display_name: "値",
+				validate: "optional,maxSize[2000]",
+				type: "calculated",
+				description: "最大2000文字"
+			},
+			{
+				name: "shape",
+				display_name: "型",
+				type: "option",
+				options: [
+					{
+						name: "ハーフ",
+						value: 0
+					},
+					{
+						name: "ファン",
+						value: 1
+					},
+					{
+						name: "ドーナッツ",
+						value: 2
+					}
+				]
+			},
+			{
+				name: "units",
+				display_name: "単位",
+				validate: "optional,maxSize[20],custom[illegalEscapeChar]",
+				style: "width:150px",
+				type: "text",
+				description: "最大20文字"
+			},
+			{
+				name: "value_fontcolor",
+				display_name: "値フォント色",
+				type: "color",
+				validate: "required,custom[hexcolor]",
+				default_value: "#d3d4d4",
+				description: "デフォルト色: #d3d4d4"
+			},
+			{
+				name: "gauge_upper_color",
+				display_name: "ゲージ色 Upper",
+				type: "color",
+				validate: "required,custom[hexcolor]",
+				default_value: "#ff0000",
+				description: "デフォルト色: #ff0000"
+			},
+			{
+				name: "gauge_mid_color",
+				display_name: "ゲージ色 Mid",
+				type: "color",
+				validate: "required,custom[hexcolor]",
+				default_value: "#f9c802",
+				description: "デフォルト色: #f9c802"
+			},
+			{
+				name: "gauge_lower_color",
+				display_name: "ゲージ色 Lower",
+				type: "color",
+				validate: "required,custom[hexcolor]",
+				default_value: "#a9d70b",
+				description: "デフォルト色: #a9d70b"
+			},
+			{
+				name: "gauge_color",
+				display_name: "ゲージ背景色",
+				type: "color",
+				validate: "required,custom[hexcolor]",
+				default_value: "#edebeb",
+				description: "デフォルト色: #edebeb"
+			},
+			{
+				name: "gauge_widthscale",
+				display_name: "ゲージ太さ",
+				type: "number",
+				style: "width:100px",
+				validate: "required,custom[integer],min[0],max[200]",
+				default_value: 100,
+				description: "0から200まで"
+			},
+			{
+				name: "min_value",
+				display_name: "最小値",
+				type: "number",
+				style: "width:100px",
+				validate: "required,custom[number],min[-100000000],max[100000000]",
+				default_value: 0,
+				description: "数値のみ"
+			},
+			{
+				name: "max_value",
+				display_name: "最大値",
+				type: "number",
+				style: "width:100px",
+				validate: "required,custom[number],min[-100000000],max[100000000]",
+				default_value: 100,
+				description: "最小値以上"
+			}
+		],
+		newInstance: function (settings, newInstanceCallback) {
+			newInstanceCallback(new gaugeWidget(settings));
+		}
+	});
+}());
+
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
+
+(function() {
+
+	freeboard.addStyle('.gm-style-cc a', "text-shadow:none;");
+
+	var googleMapWidget = function (settings) {
+		var self = this;
+		var currentSettings = settings;
+		var map;
+		var marker;
+		var poly;
+		var mapElement = $('<div></div>')
+		var currentPosition = {};
+
+		function updatePosition() {
+			if (map && marker && currentPosition.lat && currentPosition.lon) {
+				var newLatLon = new google.maps.LatLng(currentPosition.lat, currentPosition.lon);
+				marker.setPosition(newLatLon);
+				if (currentSettings.drawpath)
+					poly.getPath().push(newLatLon);
+				map.panTo(newLatLon);
+			}
+		}
+
+		function setBlocks(blocks) {
+			if (_.isUndefined(mapElement) || _.isUndefined(blocks))
+				return;
+			var height = 60 * blocks;
+			mapElement.css({
+				"height": height + "px",
+				"width": "100%"
+			});
+		}
+
+		function createWidget() {
+			if (_.isUndefined(mapElement))
+				return;
+
+			function initializeMap() {
+				var mapOptions = {
+					zoom: 13,
+					center: new google.maps.LatLng(37.235, -115.811111),
+					disableDefaultUI: true,
+					draggable: false
+				};
+
+				map = new google.maps.Map(mapElement[0], mapOptions);
+
+				var polyOptions = {
+					strokeColor: '#0091D1',
+					strokeOpacity: 1.0,
+					strokeWeight: 3
+				};
+
+				poly = new google.maps.Polyline(polyOptions);
+				poly.setMap(map);
+
+				google.maps.event.addDomListener(mapElement[0], 'mouseenter', function (e) {
+					e.cancelBubble = true;
+					if (!map.hover) {
+						map.hover = true;
+						map.setOptions({zoomControl: true});
+					}
+				});
+
+				google.maps.event.addDomListener(mapElement[0], 'mouseleave', function (e) {
+					if (map.hover) {
+						map.setOptions({zoomControl: false});
+						map.hover = false;
+					}
+				});
+
+				marker = new google.maps.Marker({map: map});
+
+				// map fitting to container
+				mapElement.resize(_.debounce(function() {
+					google.maps.event.trigger(mapElement[0], 'resize');
+					updatePosition();
+				}, 500));
+
+				updatePosition();
+			}
+
+			if (window.google && window.google.maps) {
+				initializeMap();
+			} else {
+				window.gmap_initialize = initializeMap;
+				head.js("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=gmap_initialize");
+			}
+		}
+
+		this.render = function (element) {
+			$(element).append(mapElement);
+			setBlocks(currentSettings.blocks);
+			createWidget();
+		}
+
+		this.onSettingsChanged = function (newSettings) {
+			if (_.isUndefined(map)) {
+				currentSettings = newSettings;
+				return;
+			}
+			if (newSettings.blocks != currentSettings.blocks)
+				setBlocks(newSettings.blocks);
+			if (!newSettings.drawpath)
+				poly.getPath().clear();
+			currentSettings = newSettings;
+		}
+
+		this.onCalculatedValueChanged = function (settingName, newValue) {
+			if (settingName == "lat")
+				currentPosition.lat = newValue;
+			else if (settingName == "lon")
+				currentPosition.lon = newValue;
+
+			updatePosition();
+		}
+
+		this.onDispose = function () {
+			// for memoryleak
+			map = null;
+			marker = null;
+			poly = null;
+		}
+
+		this.getHeight = function () {
+			return currentSettings.blocks;
+		}
+
+		this.onSettingsChanged(settings);
+	};
+
+	freeboard.loadWidgetPlugin({
+		type_name: "google_map",
+		display_name: "Google Map",
+		description: "GoogleMapを表示するウィジェットです。緯度経度に値を設定するとその周辺の地図が表示されます。",
+		fill_size: true,
+		settings: [
+			{
+				name: "blocks",
+				display_name: "高さ (ブロック数)",
+				validate: "required,custom[integer],min[4],max[20]",
+				type: "number",
+				style: "width:100px",
+				default_value: 4,
+				description: "1ブロック60ピクセル。20ブロックまで"
+			},
+			{
+				name: "lat",
+				display_name: "緯度",
+				validate: "optional,maxSize[2000]",
+				type: "calculated",
+				description: "最大2000文字"
+			},
+			{
+				name: "lon",
+				display_name: "経度",
+				validate: "optional,maxSize[2000]",
+				type: "calculated",
+				description: "最大2000文字"
+			},
+			{
+				name: "drawpath",
+				display_name: "移動経路の表示",
+				type: "boolean",
+				default_value: false
+			}
+		],
+		newInstance: function (settings, newInstanceCallback) {
+			newInstanceCallback(new googleMapWidget(settings));
+		}
+	});
+}());
+
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
+
+(function() {
+
+	freeboard.addStyle('.indicator-light', "border-radius:50%;width:22px;height:22px;border:2px solid #3d3d3d;margin-top:5px;float:left;background-color:#222;margin-right:10px;");
+	freeboard.addStyle('.indicator-light.on', "background-color:#FFC773;box-shadow: 0px 0px 15px #FF9900;border-color:#FDF1DF;");
+	freeboard.addStyle('.indicator-text', "margin-top:10px;");
+	var indicatorWidget = function (settings) {
+		var self = this;
+		var titleElement = $('<h2 class="section-title"></h2>');
+		var stateElement = $('<div class="indicator-text"></div>');
+		var indicatorElement = $('<div class="indicator-light"></div>');
+		var currentSettings = settings;
+		var isOn = false;
+
+		function updateState() {
+			indicatorElement.toggleClass("on", isOn);
+
+			if (isOn) {
+				stateElement.text((_.isUndefined(currentSettings.on_text) ? "" : currentSettings.on_text));
+			}
+			else {
+				stateElement.text((_.isUndefined(currentSettings.off_text) ? "" : currentSettings.off_text));
+			}
+		}
+
+		this.render = function (element) {
+			$(element).append(titleElement).append(indicatorElement).append(stateElement);
+		}
+
+		this.onSettingsChanged = function (newSettings) {
+			currentSettings = newSettings;
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			updateState();
+		}
+
+		this.onCalculatedValueChanged = function (settingName, newValue) {
+			if (settingName == "value") {
+				isOn = Boolean(newValue);
+			}
+
+			updateState();
+		}
+
+		this.onDispose = function () {
+		}
+
+		this.getHeight = function () {
+			return 1;
+		}
+
+		this.onSettingsChanged(settings);
+	};
+
+	freeboard.loadWidgetPlugin({
+		type_name: "indicator",
+		display_name: "点灯ライト",
+		description: "指定した値の条件でライトが点灯するウィジェットです。ONにするには 1 を、OFFにするには 0 を値に設定して下さい。",
+		settings: [
+			{
+				name: "title",
+				display_name: "タイトル",
+				validate: "optional,maxSize[100]",
+				type: "text",
+				description: "最大100文字"
+			},
+			{
+				name: "value",
+				display_name: "値",
+				validate: "optional,maxSize[2000]",
+				type: "calculated",
+				description: "最大2000文字"
+			},
+			{
+				name: "on_text",
+				display_name: "ON時テキスト",
+				validate: "optional,maxSize[500]",
+				type: "calculated",
+				description: "最大500文字"
+			},
+			{
+				name: "off_text",
+				display_name: "OFF時テキスト",
+				validate: "optional,maxSize[500]",
+				type: "calculated",
+				description: "最大500文字"
+			}
+		],
+		newInstance: function (settings, newInstanceCallback) {
+			newInstanceCallback(new indicatorWidget(settings));
+		}
+	});
+}());
+
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
+
+(function() {
+
+	freeboard.addStyle('.picture-widget', "background-size:contain; background-position:center; background-repeat: no-repeat;");
+
+	var pictureWidget = function(settings) {
+		var self = this;
+		var widgetElement = $('<div class="picture-widget"></div>');
+		var titleElement = $('<h2 class="section-title"></h2>');
+		var currentSettings;
+		var timer;
+		var imageURL;
+
+		function setBlocks(blocks) {
+			if (_.isUndefined(blocks))
+				return;
+			var height = 60 * blocks - titleElement.outerHeight() - 7;
+			widgetElement.css({
+				"height": height + "px",
+				"width": "100%"
+			});
+		}
+
+		function stopTimer() {
+			if (timer) {
+				clearInterval(timer);
+				timer = null;
+			}
+		}
+
+		function updateImage() {
+			if (widgetElement && imageURL) {
+				var cacheBreakerURL = imageURL + (imageURL.indexOf("?") == -1 ? "?" : "&") + Date.now();
+
+				$(widgetElement).css({
+					"background-image" :  "url(" + cacheBreakerURL + ")"
+				});
+			}
+		}
+
+		this.render = function(element) {
+			$(element).append(titleElement).append(widgetElement);
+			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
+			setBlocks(currentSettings.blocks);
+		}
+
+		this.onSettingsChanged = function(newSettings) {
+			if (titleElement.outerHeight() == 0) {
+				currentSettings = newSettings;
+				return;
+			}
+			stopTimer();
+
+			if (newSettings.refresh && newSettings.refresh > 0)
+				timer = setInterval(updateImage, Number(newSettings.refresh) * 1000);
+
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			setBlocks(newSettings.blocks);
+			currentSettings = newSettings;
+		}
+
+		this.onCalculatedValueChanged = function(settingName, newValue) {
+			if (settingName == "src")
+				imageURL = newValue;
+
+			updateImage();
+		}
+
+		this.onDispose = function() {
+			stopTimer();
+		}
+
+		this.getHeight = function() {
+			return currentSettings.blocks;
+		}
+
+		this.onSettingsChanged(settings);
+	};
+
+	freeboard.loadWidgetPlugin({
+		type_name: "picture",
+		display_name: "画像",
+		description: "画像を表示するウィジェットです。Webカメラなどの映像を表示する事に使用します。",
+		settings: [
+			{
+				name: "title",
+				display_name: "タイトル",
+				validate: "optional,maxSize[100]",
+				type: "text",
+				description: "最大100文字"
+			},
+			{
+				name: "blocks",
+				display_name: "高さ (ブロック数)",
+				validate: "required,custom[integer],min[4],max[20]",
+				type: "number",
+				style: "width:100px",
+				default_value: 4,
+				description: "1ブロック60ピクセル。20ブロックまで"
+			},
+			{
+				name: "src",
+				display_name: "画像URL",
+				validate: "optional,maxSize[2000]",
+				type: "calculated",
+				description: "最大2000文字"
+			},
+			{
+				type: "number",
+				display_name: "更新頻度",
+				validate: "optional,custom[integer],min[1]",
+				style: "width:100px",
+				name: "number",
+				suffix: "秒",
+				description:"更新する必要がない場合は空白のまま"
+			}
+		],
+		newInstance: function (settings, newInstanceCallback) {
+			newInstanceCallback(new pictureWidget(settings));
+		}
+	});
+}());
+
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
+
+(function() {
+
+	freeboard.addStyle('.pointer-widget', "width:100%;");
+
+	var pointerWidget = function (settings) {
+		var self = this;
+
+		var CIRCLE_WIDTH = 3;
+
+		var currentID = _.uniqueId("pointer_");
+		var titleElement = $('<h2 class="section-title"></h2>');
+		var widgetElement = $('<div class="pointer-widget" id="' + currentID + '"></div>');
+		var currentSettings = settings;
+		var fontcolor = freeboard.getStyleObject("values")['color'];
+
+		// d3 variables
+		var τ = 2 * Math.PI
+		var svg, center, pointer, textValue, textUnits, circle;
+
+		function setBlocks(blocks) {
+			if (_.isUndefined(blocks))
+				return;
+			var height = 60 * blocks - titleElement.outerHeight() - 7;
+			widgetElement.css({
+				"height": height + "px",
+				"width": "100%"
+			});
+		}
+
+		function polygonPath(points) {
+			if (!points || points.length < 2)
+				return [];
+			var path;
+			path = 'M'+points[0]+','+points[1];
+			for (var i = 2; i < points.length; i += 2) {
+				path += 'L'+points[i]+','+points[i+1];
+			}
+			path += 'Z';
+			return path;
+		}
+
+		function getCenteringTransform(rc) {
+			return "translate(" + (rc.width/2) + "," + (rc.height/2) + ")"
+		}
+
+		function getRadius(rc) {
+			return Math.min(rc.height, rc.width) / 2 - CIRCLE_WIDTH * 2;
+		}
+
+		function calcValueFontSize(r) {
+			return parseInt(r-35);
+		}
+
+		function getPointerPath(r) {
+			return polygonPath([0, - r + CIRCLE_WIDTH, 15, -(r-20), -15, -(r-20)])
+		}
+
+		function resize() {
+			if (_.isUndefined(svg))
+				return;
+
+			var rc = widgetElement[0].getBoundingClientRect();
+
+			svg.attr("height", rc.height);
+			svg.attr("width", rc.width);
+
+			center.attr("transform", getCenteringTransform(rc));
+
+			var r = getRadius(rc);
+			circle.attr("r", r);
+
+			pointer.attr("d", getPointerPath(r));
+
+			textValue.attr("font-size", calcValueFontSize(r) + "px");
+			textUnits.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px");
+		}
+
+		function createWidget() {
+
+			var rc = widgetElement[0].getBoundingClientRect();
+
+			svg = d3.select("#" + currentID)
+				.append("svg")
+				.attr("width", rc.width)
+				.attr("height", rc.height);
+
+			center = svg.append("g")
+				.attr("transform", getCenteringTransform(rc));
+
+			var r = getRadius(rc);
+			circle = center.append("circle")
+				.attr("r", r)
+				.style("fill", "rgba(0, 0, 0, 0)")
+				.style("stroke-width", CIRCLE_WIDTH)
+				.style("stroke", currentSettings.circle_color)
+
+			textValue = center.append("text")
+				.text("0")
+				.style("fill", fontcolor)
+				.style("text-anchor", "middle")
+				.attr("dy", ".3em")
+				.attr("font-size", calcValueFontSize(r) + "px")
+				.attr("class", "ultralight-text");
+
+			textUnits = center.append("text")
+				.text(currentSettings.units)
+				.style("fill", fontcolor)
+				.style("text-anchor", "middle")
+				.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px")
+				.attr("font-size", "14px")
+				.attr("class", "ultralight-text");
+
+			pointer = center.append("path")
+				.style("fill", currentSettings.pointer_color)
+				.attr("d", getPointerPath(r));
+
+			// svg chart fit to container
+			widgetElement.resize(_.debounce(function() {
+				resize();
+			}, 500));
+		}
+
+		this.render = function (element) {
+			$(element).append(titleElement).append(widgetElement);
+			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
+			setBlocks(currentSettings.blocks);
+			createWidget();
+		}
+
+		this.onSettingsChanged = function (newSettings) {
+			if (_.isUndefined(svg)) {
+				currentSettings = newSettings;
+				return;
+			}
+
+			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			circle.style("stroke", newSettings.circle_color);
+			pointer.style("fill", newSettings.pointer_color);
+			textUnits.text((_.isUndefined(newSettings.units) ? "" : newSettings.units))
+			setBlocks(newSettings.blocks);
+
+			currentSettings = newSettings;
+		}
+
+		this.onCalculatedValueChanged = function (settingName, newValue) {
+			if (_.isUndefined(svg))
+				return;
+			if (settingName == "direction") {
+				pointer.transition()
+					.duration(250)
+					.ease("bounce")
+					.attrTween("transform", function(d, i, a) {
+						return d3.interpolateString(a, "rotate(" + parseInt(newValue) + ", 0, 0)");
+					});
+			} else if (settingName == "value_text") {
+				if (_.isUndefined(newValue))
+					return;
+				textValue.transition()
+					.duration(500)
+					.tween("text", function() {
+						var i = d3.interpolate(this.textContent, Number(newValue));
+						return function(t) {
+							this.textContent = i(t).toFixed(1);
+						};
+					});
+			}
+		}
+
+		this.onDispose = function () {
+			svg = circle = center = pointer = textValue = textUnits = null;
+		}
+
+		this.getHeight = function () {
+			return currentSettings.blocks;
+		}
+
+		this.onSettingsChanged(settings);
+	};
+
+	freeboard.loadWidgetPlugin({
+		type_name: "pointer",
+		display_name: "ポインタ",
+		description: "方角と値を表示するウィジェットです。",
+		external_scripts : [
+			"plugins/thirdparty/d3.v3.min.js",
+		],
+		settings: [
+			{
+				name: "title",
+				display_name: "タイトル",
+				validate: "optional,maxSize[100]",
+				type: "text",
+				description: "最大100文字"
+			},
+			{
+				name: "blocks",
+				display_name: "高さ (ブロック数)",
+				validate: "required,custom[integer],min[4],max[10]",
+				type: "number",
+				style: "width:100px",
+				default_value: 4,
+				description: "1ブロック60ピクセル。10ブロックまで"
+			},
+			{
+				name: "direction",
+				display_name: "方向",
+				validate: "optional,maxSize[2000]",
+				type: "calculated",
+				description: "最大2000文字<br>角度を入力して下さい。"
+			},
+			{
+				name: "value_text",
+				display_name: "値テキスト",
+				validate: "optional,maxSize[2000]",
+				type: "calculated",
+				description: "最大2000文字"
+			},
+			{
+				name: "units",
+				display_name: "単位",
+				validate: "optional,maxSize[20]",
+				style: "width:150px",
+				type: "text",
+				description: "最大20文字"
+			},
+			{
+				name: "circle_color",
+				display_name: "サークル色",
+				validate: "required,custom[hexcolor]",
+				type: "color",
+				default_value: "#ff9900",
+				description: "デフォルト色: #ff9900"
+			},
+			{
+				name: "pointer_color",
+				display_name: "ポインタ色",
+				validate: "required,custom[hexcolor]",
+				type: "color",
+				default_value: "#fff",
+				description: "デフォルト色: #fff"
+			}
+		],
+		newInstance: function (settings, newInstanceCallback) {
+			newInstanceCallback(new pointerWidget(settings));
+		}
+	});
+}());
+
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
+
+(function() {
+
 	var SPARKLINE_HISTORY_LENGTH = 100;
 	var SPARKLINE_COLORS = ["#FF9900", "#FFFFFF", "#B3B4B4", "#6B6B6B", "#28DE28", "#13F7F9", "#E6EE18", "#C41204", "#CA3CB8", "#0B1CFB"];
 
@@ -4864,7 +6157,8 @@ $.extend(freeboard, jQuery.eventEmitter);
 	freeboard.loadWidgetPlugin({
 		type_name: "text_widget",
 		display_name: "テキスト",
-		"external_scripts" : [
+		description: "テキストと簡易チャートが表示できるウィジェットです。",
+		external_scripts : [
 			"plugins/thirdparty/jquery.sparkline.min.js"
 		],
 		settings: [
@@ -4877,7 +6171,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			},
 			{
 				name: "size",
-				display_name: "サイズ",
+				display_name: "テキストサイズ",
 				type: "option",
 				options: [
 					{
@@ -4899,7 +6193,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			},
 			{
 				name: "sparkline",
-				display_name: "スパークラインを含む",
+				display_name: "簡易チャートを含む",
 				type: "boolean"
 			},
 			{
@@ -4921,1182 +6215,4 @@ $.extend(freeboard, jQuery.eventEmitter);
 			newInstanceCallback(new textWidget(settings));
 		}
 	});
-
-	freeboard.addStyle('.gauge-widget-wrapper', "width:100%; height:214px; text-align:center;");
-	freeboard.addStyle('.gauge-widget', "width:280px; height:100%; display:inline-block;");
-
-	var gaugeWidget = function (settings) {
-		var self = this;
-
-		var currentID = _.uniqueId("gauge-");
-		var titleElement = $('<h2 class="section-title"></h2>');
-		var wrapperElement = $('<div class="gauge-widget-wrapper"></div>');
-		var gaugeElement = $('<div class="gauge-widget" id="' + currentID + '"></div>');
-		var gaugeObject;
-
-		var currentSettings = settings;
-
-		function createGauge() {
-			currentSettings.shape = Number(currentSettings.shape);
-
-			if (!_.isUndefined(gaugeObject))
-				gaugeObject = null;
-
-			gaugeElement.empty();
-
-			gaugeObject = new JustGage({
-				id: currentID,
-				value: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
-				min: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
-				max: (_.isUndefined(currentSettings.max_value) ? 0 : currentSettings.max_value),
-				label: currentSettings.units,
-				showInnerShadow: false,
-				shape: currentSettings.shape,
-				levelColors: [ currentSettings.gauge_lower_color, currentSettings.gauge_mid_color, currentSettings.gauge_upper_color ],
-				gaugeWidthScale: currentSettings.gauge_widthscale/100.0,
-				gaugeColor: currentSettings.gauge_color,
-				labelClass: "ultralight-text",
-				labelFontColor: currentSettings.value_fontcolor,
-				valueFontColor: currentSettings.value_fontcolor
-			});
-		}
-
-		this.render = function (element) {
-			$(element).append(titleElement).append(wrapperElement.append(gaugeElement));
-			// for justgauge redraw bug.
-			_.delay(function() {
-				createGauge();
-			}, 500);
-		}
-
-		this.onSettingsChanged = function (newSettings) {
-			if (_.isUndefined(gaugeObject)) {
-				titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-				currentSettings = newSettings;
-				return;
-			}
-			currentSettings = newSettings;
-			createGauge();
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-		}
-
-		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (!_.isUndefined(gaugeObject)) {
-				gaugeObject.refresh(Number(newValue));
-			}
-		}
-
-		this.onDispose = function () {
-			if (!_.isUndefined(gaugeObject))
-				gaugeObject = null;
-		}
-
-		this.getHeight = function () {
-			return 4;
-		}
-
-		this.onSettingsChanged(settings);
-	};
-
-	freeboard.loadWidgetPlugin({
-		type_name: "gauge",
-		display_name: "ゲージ",
-		"external_scripts" : [
-			"plugins/thirdparty/raphael.2.1.0.min.js",
-			"plugins/thirdparty/justgage.min.js"
-		],
-		settings: [
-			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
-			},
-			{
-				name: "value",
-				display_name: "値",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
-			},
-			{
-				name: "shape",
-				display_name: "型",
-				type: "option",
-				options: [
-					{
-						name: "ハーフ",
-						value: 0
-					},
-					{
-						name: "ファン",
-						value: 1
-					},
-					{
-						name: "ドーナッツ",
-						value: 2
-					}
-				]
-			},
-			{
-				name: "units",
-				display_name: "単位",
-				validate: "optional,maxSize[20],custom[illegalEscapeChar]",
-				style: "width:150px",
-				type: "text",
-				description: "最大20文字"
-			},
-			{
-				name: "value_fontcolor",
-				display_name: "値フォント色",
-				type: "color",
-				validate: "required,custom[hexcolor]",
-				default_value: "#d3d4d4",
-				description: "デフォルト色: #d3d4d4"
-			},
-			{
-				name: "gauge_upper_color",
-				display_name: "ゲージ色 Upper",
-				type: "color",
-				validate: "required,custom[hexcolor]",
-				default_value: "#ff0000",
-				description: "デフォルト色: #ff0000"
-			},
-			{
-				name: "gauge_mid_color",
-				display_name: "ゲージ色 Mid",
-				type: "color",
-				validate: "required,custom[hexcolor]",
-				default_value: "#f9c802",
-				description: "デフォルト色: #f9c802"
-			},
-			{
-				name: "gauge_lower_color",
-				display_name: "ゲージ色 Lower",
-				type: "color",
-				validate: "required,custom[hexcolor]",
-				default_value: "#a9d70b",
-				description: "デフォルト色: #a9d70b"
-			},
-			{
-				name: "gauge_color",
-				display_name: "ゲージ背景色",
-				type: "color",
-				validate: "required,custom[hexcolor]",
-				default_value: "#edebeb",
-				description: "デフォルト色: #edebeb"
-			},
-			{
-				name: "gauge_widthscale",
-				display_name: "ゲージ太さ",
-				type: "number",
-				style: "width:100px",
-				validate: "required,custom[integer],min[0],max[200]",
-				default_value: 100,
-				description: "0から200まで"
-			},
-			{
-				name: "min_value",
-				display_name: "最小値",
-				type: "number",
-				style: "width:100px",
-				validate: "required,custom[number],min[-100000000],max[100000000]",
-				default_value: 0,
-				description: "数値のみ"
-			},
-			{
-				name: "max_value",
-				display_name: "最大値",
-				type: "number",
-				style: "width:100px",
-				validate: "required,custom[number],min[-100000000],max[100000000]",
-				default_value: 100,
-				description: "最小値以上"
-			}
-		],
-		newInstance: function (settings, newInstanceCallback) {
-			newInstanceCallback(new gaugeWidget(settings));
-		}
-	});
-
-	freeboard.addStyle('.sparkline', "width:100%;height: 75px;");
-	var sparklineWidget = function (settings) {
-		var self = this;
-
-		var titleElement = $('<h2 class="section-title"></h2>');
-		var sparklineElement = $('<div class="sparkline"></div>');
-
-		this.render = function (element) {
-			$(element).append(titleElement).append(sparklineElement);
-		}
-
-		this.onSettingsChanged = function (newSettings) {
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-		}
-
-		this.onCalculatedValueChanged = function (settingName, newValue) {
-			addValueToSparkline(sparklineElement, newValue);
-		}
-
-		this.onDispose = function () {
-		}
-
-		this.getHeight = function () {
-			return 2;
-		}
-
-		this.onSettingsChanged(settings);
-	};
-
-	freeboard.loadWidgetPlugin({
-		type_name: "sparkline",
-		display_name: "スパークラインチャート",
-		"external_scripts" : [
-			"plugins/thirdparty/jquery.sparkline.min.js"
-		],
-		settings: [
-			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
-			},
-			{
-				name: "value",
-				display_name: "値",
-				validate: "optional,maxSize[500]",
-				type: "calculated",
-				description: "最大500文字",
-				multi_input: true
-			}
-		],
-		newInstance: function (settings, newInstanceCallback) {
-			newInstanceCallback(new sparklineWidget(settings));
-		}
-	});
-
-	freeboard.addStyle('.pointer-widget', "width:100%;");
-
-	var pointerWidget = function (settings) {
-		var self = this;
-
-		var CIRCLE_WIDTH = 3;
-
-		var currentID = _.uniqueId("pointer_");
-		var titleElement = $('<h2 class="section-title"></h2>');
-		var widgetElement = $('<div class="pointer-widget" id="' + currentID + '"></div>');
-		var currentSettings = settings;
-		var fontcolor = freeboard.getStyleObject("values")['color'];
-
-		// d3 variables
-		var τ = 2 * Math.PI
-		var svg, center, pointer, textValue, textUnits, circle;
-
-		function setBlocks(blocks) {
-			if (_.isUndefined(blocks))
-				return;
-			var height = 60 * blocks - titleElement.outerHeight() - 7;
-			widgetElement.css({
-				"height": height + "px",
-				"width": "100%"
-			});
-		}
-
-		function polygonPath(points) {
-			if (!points || points.length < 2)
-				return [];
-			var path;
-			path = 'M'+points[0]+','+points[1];
-			for (var i = 2; i < points.length; i += 2) {
-				path += 'L'+points[i]+','+points[i+1];
-			}
-			path += 'Z';
-			return path;
-		}
-
-		function getCenteringTransform(rc) {
-			return "translate(" + (rc.width/2) + "," + (rc.height/2) + ")"
-		}
-
-		function getRadius(rc) {
-			return Math.min(rc.height, rc.width) / 2 - CIRCLE_WIDTH * 2;
-		}
-
-		function calcValueFontSize(r) {
-			return parseInt(r-35);
-		}
-
-		function getPointerPath(r) {
-			return polygonPath([0, - r + CIRCLE_WIDTH, 15, -(r-20), -15, -(r-20)])
-		}
-
-		function resize() {
-			if (_.isUndefined(svg))
-				return;
-
-			var rc = widgetElement[0].getBoundingClientRect();
-
-			svg.attr("height", rc.height);
-			svg.attr("width", rc.width);
-
-			center.attr("transform", getCenteringTransform(rc));
-
-			var r = getRadius(rc);
-			circle.attr("r", r);
-
-			pointer.attr("d", getPointerPath(r));
-
-			textValue.attr("font-size", calcValueFontSize(r) + "px");
-			textUnits.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px");
-		}
-
-		function createWidget() {
-
-			var rc = widgetElement[0].getBoundingClientRect();
-
-			svg = d3.select("#" + currentID)
-				.append("svg")
-				.attr("width", rc.width)
-				.attr("height", rc.height);
-
-			center = svg.append("g")
-				.attr("transform", getCenteringTransform(rc));
-
-			var r = getRadius(rc);
-			circle = center.append("circle")
-				.attr("r", r)
-				.style("fill", "rgba(0, 0, 0, 0)")
-				.style("stroke-width", CIRCLE_WIDTH)
-				.style("stroke", currentSettings.circle_color)
-
-			textValue = center.append("text")
-				.text("0")
-				.style("fill", fontcolor)
-				.style("text-anchor", "middle")
-				.attr("dy", ".3em")
-				.attr("font-size", calcValueFontSize(r) + "px")
-				.attr("class", "ultralight-text");
-
-			textUnits = center.append("text")
-				.text(currentSettings.units)
-				.style("fill", fontcolor)
-				.style("text-anchor", "middle")
-				.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px")
-				.attr("font-size", "14px")
-				.attr("class", "ultralight-text");
-
-			pointer = center.append("path")
-				.style("fill", currentSettings.pointer_color)
-				.attr("d", getPointerPath(r));
-
-			// svg chart fit to container
-			widgetElement.resize(_.debounce(function() {
-				resize();
-			}, 500));
-		}
-
-		this.render = function (element) {
-			$(element).append(titleElement).append(widgetElement);
-			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
-			setBlocks(currentSettings.blocks);
-			createWidget();
-		}
-
-		this.onSettingsChanged = function (newSettings) {
-			if (_.isUndefined(svg)) {
-				currentSettings = newSettings;
-				return;
-			}
-
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-			circle.style("stroke", newSettings.circle_color);
-			pointer.style("fill", newSettings.pointer_color);
-			textUnits.text((_.isUndefined(newSettings.units) ? "" : newSettings.units))
-			setBlocks(newSettings.blocks);
-
-			currentSettings = newSettings;
-		}
-
-		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (_.isUndefined(svg))
-				return;
-			if (settingName == "direction") {
-				pointer.transition()
-					.duration(250)
-					.ease("bounce")
-					.attrTween("transform", function(d, i, a) {
-						return d3.interpolateString(a, "rotate(" + parseInt(newValue) + ", 0, 0)");
-					});
-			} else if (settingName == "value_text") {
-				if (_.isUndefined(newValue))
-					return;
-				textValue.transition()
-					.duration(500)
-					.tween("text", function() {
-						var i = d3.interpolate(this.textContent, Number(newValue));
-						return function(t) {
-							this.textContent = i(t).toFixed(1);
-						};
-					});
-			}
-		}
-
-		this.onDispose = function () {
-			svg = circle = center = pointer = textValue = textUnits = null;
-		}
-
-		this.getHeight = function () {
-			return currentSettings.blocks;
-		}
-
-		this.onSettingsChanged(settings);
-	};
-
-	freeboard.loadWidgetPlugin({
-		type_name: "pointer",
-		display_name: "ポインタ",
-		"external_scripts" : [
-			"http://d3js.org/d3.v3.min.js",
-		],
-		settings: [
-			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
-			},
-			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[4],max[10]",
-				type: "number",
-				style: "width:100px",
-				default_value: 4,
-				description: "1ブロック60ピクセル。10ブロックまで"
-			},
-			{
-				name: "direction",
-				display_name: "方向",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字<br>角度を入力して下さい。"
-			},
-			{
-				name: "value_text",
-				display_name: "値テキスト",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
-			},
-			{
-				name: "units",
-				display_name: "単位",
-				validate: "optional,maxSize[20]",
-				style: "width:150px",
-				type: "text",
-				description: "最大20文字"
-			},
-			{
-				name: "circle_color",
-				display_name: "サークル色",
-				validate: "required,custom[hexcolor]",
-				type: "color",
-				default_value: "#ff9900",
-				description: "デフォルト色: #ff9900"
-			},
-			{
-				name: "pointer_color",
-				display_name: "ポインタ色",
-				validate: "required,custom[hexcolor]",
-				type: "color",
-				default_value: "#fff",
-				description: "デフォルト色: #fff"
-			}
-		],
-		newInstance: function (settings, newInstanceCallback) {
-			newInstanceCallback(new pointerWidget(settings));
-		}
-	});
-
-	freeboard.addStyle('.picture-widget', "background-size:contain; background-position:center; background-repeat: no-repeat;");
-
-	var pictureWidget = function(settings) {
-		var self = this;
-		var widgetElement = $('<div class="picture-widget"></div>');
-		var titleElement = $('<h2 class="section-title"></h2>');
-		var currentSettings;
-		var timer;
-		var imageURL;
-
-		function setBlocks(blocks) {
-			if (_.isUndefined(blocks))
-				return;
-			var height = 60 * blocks - titleElement.outerHeight() - 7;
-			widgetElement.css({
-				"height": height + "px",
-				"width": "100%"
-			});
-		}
-
-		function stopTimer() {
-			if (timer) {
-				clearInterval(timer);
-				timer = null;
-			}
-		}
-
-		function updateImage() {
-			if (widgetElement && imageURL) {
-				var cacheBreakerURL = imageURL + (imageURL.indexOf("?") == -1 ? "?" : "&") + Date.now();
-
-				$(widgetElement).css({
-					"background-image" :  "url(" + cacheBreakerURL + ")"
-				});
-			}
-		}
-
-		this.render = function(element) {
-			$(element).append(titleElement).append(widgetElement);
-			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
-			setBlocks(currentSettings.blocks);
-		}
-
-		this.onSettingsChanged = function(newSettings) {
-			if (titleElement.outerHeight() == 0) {
-				currentSettings = newSettings;
-				return;
-			}
-			stopTimer();
-
-			if (newSettings.refresh && newSettings.refresh > 0)
-				timer = setInterval(updateImage, Number(newSettings.refresh) * 1000);
-
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-			setBlocks(newSettings.blocks);
-			currentSettings = newSettings;
-		}
-
-		this.onCalculatedValueChanged = function(settingName, newValue) {
-			if (settingName == "src")
-				imageURL = newValue;
-
-			updateImage();
-		}
-
-		this.onDispose = function() {
-			stopTimer();
-		}
-
-		this.getHeight = function() {
-			return currentSettings.blocks;
-		}
-
-		this.onSettingsChanged(settings);
-	};
-
-	freeboard.loadWidgetPlugin({
-		type_name: "picture",
-		display_name: "画像",
-		settings: [
-			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
-			},
-			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[4],max[20]",
-				type: "number",
-				style: "width:100px",
-				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
-			},
-			{
-				name: "src",
-				display_name: "画像URL",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
-			},
-			{
-				type: "number",
-				display_name: "更新頻度",
-				validate: "optional,custom[integer],min[1]",
-				style: "width:100px",
-				name: "number",
-				suffix: "秒",
-				description:"更新する必要がない場合は空白のまま"
-			}
-		],
-		newInstance: function (settings, newInstanceCallback) {
-			newInstanceCallback(new pictureWidget(settings));
-		}
-	});
-
-	freeboard.addStyle('.indicator-light', "border-radius:50%;width:22px;height:22px;border:2px solid #3d3d3d;margin-top:5px;float:left;background-color:#222;margin-right:10px;");
-	freeboard.addStyle('.indicator-light.on', "background-color:#FFC773;box-shadow: 0px 0px 15px #FF9900;border-color:#FDF1DF;");
-	freeboard.addStyle('.indicator-text', "margin-top:10px;");
-	var indicatorWidget = function (settings) {
-		var self = this;
-		var titleElement = $('<h2 class="section-title"></h2>');
-		var stateElement = $('<div class="indicator-text"></div>');
-		var indicatorElement = $('<div class="indicator-light"></div>');
-		var currentSettings = settings;
-		var isOn = false;
-
-		function updateState() {
-			indicatorElement.toggleClass("on", isOn);
-
-			if (isOn) {
-				stateElement.text((_.isUndefined(currentSettings.on_text) ? "" : currentSettings.on_text));
-			}
-			else {
-				stateElement.text((_.isUndefined(currentSettings.off_text) ? "" : currentSettings.off_text));
-			}
-		}
-
-		this.render = function (element) {
-			$(element).append(titleElement).append(indicatorElement).append(stateElement);
-		}
-
-		this.onSettingsChanged = function (newSettings) {
-			currentSettings = newSettings;
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-			updateState();
-		}
-
-		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (settingName == "value") {
-				isOn = Boolean(newValue);
-			}
-
-			updateState();
-		}
-
-		this.onDispose = function () {
-		}
-
-		this.getHeight = function () {
-			return 1;
-		}
-
-		this.onSettingsChanged(settings);
-	};
-
-	freeboard.loadWidgetPlugin({
-		type_name: "indicator",
-		display_name: "インジケータライト",
-		settings: [
-			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
-			},
-			{
-				name: "value",
-				display_name: "値",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
-			},
-			{
-				name: "on_text",
-				display_name: "ON時テキスト",
-				validate: "optional,maxSize[500]",
-				type: "calculated",
-				description: "最大500文字"
-			},
-			{
-				name: "off_text",
-				display_name: "OFF時テキスト",
-				validate: "optional,maxSize[500]",
-				type: "calculated",
-				description: "最大500文字"
-			}
-		],
-		newInstance: function (settings, newInstanceCallback) {
-			newInstanceCallback(new indicatorWidget(settings));
-		}
-	});
-
-	freeboard.addStyle('.gm-style-cc a', "text-shadow:none;");
-
-	var googleMapWidget = function (settings) {
-		var self = this;
-		var currentSettings = settings;
-		var map;
-		var marker;
-		var poly;
-		var mapElement = $('<div></div>')
-		var currentPosition = {};
-
-		function updatePosition() {
-			if (map && marker && currentPosition.lat && currentPosition.lon) {
-				var newLatLon = new google.maps.LatLng(currentPosition.lat, currentPosition.lon);
-				marker.setPosition(newLatLon);
-				if (currentSettings.drawpath)
-					poly.getPath().push(newLatLon);
-				map.panTo(newLatLon);
-			}
-		}
-
-		function setBlocks(blocks) {
-			if (_.isUndefined(mapElement) || _.isUndefined(blocks))
-				return;
-			var height = 60 * blocks;
-			mapElement.css({
-				"height": height + "px",
-				"width": "100%"
-			});
-		}
-
-		function createWidget() {
-			if (_.isUndefined(mapElement))
-				return;
-
-			function initializeMap() {
-				var mapOptions = {
-					zoom: 13,
-					center: new google.maps.LatLng(37.235, -115.811111),
-					disableDefaultUI: true,
-					draggable: false
-				};
-
-				map = new google.maps.Map(mapElement[0], mapOptions);
-
-				var polyOptions = {
-					strokeColor: '#0091D1',
-					strokeOpacity: 1.0,
-					strokeWeight: 3
-				};
-
-				poly = new google.maps.Polyline(polyOptions);
-				poly.setMap(map);
-
-				google.maps.event.addDomListener(mapElement[0], 'mouseenter', function (e) {
-					e.cancelBubble = true;
-					if (!map.hover) {
-						map.hover = true;
-						map.setOptions({zoomControl: true});
-					}
-				});
-
-				google.maps.event.addDomListener(mapElement[0], 'mouseleave', function (e) {
-					if (map.hover) {
-						map.setOptions({zoomControl: false});
-						map.hover = false;
-					}
-				});
-
-				marker = new google.maps.Marker({map: map});
-
-				// map fitting to container
-				mapElement.resize(_.debounce(function() {
-					google.maps.event.trigger(mapElement[0], 'resize');
-					updatePosition();
-				}, 500));
-
-				updatePosition();
-			}
-
-			if (window.google && window.google.maps) {
-				initializeMap();
-			} else {
-				window.gmap_initialize = initializeMap;
-				head.js("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=gmap_initialize");
-			}
-		}
-
-		this.render = function (element) {
-			$(element).append(mapElement);
-			setBlocks(currentSettings.blocks);
-			createWidget();
-		}
-
-		this.onSettingsChanged = function (newSettings) {
-			if (_.isUndefined(map)) {
-				currentSettings = newSettings;
-				return;
-			}
-			if (newSettings.blocks != currentSettings.blocks)
-				setBlocks(newSettings.blocks);
-			if (!newSettings.drawpath)
-				poly.getPath().clear();
-			currentSettings = newSettings;
-		}
-
-		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (settingName == "lat")
-				currentPosition.lat = newValue;
-			else if (settingName == "lon")
-				currentPosition.lon = newValue;
-
-			updatePosition();
-		}
-
-		this.onDispose = function () {
-			// for memoryleak
-			map = null;
-			marker = null;
-			poly = null;
-		}
-
-		this.getHeight = function () {
-			return currentSettings.blocks;
-		}
-
-		this.onSettingsChanged(settings);
-	};
-
-	freeboard.loadWidgetPlugin({
-		type_name: "google_map",
-		display_name: "Google Map",
-		fill_size: true,
-		settings: [
-			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[4],max[20]",
-				type: "number",
-				style: "width:100px",
-				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
-			},
-			{
-				name: "lat",
-				display_name: "緯度",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
-			},
-			{
-				name: "lon",
-				display_name: "経度",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
-			},
-			{
-				name: "drawpath",
-				display_name: "移動経路の表示",
-				type: "boolean",
-				default_value: false
-			}
-		],
-		newInstance: function (settings, newInstanceCallback) {
-			newInstanceCallback(new googleMapWidget(settings));
-		}
-	});
-
-	freeboard.addStyle('.html-widget', "white-space:normal;width:100%;height:100%");
-
-	var htmlWidget = function (settings) {
-		var self = this;
-		var htmlElement = $('<div class="html-widget"></div>');
-		var currentSettings = settings;
-
-		this.render = function (element) {
-			$(element).append(htmlElement);
-		}
-
-		this.onSettingsChanged = function (newSettings) {
-			currentSettings = newSettings;
-		}
-
-		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (settingName == "html") {
-				htmlElement.html(newValue);
-			}
-		}
-
-		this.onDispose = function () {
-		}
-
-		this.getHeight = function () {
-			return Number(currentSettings.height);
-		}
-
-		this.onSettingsChanged(settings);
-	};
-
-	freeboard.loadWidgetPlugin({
-		"type_name": "html",
-		"display_name": "HTML",
-		"fill_size": true,
-		"settings": [
-			{
-				name: "html",
-				display_name: "HTML",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字<br>HTML文字列かjavascriptが使用できます。"
-			},
-			{
-				name: "height",
-				display_name: "ブロック高さ",
-				validate: "required,custom[integer],min[3],max[20]",
-				style: "width:100px",
-				type: "number",
-				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
-			}
-		],
-		newInstance: function (settings, newInstanceCallback) {
-			newInstanceCallback(new htmlWidget(settings));
-		}
-	});
-}());
-
-// # c3js Freeboard Plugin
-//
-// Copyright © 2015 Daisuke Tanaka.(https://github.com/tanaka0323)
-// Licensed under the MIT license.
-//
-// -------------------
-
-(function() {
-
-	freeboard.loadWidgetPlugin({
-		type_name: "c3js",
-		display_name: "C3チャート",
-		"external_scripts" : [
-			"http://d3js.org/d3.v3.min.js",
-			"plugins/thirdparty/c3.min.js"
-		],
-		settings: [
-			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
-			},
-			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[2],max[20]",
-				type: "number",
-				style: "width:100px",
-				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
-			},
-			{
-				name: "value",
-				display_name: "値",
-				validate: "optional,maxSize[5000]",
-				type: "calculated",
-				description: "最大5000文字"
-			},
-			{
-				name: "options",
-				display_name: "チャートオプション",
-				validate: "optional,maxSize[5000]",
-				type: "json",
-				default_value: '{\n\
-	"data": {\n\
-		"type": "line"\n\
-	}\n\
-}',
-				description: "最大5000文字<br>JSON形式文字列。 参考URL: <a href='http://c3js.org/' target='_blank'>http://c3js.org/</a>"
-			}
-		],
-
-		newInstance: function (settings, newInstanceCallback) {
-			newInstanceCallback(new c3jsWidget(settings));
-		}
-	});
-
-	var c3jsWidget = function (settings) {
-		var self = this;
-		var currentID = _.uniqueId("c3js_");
-		var titleElement = $('<h2 class="section-title"></h2>');
-		var chartElement = $('<div id="' + currentID + '"></div>');
-		var currentSettings;
-		var chart;
-		var chartdata;
-
-		function setBlocks(blocks) {
-			if (_.isUndefined(blocks))
-				return;
-			var height = 60 * blocks - titleElement.outerHeight() - 7;
-			chartElement.css({
-				"max-height": height + "px",
-				"height": height + "px",
-				"width": "100%"
-			});
-		}
-
-		function createWidget(data, chartsettings) {
-
-			var options;
-
-			// No need for the first load
-			data = _.omit(data, '_op');
-
-			Function.prototype.toJSON = Function.prototype.toString;
-
-			if (!_.isUndefined(chartsettings.options)) {
-				try {
-					options = JSON.parse(chartsettings.options.replace(/'/g, "\\\""), function(k,v) {
-						var ret;
-						var str = v.toString();
-						if (str.indexOf('function') === 0)
-							ret = eval('('+v+')');
-						else if (str.indexOf('d3.') === 0)
-							ret = eval('('+v+')');
-						else
-							ret = v;
-						return ret;
-					});
-				} catch (e) {
-					alert("チャートオプションが不正です。 " + e);
-					console.error(e);
-					return;
-				}
-			}
-
-			if (!_.isUndefined(chart)) {
-				chartElement.resize(null);
-				chart.destroy();
-				chart = null;
-			}
-
-			var bind = {
-				bindto: '#' + currentID,
-			};
-			options = _.merge(bind, _.merge(data, options));
-
-			try {
-				chart = c3.generate(options);
-				// svg chart fit to container
-				chartElement.resize(_.debounce(function() {
-					chart.resize();
-				}, 500));
-			} catch (e) {
-				console.error(e);
-				return;
-			}
-		}
-
-		function plotData(data) {
-			if (_.isUndefined(chart))
-				return;
-
-			var op = data._op;
-			data = _.omit(data, '_op');
-
-			try {
-				switch (op) {
-					case 'load':
-						chart.load(data);
-						break;
-					case 'unload':
-						chart.unload(data);
-						break;
-					case 'groups':
-						chart.groups(data);
-						break;
-					case 'flow':
-						chart.flow(data);
-						break;
-					case 'data.names':
-						chart.data.names(data);
-						break;
-					case 'data.colors':
-						chart.data.colors(data);
-						break;
-					case 'axis.labels':
-						chart.axis.labels(data);
-						break;
-					case 'axis.max':
-						chart.axis.max(data);
-						break;
-					case 'axis.min':
-						chart.axis.min(data);
-						break;
-					case 'axis.range':
-						chart.axis.range(data);
-						break;
-					case 'xgrids':
-						if (!_.isUndefined(data.xgrids))
-							chart.xgrids(data.xgrids);
-						break;
-					case 'xgrids.add':
-						if (!_.isUndefined(data.xgrids))
-							chart.xgrids.add(data.xgrids);
-						break;
-					case 'xgrids.remove':
-						if (!_.isUndefined(data.xgrids))
-							chart.xgrids.remove(data.xgrids);
-						else
-							chart.xgrids.remove();
-						break;
-					case 'transform':
-						if (!_.isUndefined(data.type)) {
-							if (!_.isUndefined(data.name))
-								chart.transform(data.type, data.name);
-							else
-								chart.transform(data.type);
-						}
-						break;
-					default:
-						chart.load(data);
-						break;
-				}
-			} catch (e) {
-				console.error(e);
-			}
-		}
-
-		this.render = function (element) {
-			$(element).append(titleElement).append(chartElement);
-			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
-			setBlocks(currentSettings.blocks);
-		}
-
-		this.onSettingsChanged = function (newSettings) {
-			if (titleElement.outerHeight() == 0) {
-				currentSettings = newSettings;
-				return;
-			}
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-			setBlocks(newSettings.blocks);
-			if (newSettings.options != currentSettings.options)
-				createWidget(chartdata, newSettings);
-			currentSettings = newSettings;
-		}
-
-		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (!_.isObject(newValue))
-				return;
-
-			if (_.isUndefined(chart))
-				createWidget(newValue, currentSettings);
-			else
-				plotData(newValue);
-
-			chartdata = newValue;
-		}
-
-		this.onDispose = function () {
-			if (!_.isUndefined(chart)) {
-				chart.destroy();
-				chart = null;
-			}
-		}
-
-		this.getHeight = function () {
-			return currentSettings.blocks;
-		}
-
-		this.onSettingsChanged(settings);
-	};
 }());

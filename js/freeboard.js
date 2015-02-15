@@ -484,7 +484,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 				self.panes.push(pane);
 			});
 
-			if(self.allow_edit() && self.panes().length == 0)
+			if(self.allow_edit() && self.panes().length == 0 && self.datasources().length == 0)
 			{
 				self.setEditing(true);
 			}
@@ -735,7 +735,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 				$("#board-content").css("transform", "translateY(20px)");
 				_.delay(function() {
 					$("#admin-menu").css("display", "none");
-				}, 300);
+				}, 200);
 			} else {
 				$("#main-header").css("top", "-" + barHeight + "px");
 				$("#board-content").css("top", "20px");
@@ -1643,7 +1643,7 @@ PluginEditor = function(jsEditor, valueEditor)
 		$(valueCell).append(wrapperDiv);
 	}
 
-	function createPluginEditor(title, pluginTypes, currentTypeName, currentSettingsValues, settingsSavedCallback)
+	function createPluginEditor(title, pluginTypes, currentTypeName, currentSettingsValues, settingsSavedCallback, cancelCallback)
 	{
 		var newSettings = {
 			type    : currentTypeName,
@@ -2028,8 +2028,10 @@ PluginEditor = function(jsEditor, valueEditor)
 
 				if(_.isFunction(settingsSavedCallback))
 					settingsSavedCallback(newSettings);
+			} else if (okcancel == "cancel") {
+				if(_.isFunction(cancelCallback))
+					cancelCallback();
 			}
-
 			// Remove colorpick dom objects
 			colorPickerID = 0;
 			$("[id^=collorpicker]").remove();
@@ -3057,8 +3059,7 @@ var freeboard = (function()
 						}
 					}
 
-					pluginEditor.createPluginEditor(title, types, instanceType, settings, function(newSettings)
-					{
+					var saveSettingCallback = function(newSettings) {
 						if(options.operation == 'add')
 						{
 							if(options.type == 'datasource')
@@ -3106,7 +3107,16 @@ var freeboard = (function()
 								viewModel.settings(newSettings.settings);
 							}
 						}
-					});
+					}
+
+					var cancelCallback = function() {
+						if (options.operation == 'edit') {
+							if (options.type == 'widget' || options.type == 'datasource')
+								viewModel.isEditing(false);
+						}
+					}
+
+					pluginEditor.createPluginEditor(title, types, instanceType, settings, saveSettingCallback, cancelCallback);
 				}
 			});
 		}
