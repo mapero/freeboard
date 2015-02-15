@@ -24,7 +24,6 @@
 		var fontcolor = freeboard.getStyleObject("values")['color'];
 
 		// d3 variables
-		var τ = 2 * Math.PI
 		var svg, center, pointer, textValue, textUnits, circle;
 
 		function setBlocks(blocks) {
