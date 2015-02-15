@@ -5,7 +5,7 @@ freeboardを日本向にローカライズしカスタマイズした
 IoT(センサー等)向けレイアウト編集可能なダッシュボード
 
 ### デモ
-[https://infocorpus.github.io/freeboard/](https://infocorpus.github.io/freeboard/)
+[http://infocorpus.github.io/freeboard/](http://infocorpus.github.io/freeboard/)
 
 ### スクリーンショット
 ![weather](https://raw.githubusercontent.com/wiki/infocorpus/freeboard/images/screenshot01.png)
