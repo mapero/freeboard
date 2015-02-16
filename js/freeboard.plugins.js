@@ -2231,6 +2231,7 @@
 		var self = this;
 
 		var CIRCLE_WIDTH = 3;
+		var BLOCK_HEIGHT = 60;
 
 		var currentID = _.uniqueId("pointer_");
 		var titleElement = $('<h2 class="section-title"></h2>');
@@ -2244,7 +2245,7 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
-			var height = 60 * blocks - titleElement.outerHeight() - 7;
+			var height = BLOCK_HEIGHT * blocks - titleElement.outerHeight() - 7;
 			widgetElement.css({
 				"height": height + "px",
 				"width": "100%"
@@ -2272,7 +2273,11 @@
 		}
 
 		function calcValueFontSize(r) {
-			return parseInt(r-35);
+			return (5*r/102.5).toFixed(2);
+		}
+
+		function calcUnitsFontSize(r) {
+			return (1.1*r/102.5).toFixed(2);
 		}
 
 		function getPointerPath(r) {
@@ -2295,7 +2300,8 @@
 
 			pointer.attr("d", getPointerPath(r));
 
-			textValue.attr("font-size", calcValueFontSize(r) + "px");
+			textValue.attr("font-size", calcValueFontSize(r) + "em");
+			textUnits.attr("font-size", calcUnitsFontSize(r) + "em");
 			textUnits.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px");
 		}
 
@@ -2323,7 +2329,7 @@
 				.style("fill", fontcolor)
 				.style("text-anchor", "middle")
 				.attr("dy", ".3em")
-				.attr("font-size", calcValueFontSize(r) + "px")
+				.attr("font-size", calcValueFontSize(r) + "em")
 				.attr("class", "ultralight-text");
 
 			textUnits = center.append("text")
@@ -2331,7 +2337,7 @@
 				.style("fill", fontcolor)
 				.style("text-anchor", "middle")
 				.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px")
-				.attr("font-size", "14px")
+				.attr("font-size", calcUnitsFontSize(r) + "em")
 				.attr("class", "ultralight-text");
 
 			pointer = center.append("path")

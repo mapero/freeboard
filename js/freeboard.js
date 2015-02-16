@@ -243,7 +243,7 @@ function DialogBox(contentElement, title, okTitle, cancelTitle, closeCallback)
 
 	function closeModal()
 	{
-		if (window.freeboard.browsername.indexOf("ie") != -1) {
+		if (bowser.msie) {
 			overlay.remove();
 		} else {
 			overlay.removeClass("show").addClass("hide");
@@ -289,9 +289,7 @@ function DialogBox(contentElement, title, okTitle, cancelTitle, closeCallback)
 
 	overlay.append(modalDialog);
 	$("body").append(overlay);
-	if (window.freeboard.browsername.indexOf("ie") != -1)
-		;
-	else
+	if (!bowser.msie)
 		overlay.removeClass("hide").addClass("show");
 
 	// ValidationEngine initialize
@@ -587,11 +585,10 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 
 					reader.readAsText(file);
 				}
-				if (freeboard.browsername.indexOf('ie') != -1) {
+				if (bowser.msie)
 					$("#myfile").remove();
-				}
 			});
-			if (freeboard.browsername.indexOf('ie') != -1) {
+			if (bowser.msie) {
 				document.body.appendChild(input);
 				var evt = document.createEvent('MouseEvents');
 				evt.initEvent('click',true,true,window,0,0,0,0,0,false,false,false,false,0,null);
@@ -612,7 +609,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		var blob = new Blob([JSON.stringify(self.serialize())], {'type': contentType});
 		var file = "dashboard.json";
 
-		if (freeboard.browsername.indexOf('ie') != -1) {
+		if (bowser.msie) {
 			window.navigator.msSaveBlob(blob, file);
 		} else {
 			var url = (window.URL || window.webkitURL);
@@ -730,15 +727,15 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			$("#toggle-header-icon").addClass("fa-wrench").removeClass("fa-chevron-up");
 			$(".gridster .gs_w").css({cursor: "default"});
 
-			if (freeboard.browsername.indexOf("ie") == -1) {
+			if (bowser.msie) {
+				$("#main-header").css("top", "-" + barHeight + "px");
+				$("#board-content").css("top", "20px");
+			} else {
 				$("#main-header").css("transform", "translateY(-" + barHeight + "px)");
 				$("#board-content").css("transform", "translateY(20px)");
 				_.delay(function() {
 					$("#admin-menu").css("display", "none");
 				}, 200);
-			} else {
-				$("#main-header").css("top", "-" + barHeight + "px");
-				$("#board-content").css("top", "20px");
 			}
 			$(".sub-section").unbind();
 		}
@@ -748,12 +745,12 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			$("#toggle-header-icon").addClass("fa-chevron-up").removeClass("fa-wrench");
 			$(".gridster .gs_w").css({cursor: "pointer"});
 
-			if (freeboard.browsername.indexOf("ie") == -1) {
-				$("#main-header").css("transform", "translateY(0px)");
-				$("#board-content").css("transform", "translateY(" + headerHeight + "px)");
-			} else {
+			if (bowser.msie) {
 				$("#main-header").css("top", "0px");
 				$("#board-content").css("top", headerHeight + "px");
+			} else {
+				$("#main-header").css("transform", "translateY(0px)");
+				$("#board-content").css("transform", "translateY(" + headerHeight + "px)");
 			}
 			freeboardUI.attachWidgetEditIcons($(".sub-section"));
 			freeboardUI.enableGrid();
@@ -811,12 +808,12 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			$("html").addClass("boardtools-opening");
 			$("#board-actions > ul").removeClass("collapse");
 
-			if (freeboard.browsername.indexOf("ie") == -1) {
-				mh.css("transform", "translate(" + width + "px, " + mh.transform('y') + "px)");
-				bc.css("transform", "translate(" + width + "px, " + bc.transform('y') + "px)");
-			} else {
+			if (bowser.msie) {
 				mh.offset({ top: 0, left: width });
 				bc.offset({ top: mhHeight, left: width });
+			} else {
+				mh.css("transform", "translate(" + width + "px, " + mh.transform('y') + "px)");
+				bc.css("transform", "translate(" + width + "px, " + bc.transform('y') + "px)");
 			}
 
 			$(window).resize(debounce);
@@ -824,12 +821,12 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			$("html").removeClass("boardtools-opening");
 			$("#board-actions > ul").addClass("collapse");
 
-			if (freeboard.browsername.indexOf("ie") == -1) {
-				mh.css("transform", "translate(0px, " + mh.transform('y') + "px)");
-				bc.css("transform", "translate(0px, " + bc.transform('y') + "px)");
-			} else {
+			if (bowser.msie) {
 				mh.offset({ top: 0, left: 0 });
 				bc.offset({ top: mhHeight, left: 0 });
+			} else {
+				mh.css("transform", "translate(0px, " + mh.transform('y') + "px)");
+				bc.css("transform", "translate(0px, " + bc.transform('y') + "px)");
 			}
 
 			$(window).off("resize", debounce);
@@ -2925,7 +2922,6 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 
 var freeboard = (function()
 {
-	var browsername;
 	var datasourcePlugins = {};
 	var widgetPlugins = {};
 
@@ -3169,61 +3165,6 @@ var freeboard = (function()
 		}
 	}
 
-	/**
-	 *  Get the Browser name
-	 *
-	 *  @return     browsername(ie6、ie7、ie8、ie9、ie10、ie11、chrome、safari、opera、firefox、unknown)
-	 */
-	var getBrowser = function(){
-		var ua = window.navigator.userAgent.toLowerCase();
-		var ver = window.navigator.appVersion.toLowerCase();
-		var name = 'unknown';
-
-		if (ua.indexOf("msie") != -1){
-			if (ver.indexOf("msie 6.") != -1){
-				name = 'ie6';
-			}else if (ver.indexOf("msie 7.") != -1){
-				name = 'ie7';
-			}else if (ver.indexOf("msie 8.") != -1){
-				name = 'ie8';
-			}else if (ver.indexOf("msie 9.") != -1){
-				name = 'ie9';
-			}else if (ver.indexOf("msie 10.") != -1){
-				name = 'ie10';
-			}else{
-				name = 'ie';
-			}
-		}else if(ua.indexOf('trident/7') != -1){
-			name = 'ie11';
-		}else if (ua.indexOf('chrome') != -1){
-			name = 'chrome';
-		}else if (ua.indexOf('safari') != -1){
-			name = 'safari';
-		}else if (ua.indexOf('opera') != -1){
-			name = 'opera';
-		}else if (ua.indexOf('firefox') != -1){
-			name = 'firefox';
-		}
-		return name;
-	};
-
-	/**
-	 *  Determining whether the corresponding browser
-	 *
-	 *  @param  browsers    supported browser name in the array(ie6、ie7、ie8、ie9、ie10、ie11、chrome、safari、opera、firefox)
-	 *  @return             returns whether support is in true / false
-	 */
-	var isSupported = function(browsers){
-		var thusBrowser = getBrowser();
-		for(var i=0; i<browsers.length; i++){
-			if(browsers[i] == thusBrowser){
-				return true;
-				exit;
-			}
-		}
-		return false;
-	};
-
 	function getParameterByName(name)
 	{
 		name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -3231,8 +3172,40 @@ var freeboard = (function()
 		return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 	}
 
+	function showNotSupport() {
+		freeboard.addStyle('.modal section.notsupport', "padding-bottom: 30px;");
+		freeboard.addStyle('div.notsupport > p', "margin: 0px;");
+		freeboard.addStyle('div.notsupport > p.center', "text-align: center;");
+
+		var overlay = $('<div id="modal_overlay"></div>');
+		var modalDialog = $('<div class="modal"></div>');
+		var contentElement = $('\n\
+<div class="notsupport"><p>Sorry. Your browser does not support.</p>\n\
+<p>We support the following browsers.</p><br>\n\
+<p class="center">Chrome</p><p class="center">Internet Explorer 10 or higher</p>\n\
+<p class="center">Firefox</p><p class="center">Safari</p><p class="center">Opera</p>\n\
+</div>');
+
+		modalDialog.append('<header><h2 class="title">Caution</h2></header>');
+
+		$('<section class="notsupport"></section>').appendTo(modalDialog).append(contentElement);
+
+		// Create our footer
+		var footer = $('<footer></footer>').appendTo(modalDialog);
+
+		modalDialog.css("width", "500px");
+		overlay.append(modalDialog);
+		$("body").append(overlay);
+	}
+
 	$(function()
 	{ //DOM Ready
+		// browser check
+		if (bowser.msie && bowser.version <= 9) {
+			showNotSupport();
+			return;
+		}
+
 		// Show the loading indicator when we first load
 		freeboardUI.showLoadingIndicator(true);
 
@@ -3245,8 +3218,6 @@ var freeboard = (function()
 	return {
 		initialize          : function(allowEdit, finishedCallback)
 		{
-			freeboard.browsername = getBrowser();
-
 			// Check to see if we have a query param called load. If so, we should load that dashboard initially
 			var freeboardLocation = getParameterByName("load");
 
