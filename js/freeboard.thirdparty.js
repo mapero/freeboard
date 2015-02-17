@@ -25712,7 +25712,7 @@ var JSHINT = (function () {
 
     function checkOption(name, t) {
         if (valOptions[name] === undefined && boolOptions[name] === undefined) {
-            warning("Bad option: '" + name + "'.", t);
+            ;// warning("Bad option: '" + name + "'.", t);
         }
     }
 
@@ -29061,6 +29061,9 @@ loop:   for (;;) {
 
         option.indent = option.indent || 4;
         option.maxerr = option.maxerr || 50;
+
+        // if all forms of subscript notation are tolerated
+        option.sub = true;
 
         tab = '';
         for (i = 0; i < option.indent; i += 1) {

@@ -1337,7 +1337,7 @@ JSEditor = function () {
 		switch (mode) {
 			case 'javascript':
 				exampleText = '// 例: return datasouces["test"]["value"];';
-				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance">このJavaScriptは、参照データソースが更新されるたびに再評価され、<span class="cm-keyword">戻り値</span>がウィジェットに表示されます。関数 <code><span class="cm-keyword">function</span>(<span class="cm-def">datasources</span>)</code> の内部をJavaScriptで記述することができます。引数 <span class="cm-def">datasources</span> は追加したデータソースの配列です。</div>');
+				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance">このJavaScriptは、参照データソースが更新されるたびに再評価され、<span class="cm-keyword">戻り値</span>がウィジェットに表示されます。関数 <code><span class="cm-keyword">function</span>(<span class="cm-def">datasources</span>)</code> の内部をJavaScriptで記述することができます。引数 <span class="cm-def">datasources</span> は追加したデータソースの配列です。また引数 <span class="cm-def">_global</span> へスクリプト外スコープの変数を格納することができます。(注:異なるスクリプト間では共有できません。)</div>');
 
 				// If value is empty, go ahead and suggest something
 				if (!value)
@@ -1352,7 +1352,13 @@ JSEditor = function () {
 					matchBrackets: true,
 					autoCloseBrackets: true,
 					gutters: ["CodeMirror-lint-markers"],
-					lint: true
+					lint: true,
+					lintWith: {
+						getAnnotations: CodeMirror.javascriptValidator,
+						options: {
+							sub: false
+						}
+					}
 				};
 				break;
 			case 'json':
@@ -1361,8 +1367,7 @@ JSEditor = function () {
 
 				config = {
 					value: value,
-					mode: "javascript",
-					json: true,
+					mode: "application/json",
 					theme: "ambiance",
 					indentUnit: 4,
 					lineNumbers: true,
@@ -1391,7 +1396,7 @@ JSEditor = function () {
 				var error = null;
 				switch (mode) {
 					case 'json':
-						if (JSHINT.errors.length > 1) {
+						if (JSHINT.errors.length > 0) {
 							alert("Please correct the json error.");
 							return;
 						}
@@ -2503,6 +2508,7 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 
 	this.datasourceRefreshNotifications = {};
 	this.calculatedSettingScripts = {};
+	this.scriptGlobalVariables = {};
 
 	this.isEditing = ko.observable(false); // editing by PluginEditor
 	this.title = ko.observable();
@@ -2556,8 +2562,8 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 		}
 	}
 
-	this.callValueFunction = function (theFunction) {
-		return theFunction.call(undefined, theFreeboardModel.datasourceData);
+	this.callValueFunction = function (theFunction, globalVariables) {
+		return theFunction.call(undefined, theFreeboardModel.datasourceData, globalVariables);
 	}
 
 	this.processSizeChange = function () {
@@ -2571,15 +2577,18 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 			var returnValue = undefined;
 
 			try {
-				returnValue = self.callValueFunction(self.calculatedSettingScripts[settingName]);
+				returnValue = self.callValueFunction(self.calculatedSettingScripts[settingName], self.scriptGlobalVariables[settingName]);
 			}
 			catch (e) {
 				var rawValue = self.settings()[settingName];
 
 				// If there is a reference error and the value just contains letters and numbers, then
-				if (e instanceof ReferenceError && (/^\w+$/).test(rawValue)) {
+				if (e instanceof ReferenceError && (/^.*/).test(rawValue))
 					returnValue = rawValue;
-				}
+				else if (e instanceof TypeError && e.message.indexOf("Cannot read property") != -1)
+					;
+				else
+					console.error(e);
 			}
 
 			if (!_.isUndefined(self.widgetInstance) && _.isFunction(self.widgetInstance.onCalculatedValueChanged) && !_.isUndefined(returnValue)) {
@@ -2634,6 +2643,9 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 
 				if (!_.isUndefined(script)) {
 
+					// clear global variable
+					self.scriptGlobalVariables[settingDef.name] = {};
+
 					if(_.isArray(script)) {
 						script = "[" + script.join(",") + "]";
 					}
@@ -2645,14 +2657,14 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 
 					var valueFunction;
 
- 					try {
-						valueFunction = new Function("datasources", script);
+					try {
+						valueFunction = new Function("datasources", "_global", script);
 					}
 					catch (e) {
 						var literalText = currentSettings[settingDef.name].replace(/"/g, '\\"').replace(/[\r\n]/g, ' \\\n');
 
 						// If the value function cannot be created, then go ahead and treat it as literal text
-						valueFunction = new Function("datasources", "return \"" + literalText + "\";");
+						valueFunction = new Function("datasources", "_global", "return \"" + literalText + "\";");
 					}
 
 					self.calculatedSettingScripts[settingDef.name] = valueFunction;
