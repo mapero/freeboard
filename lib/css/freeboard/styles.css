@@ -996,6 +996,7 @@ header h1 {
 	display: table-cell;
 	vertical-align: middle;
 	text-align: right;
+	padding-top: 1px;
 }
 
 #board-configs {
