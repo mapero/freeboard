@@ -989,6 +989,7 @@ header h1 {
 #board-actions {
 	display: table-cell;
 	vertical-align: middle;
+	padding-top: 1px;
 }
 
 #board-actions-right {

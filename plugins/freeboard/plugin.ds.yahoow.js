@@ -99,7 +99,7 @@
 					return;
 				data = data.query.results.weather.rss.channel;
 				var easy = {
-					place_name: data.location.city,
+					place_name: _.isUndefined(data.location.city) ? data.location.city : "",
 					latitude: Number(data.item.lat),
 					longitude: Number(data.item.long),
 					sunrise: data.astronomy.sunrise,
