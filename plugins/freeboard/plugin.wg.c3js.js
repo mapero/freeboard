@@ -14,8 +14,7 @@
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var chartElement = $('<div id="' + currentID + '"></div>');
 		var currentSettings;
-		var chart;
-		var chartdata;
+		var chart = null;
 
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
@@ -57,7 +56,7 @@
 				}
 			}
 
-			if (!_.isUndefined(chart)) {
+			if (!_.isNull(chart)) {
 				chartElement.resize(null);
 				chart.destroy();
 				chart = null;
@@ -80,70 +79,78 @@
 			}
 		}
 
+		function destroyChart() {
+			if (!_.isNull(chart)) {
+				chartElement.resize(null);
+				chart.destroy();
+				chart = null;
+			}
+		}
+
 		function plotData(data) {
-			if (_.isUndefined(chart))
+			if (_.isNull(chart))
 				return;
 
 			var op = data._op;
 			data = _.omit(data, '_op');
 
 			try {
-				switch (op) {
-					case 'load':
-						chart.load(data);
-						break;
-					case 'unload':
-						chart.unload(data);
-						break;
-					case 'groups':
-						chart.groups(data);
-						break;
-					case 'flow':
-						chart.flow(data);
-						break;
-					case 'data.names':
-						chart.data.names(data);
-						break;
-					case 'data.colors':
-						chart.data.colors(data);
-						break;
-					case 'axis.labels':
-						chart.axis.labels(data);
-						break;
-					case 'axis.max':
-						chart.axis.max(data);
-						break;
-					case 'axis.min':
-						chart.axis.min(data);
-						break;
-					case 'axis.range':
-						chart.axis.range(data);
-						break;
-					case 'xgrids':
-						if (!_.isUndefined(data.xgrids))
-							chart.xgrids(data.xgrids);
-						break;
-					case 'xgrids.add':
-						if (!_.isUndefined(data.xgrids))
-							chart.xgrids.add(data.xgrids);
-						break;
-					case 'xgrids.remove':
-						if (!_.isUndefined(data.xgrids))
-							chart.xgrids.remove(data.xgrids);
+			switch (op) {
+				case 'load':
+					chart.load(data);
+					break;
+				case 'unload':
+					chart.unload(data);
+					break;
+				case 'groups':
+					chart.groups(data);
+					break;
+				case 'flow':
+					chart.flow(data);
+					break;
+				case 'data.names':
+					chart.data.names(data);
+					break;
+				case 'data.colors':
+					chart.data.colors(data);
+					break;
+				case 'axis.labels':
+					chart.axis.labels(data);
+					break;
+				case 'axis.max':
+					chart.axis.max(data);
+					break;
+				case 'axis.min':
+					chart.axis.min(data);
+					break;
+				case 'axis.range':
+					chart.axis.range(data);
+					break;
+				case 'xgrids':
+					if (!_.isUndefined(data.xgrids))
+						chart.xgrids(data.xgrids);
+					break;
+				case 'xgrids.add':
+					if (!_.isUndefined(data.xgrids))
+						chart.xgrids.add(data.xgrids);
+					break;
+				case 'xgrids.remove':
+					if (!_.isUndefined(data.xgrids))
+						chart.xgrids.remove(data.xgrids);
+					else
+						chart.xgrids.remove();
+					break;
+				case 'transform':
+					if (!_.isUndefined(data.type)) {
+						if (!_.isUndefined(data.name))
+							chart.transform(data.type, data.name);
 						else
-							chart.xgrids.remove();
-						break;
-					case 'transform':
-						if (!_.isUndefined(data.type)) {
-							if (!_.isUndefined(data.name))
-								chart.transform(data.type, data.name);
-							else
-								chart.transform(data.type);
-						}
-						break;
-					default:
-						chart.load(data);
-						break;
+							chart.transform(data.type);
+					}
+					break;
+				default:
+					chart.load(data);
+					break;
 				}
 			} catch (e) {
 				console.error(e);
@@ -164,7 +171,7 @@
 			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
 			setBlocks(newSettings.blocks);
 			if (newSettings.options != currentSettings.options)
-				createWidget(chartdata, newSettings);
+				destroyChart();
 			currentSettings = newSettings;
 		}
 
@@ -172,19 +179,14 @@
 			if (!_.isObject(newValue))
 				return;
 
-			if (_.isUndefined(chart))
+			if (_.isNull(chart))
 				createWidget(newValue, currentSettings);
 			else
 				plotData(newValue);
-
-			chartdata = newValue;
 		}
 
 		this.onDispose = function () {
-			if (!_.isUndefined(chart)) {
-				chart.destroy();
-				chart = null;
-			}
+			destroyChart();
 		}
 
 		this.getHeight = function () {
