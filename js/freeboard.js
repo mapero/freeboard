@@ -1352,13 +1352,7 @@ JSEditor = function () {
 					matchBrackets: true,
 					autoCloseBrackets: true,
 					gutters: ["CodeMirror-lint-markers"],
-					lint: true,
-					lintWith: {
-						getAnnotations: CodeMirror.javascriptValidator,
-						options: {
-							sub: false
-						}
-					}
+					lint: true
 				};
 				break;
 			case 'json':
