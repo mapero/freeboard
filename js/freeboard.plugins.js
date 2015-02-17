@@ -1296,7 +1296,7 @@
 		}
 
 		this.updateNow = function () {
-			var units = (currentSettings.units == "metric") ? "c" : "f";
+			var units = (currentSettings.units === "metric") ? "c" : "f";
 			var query = "select * from weather.bylocation where location='" + currentSettings.location + "' and unit='" + units + "'";
 			var uri = "https://query.yahooapis.com/v1/public/yql?q="
 					+ encodeURIComponent(query)
@@ -1317,7 +1317,7 @@
 					return;
 				data = data.query.results.weather.rss.channel;
 				var easy = {
-					place_name: _.isUndefined(data.location.city) ? data.location.city : "",
+					place_name: !_.isUndefined(data.location.city) ? data.location.city : "",
 					latitude: Number(data.item.lat),
 					longitude: Number(data.item.long),
 					sunrise: data.astronomy.sunrise,
@@ -1360,9 +1360,9 @@
 			{
 				name: "location",
 				display_name: "ロケーション郵便番号",
-				validate: "required,maxSize[20],custom[zip]",
+				validate: "required,maxSize[100]",
 				type: "text",
-				description: "最大20文字"
+				description: "最大100文字 半角英字の地名でも可"
 			},
 			{
 				name: "units",

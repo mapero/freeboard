@@ -144,7 +144,7 @@
 				display_name: "ロケーション郵便番号",
 				validate: "required,maxSize[100]",
 				type: "text",
-				description: "最大20文字 半角英字の地名でも可"
+				description: "最大100文字 半角英字の地名でも可"
 			},
 			{
 				name: "units",
