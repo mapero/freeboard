@@ -1002,6 +1002,126 @@
 
 (function () {
 
+	var openWeatherMapDatasource = function (settings, updateCallback) {
+		var self = this;
+		var updateTimer = null;
+		var currentSettings = settings;
+
+		function updateRefresh(refreshTime) {
+			if (updateTimer) {
+				clearInterval(updateTimer);
+			}
+
+			updateTimer = setInterval(function () {
+				self.updateNow();
+			}, refreshTime);
+		}
+
+		function toTitleCase(str) {
+			return str.replace(/\w\S*/g, function (txt) {
+				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+			});
+		}
+
+		updateRefresh(currentSettings.refresh * 1000);
+
+		this.updateNow = function () {
+			$.ajax({
+				url: "http://api.openweathermap.org/data/2.5/weather?q=" + encodeURIComponent(currentSettings.location) + "&units=" + currentSettings.units,
+				dataType: "JSONP",
+			})
+			.done(function (data) {
+				// Rejigger our data into something easier to understand
+				var easy = {
+					place_name: data.name,
+					latitude: data.coord.lat,
+					longitude: data.coord.lon,
+					sunrise: (new Date(data.sys.sunrise * 1000)).toLocaleTimeString(),
+					sunset: (new Date(data.sys.sunset * 1000)).toLocaleTimeString(),
+					conditions: toTitleCase(data.weather[0].description),
+					current_temp: data.main.temp,
+					high_temp: data.main.temp_max,
+					low_temp: data.main.temp_min,
+					pressure: data.main.pressure,
+					humidity: data.main.humidity,
+					wind_speed: data.wind.speed,
+					wind_direction: data.wind.deg
+				};
+				updateCallback(_.merge(data, easy));
+			})
+			.fail(function (xhr, status) {
+				console.error('Open Weather Map API error: ' + status);
+			});
+		}
+
+		this.onDispose = function () {
+			clearInterval(updateTimer);
+			updateTimer = null;
+		}
+
+		this.onSettingsChanged = function (newSettings) {
+			currentSettings = newSettings;
+			self.updateNow();
+			updateRefresh(currentSettings.refresh * 1000);
+		}
+	};
+
+	freeboard.loadDatasourcePlugin({
+		type_name: "openweathermap",
+		display_name: "Open Weather Map API",
+		description: "天候や予測履歴を含む各種気象データを受信します。",
+		settings: [
+			{
+				name: "location",
+				display_name: "場所",
+				validate: "required,maxSize[200]",
+				type: "text",
+				description: "最大200文字<br>例: London, UK"
+			},
+			{
+				name: "units",
+				display_name: "単位",
+				style: "width:200px",
+				type: "option",
+				default_value: "metric",
+				options: [
+					{
+						name: "メトリック",
+						value: "metric"
+					},
+					{
+						name: "インペリアル",
+						value: "imperial"
+					}
+				]
+			},
+			{
+				name: "refresh",
+				display_name: "更新頻度",
+				validate: "required,custom[integer],min[5]",
+				style: "width:100px",
+				type: "number",
+				suffix: "秒",
+				default_value: 5
+			}
+		],
+		newInstance: function (settings, newInstanceCallback, updateCallback) {
+			newInstanceCallback(new openWeatherMapDatasource(settings, updateCallback));
+		}
+	});
+}());
+// ┌────────────────────────────────────────────────────────────────────┐ \\
+// │ F R E E B O A R D                                                                                                                      │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
+// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
+// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
+// ├────────────────────────────────────────────────────────────────────┤ \\
+// │ Licensed under the MIT license.                                                                                                        │ \\
+// └────────────────────────────────────────────────────────────────────┘ \\
+
+(function () {
+
 	var playbackDatasource = function (settings, updateCallback) {
 		var self = this;
 		var currentSettings = settings;
@@ -1382,11 +1502,11 @@
 			{
 				name: 'refresh',
 				display_name: '更新頻度',
-				validate: 'required,custom[integer],min[1]',
+				validate: 'required,custom[integer],min[30]',
 				style: 'width:100px',
 				type: 'number',
 				suffix: '秒',
-				default_value: 5
+				default_value: 30
 			}
 		],
 		newInstance: function (settings, newInstanceCallback, updateCallback) {
@@ -1742,211 +1862,6 @@
 		external_scripts : [
 			'plugins/thirdparty/raphael.2.1.0.min.js',
 			'plugins/thirdparty/justgage.min.js'
-		],
-		settings: [
-			{
-				name: 'title',
-				display_name: 'タイトル',
-				validate: 'optional,maxSize[100]',
-				type: 'text',
-				description: '最大100文字'
-			},
-			{
-				name: 'value',
-				display_name: '値',
-				validate: 'optional,maxSize[2000]',
-				type: 'calculated',
-				description: '最大2000文字'
-			},
-			{
-				name: 'shape',
-				display_name: '型',
-				type: 'option',
-				options: [
-					{
-						name: 'ハーフ',
-						value: 0
-					},
-					{
-						name: 'ファン',
-						value: 1
-					},
-					{
-						name: 'ドーナッツ',
-						value: 2
-					}
-				]
-			},
-			{
-				name: 'units',
-				display_name: '単位',
-				validate: 'optional,maxSize[20],custom[illegalEscapeChar]',
-				style: 'width:150px',
-				type: 'text',
-				description: '最大20文字'
-			},
-			{
-				name: 'value_fontcolor',
-				display_name: '値フォント色',
-				type: 'color',
-				validate: 'required,custom[hexcolor]',
-				default_value: '#d3d4d4',
-				description: 'デフォルト色: #d3d4d4'
-			},
-			{
-				name: 'gauge_upper_color',
-				display_name: 'ゲージ色 Upper',
-				type: 'color',
-				validate: 'required,custom[hexcolor]',
-				default_value: '#ff0000',
-				description: 'デフォルト色: #ff0000'
-			},
-			{
-				name: 'gauge_mid_color',
-				display_name: 'ゲージ色 Mid',
-				type: 'color',
-				validate: 'required,custom[hexcolor]',
-				default_value: '#f9c802',
-				description: 'デフォルト色: #f9c802'
-			},
-			{
-				name: 'gauge_lower_color',
-				display_name: 'ゲージ色 Lower',
-				type: 'color',
-				validate: 'required,custom[hexcolor]',
-				default_value: '#a9d70b',
-				description: 'デフォルト色: #a9d70b'
-			},
-			{
-				name: 'gauge_color',
-				display_name: 'ゲージ背景色',
-				type: 'color',
-				validate: 'required,custom[hexcolor]',
-				default_value: '#edebeb',
-				description: 'デフォルト色: #edebeb'
-			},
-			{
-				name: 'gauge_widthscale',
-				display_name: 'ゲージ太さ',
-				type: 'number',
-				style: 'width:100px',
-				validate: 'required,custom[integer],min[0],max[200]',
-				default_value: 100,
-				description: '0から200まで'
-			},
-			{
-				name: 'min_value',
-				display_name: '最小値',
-				type: 'number',
-				style: 'width:100px',
-				validate: 'required,custom[number],min[-100000000],max[100000000]',
-				default_value: 0,
-				description: '数値のみ'
-			},
-			{
-				name: 'max_value',
-				display_name: '最大値',
-				type: 'number',
-				style: 'width:100px',
-				validate: 'required,custom[number],min[-100000000],max[100000000]',
-				default_value: 100,
-				description: '最小値以上'
-			}
-		],
-		newInstance: function (settings, newInstanceCallback) {
-			newInstanceCallback(new gaugeWidget(settings));
-		}
-	});
-}());
-
-// ┌────────────────────────────────────────────────────────────────────┐ \\
-// │ F R E E B O A R D                                                                                                                      │ \\
-// ├────────────────────────────────────────────────────────────────────┤ \\
-// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
-// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
-// │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
-// ├────────────────────────────────────────────────────────────────────┤ \\
-// │ Licensed under the MIT license.                                                                                                        │ \\
-// └────────────────────────────────────────────────────────────────────┘ \\
-
-(function() {
-
-	freeboard.addStyle('.gauge-widget-wrapper', "width:100%; height:214px; text-align:center;");
-	freeboard.addStyle('.gauge-widget', "width:280px; height:100%; display:inline-block;");
-
-	var gaugeWidget = function (settings) {
-		var self = this;
-
-		var currentID = _.uniqueId('gauge-');
-		var titleElement = $('<h2 class="section-title"></h2>');
-		var wrapperElement = $('<div class="gauge-widget-wrapper"></div>');
-		var gaugeElement = $('<div class="gauge-widget" id="' + currentID + '"></div>');
-		var gaugeObject;
-
-		var currentSettings = settings;
-
-		function createGauge() {
-			currentSettings.shape = Number(currentSettings.shape);
-
-			if (!_.isUndefined(gaugeObject))
-				gaugeObject = null;
-
-			gaugeElement.empty();
-
-			gaugeObject = new GaugeD3({
-				bindto: currentID,
-				value: {
-					val: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
-					min: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
-					max: (_.isUndefined(currentSettings.max_value) ? 0 : currentSettings.max_value)
-				}
-			});
-		}
-
-		this.render = function (element) {
-			$(element).append(titleElement).append(wrapperElement.append(gaugeElement));
-			// for justgauge redraw bug.
-			_.delay(function() {
-				createGauge();
-			}, 500);
-		}
-
-		this.onSettingsChanged = function (newSettings) {
-			if (_.isUndefined(gaugeObject)) {
-				titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
-				currentSettings = newSettings;
-				return;
-			}
-			currentSettings = newSettings;
-			createGauge();
-			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
-		}
-
-		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (!_.isUndefined(gaugeObject)) {
-				gaugeObject.refresh(Number(newValue));
-			}
-		}
-
-		this.onDispose = function () {
-			if (!_.isUndefined(gaugeObject))
-				gaugeObject = null;
-		}
-
-		this.getHeight = function () {
-			return 4;
-		}
-
-		this.onSettingsChanged(settings);
-	};
-
-	freeboard.loadWidgetPlugin({
-		type_name: 'gauged3',
-		display_name: 'ゲージD3',
-		description: 'ゲージを表示するウィジェットです。',
-		external_scripts : [
-			'plugins/thirdparty/d3.v3.min.js',
-			'plugins/thirdparty/gauged3.js'
 		],
 		settings: [
 			{
