@@ -1510,7 +1510,6 @@ PluginEditor = function(jsEditor, valueEditor)
 		form.append(pluginDescriptionElement);
 
 		function createSettingsFromDefinition(settingsDefs) {
-			var colorPickerID = 0;
 
 			_.each(settingsDefs, function(settingDef) {
 				// Set a default value if one doesn't exist
@@ -1674,7 +1673,7 @@ PluginEditor = function(jsEditor, valueEditor)
 						break;
 
 					case 'color':
-						var curColorPickerID = 'picker-' + colorPickerID++;
+						var curColorPickerID = _.uniqueId('picker-');
 						var thisColorPickerID = '#' + curColorPickerID;
 						var defaultValue = currentSettingsValues[settingDef.name];
 						var input = $('<input id="' + curColorPickerID + '" type="text">').addClass(_toValidateClassString(settingDef.validate, 'text-input')).appendTo(valueCell);
@@ -1683,7 +1682,8 @@ PluginEditor = function(jsEditor, valueEditor)
 
 						$(thisColorPickerID).css({
 							'border-right':'30px solid green',
-							'width':'80px'
+							'width':'80px',
+							'position': 'absolute'
 						});
 
 						$(thisColorPickerID).css('border-color', defaultValue);

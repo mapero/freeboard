@@ -39055,9 +39055,6 @@ For usage and examples: colpick.com/plugin
 						} else {
 							cal.appendTo(document.body);
 							$(this).on(options.showEvent, show);
-							cal.css({
-								position:'fixed'
-							});
 						}
 					}
 				});
