@@ -32,9 +32,9 @@
 
 			var data = {
 				numeric_value: now.unix(),
-				full_string_value: now.format("YYYY/MM/DD HH:mm:ss"),
-				date_string_value: now.format("YYYY/MM/DD"),
-				time_string_value: now.format("HH:mm:ss"),
+				full_string_value: now.format('YYYY/MM/DD HH:mm:ss'),
+				date_string_value: now.format('YYYY/MM/DD'),
+				time_string_value: now.format('HH:mm:ss'),
 				date_object: now.toDate()
 			};
 
@@ -48,7 +48,7 @@
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			if (_.isUndefined(currentSettings.timezone))
-				currentSettings.timezone = "Asia/Tokyo";
+				currentSettings.timezone = 'Asia/Tokyo';
 			updateTimer();
 		}
 
@@ -56,409 +56,409 @@
 	};
 
 	freeboard.loadDatasourcePlugin({
-		type_name: "clock",
-		display_name: "時計",
-		description: "指定の間隔で更新され、異なるフォーマットで現在の時刻を返します。画面上にタイマーを表示したり、ウィジェットが一定の間隔でリフレッシュさせるために使用することができます。",
+		type_name: 'clock',
+		display_name: '時計',
+		description: '指定の間隔で更新され、異なるフォーマットで現在の時刻を返します。画面上にタイマーを表示したり、ウィジェットが一定の間隔でリフレッシュさせるために使用することができます。',
 		settings: [
 			{
-				name: "timezone",
-				display_name: "タイムゾーン",
-				type: "option",
-				default_value: "Asia/Tokyo",
+				name: 'timezone',
+				display_name: 'タイムゾーン',
+				type: 'option',
+				default_value: 'Asia/Tokyo',
 				options: [
 					{
-						name: "(UTC-12:00) 国際日付変更線 西側",
-						value: "Etc/GMT+12"
+						name: '(UTC-12:00) 国際日付変更線 西側',
+						value: 'Etc/GMT+12'
 					},
 					{
-						name: "(UTC-11:00) 協定世界時-11",
-						value: "Etc/GMT+11"
+						name: '(UTC-11:00) 協定世界時-11',
+						value: 'Etc/GMT+11'
 					},
 					{
-						name: "(UTC-10:00) ハワイ",
-						value: "Pacific/Honolulu"
+						name: '(UTC-10:00) ハワイ',
+						value: 'Pacific/Honolulu'
 					},
 					{
-						name: "(UTC-09:00) アラスカ",
-						value: "America/Anchorage"
+						name: '(UTC-09:00) アラスカ',
+						value: 'America/Anchorage'
 					},
 					{
-						name: "(UTC-08:00) バハカリフォルニア",
-						value: "America/Santa_Isabel"
+						name: '(UTC-08:00) バハカリフォルニア',
+						value: 'America/Santa_Isabel'
 					},
 					{
-						name: "(UTC-08:00) 太平洋標準時(米国およびカナダ)",
-						value: "America/Los_Angeles"
+						name: '(UTC-08:00) 太平洋標準時(米国およびカナダ)',
+						value: 'America/Los_Angeles'
 					},
 					{
-						name: "(UTC-07:00) チワワ、ラパス、マサトラン",
-						value: "America/Chihuahua"
+						name: '(UTC-07:00) チワワ、ラパス、マサトラン',
+						value: 'America/Chihuahua'
 					},
 					{
-						name: "(UTC-07:00) アリゾナ",
-						value: "America/Phoenix"
+						name: '(UTC-07:00) アリゾナ',
+						value: 'America/Phoenix'
 					},
 					{
-						name: "(UTC-07:00) 山地標準時(米国およびカナダ)",
-						value: "America/Denver"
+						name: '(UTC-07:00) 山地標準時(米国およびカナダ)',
+						value: 'America/Denver'
 					},
 					{
-						name: "(UTC-06:00) 中央アメリカ",
-						value: "America/Guatemala"
+						name: '(UTC-06:00) 中央アメリカ',
+						value: 'America/Guatemala'
 					},
 					{
-						name: "(UTC-06:00) 中部標準時(米国およびカナダ)",
-						value: "America/Chicago"
+						name: '(UTC-06:00) 中部標準時(米国およびカナダ)',
+						value: 'America/Chicago'
 					},
 					{
-						name: "(UTC-06:00) サスカチュワン",
-						value: "America/Regina"
+						name: '(UTC-06:00) サスカチュワン',
+						value: 'America/Regina'
 					},
 					{
-						name: "(UTC-06:00) グアダラハラ、メキシコシティ、モンテレー",
-						value: "America/Mexico_City"
+						name: '(UTC-06:00) グアダラハラ、メキシコシティ、モンテレー',
+						value: 'America/Mexico_City'
 					},
 					{
-						name: "(UTC-05:00) ボゴタ、リマ、キト",
-						value: "America/Bogota"
+						name: '(UTC-05:00) ボゴタ、リマ、キト',
+						value: 'America/Bogota'
 					},
 					{
-						name: "(UTC-05:00) インディアナ東部",
-						value: "America/Indiana/Indianapolis"
+						name: '(UTC-05:00) インディアナ東部',
+						value: 'America/Indiana/Indianapolis'
 					},
 					{
-						name: "(UTC-05:00) 東部標準時(米国およびカナダ)",
-						value: "America/New_York"
+						name: '(UTC-05:00) 東部標準時(米国およびカナダ)',
+						value: 'America/New_York'
 					},
 					{
-						name: "(UTC-04:30) カラカス",
-						value: "America/Caracas"
+						name: '(UTC-04:30) カラカス',
+						value: 'America/Caracas'
 					},
 					{
-						name: "(UTC-04:00) 大西洋標準時(カナダ)",
-						value: "America/Halifax"
+						name: '(UTC-04:00) 大西洋標準時(カナダ)',
+						value: 'America/Halifax'
 					},
 					{
-						name: "(UTC-04:00) アスンシオン",
-						value: "America/Asuncion"
+						name: '(UTC-04:00) アスンシオン',
+						value: 'America/Asuncion'
 					},
 					{
-						name: "(UTC-04:00) ジョージタウン、ラパス、マナウス、サンフアン",
-						value: "America/La_Paz"
+						name: '(UTC-04:00) ジョージタウン、ラパス、マナウス、サンフアン',
+						value: 'America/La_Paz'
 					},
 					{
-						name: "(UTC-04:00) クイアバ",
-						value: "America/Cuiaba"
+						name: '(UTC-04:00) クイアバ',
+						value: 'America/Cuiaba'
 					},
 					{
-						name: "(UTC-04:00) サンチアゴ",
-						value: "America/Santiago"
+						name: '(UTC-04:00) サンチアゴ',
+						value: 'America/Santiago'
 					},
 					{
-						name: "(UTC-03:30) ニューファンドランド",
-						value: "America/St_Johns"
+						name: '(UTC-03:30) ニューファンドランド',
+						value: 'America/St_Johns'
 					},
 					{
-						name: "(UTC-03:00) ブラジリア",
-						value: "America/Sao_Paulo"
+						name: '(UTC-03:00) ブラジリア',
+						value: 'America/Sao_Paulo'
 					},
 					{
-						name: "(UTC-03:00) グリーンランド",
-						value: "America/Godthab"
+						name: '(UTC-03:00) グリーンランド',
+						value: 'America/Godthab'
 					},
 					{
-						name: "(UTC-03:00) カイエンヌ、フォルタレザ",
-						value: "America/Cayenne"
+						name: '(UTC-03:00) カイエンヌ、フォルタレザ',
+						value: 'America/Cayenne'
 					},
 					{
-						name: "(UTC-03:00) ブエノスアイレス",
-						value: "America/Argentina/Buenos_Aires"
+						name: '(UTC-03:00) ブエノスアイレス',
+						value: 'America/Argentina/Buenos_Aires'
 					},
 					{
-						name: "(UTC-03:00) モンテビデオ",
-						value: "America/Montevideo"
+						name: '(UTC-03:00) モンテビデオ',
+						value: 'America/Montevideo'
 					},
 					{
-						name: "(UTC-02:00) 協定世界時-2",
-						value: "Etc/GMT+2"
+						name: '(UTC-02:00) 協定世界時-2',
+						value: 'Etc/GMT+2'
 					},
 					{
-						name: "(UTC-01:00) カーボベルデ諸島",
-						value: "America/Cape_Verde"
+						name: '(UTC-01:00) カーボベルデ諸島',
+						value: 'America/Cape_Verde'
 					},
 					{
-						name: "(UTC-01:00) アゾレス",
-						value: "Atlantic/Azores"
+						name: '(UTC-01:00) アゾレス',
+						value: 'Atlantic/Azores'
 					},
 					{
-						name: "(UTC+00:00) カサブランカ",
-						value: "America/Casablanca"
+						name: '(UTC+00:00) カサブランカ',
+						value: 'America/Casablanca'
 					},
 					{
-						name: "(UTC+00:00) モンロビア、レイキャビク",
-						value: "Atlantic/Reykjavik"
+						name: '(UTC+00:00) モンロビア、レイキャビク',
+						value: 'Atlantic/Reykjavik'
 					},
 					{
-						name: "(UTC+00:00) ダブリン、エジンバラ、リスボン、ロンドン",
-						value: "Europe/London"
+						name: '(UTC+00:00) ダブリン、エジンバラ、リスボン、ロンドン',
+						value: 'Europe/London'
 					},
 					{
-						name: "(UTC+00:00) 協定世界時",
-						value: "Etc/GMT"
+						name: '(UTC+00:00) 協定世界時',
+						value: 'Etc/GMT'
 					},
 					{
-						name: "(UTC+01:00) アムステルダム、ベルリン、ベルン、ローマ、ストックホルム、ウィーン",
-						value: "Europe/Berlin"
+						name: '(UTC+01:00) アムステルダム、ベルリン、ベルン、ローマ、ストックホルム、ウィーン',
+						value: 'Europe/Berlin'
 					},
 					{
-						name: "(UTC+01:00) ブリュッセル、コペンハーゲン、マドリード、パリ",
-						value: "Europe/Paris"
+						name: '(UTC+01:00) ブリュッセル、コペンハーゲン、マドリード、パリ',
+						value: 'Europe/Paris'
 					},
 					{
-						name: "(UTC+01:00) 西中央アフリカ",
-						value: "Africa/Lagos"
+						name: '(UTC+01:00) 西中央アフリカ',
+						value: 'Africa/Lagos'
 					},
 					{
-						name: "(UTC+01:00) ベオグラード、ブラチスラバ、ブダペスト、リュブリャナ、プラハ",
-						value: "Europe/Budapest"
+						name: '(UTC+01:00) ベオグラード、ブラチスラバ、ブダペスト、リュブリャナ、プラハ',
+						value: 'Europe/Budapest'
 					},
 					{
-						name: "(UTC+01:00) サラエボ、スコピエ、ワルシャワ、ザグレブ",
-						value: "Europe/Warsaw"
+						name: '(UTC+01:00) サラエボ、スコピエ、ワルシャワ、ザグレブ',
+						value: 'Europe/Warsaw'
 					},
 					{
-						name: "(UTC+01:00) ウィントフック",
-						value: "Africa/Windhoek"
+						name: '(UTC+01:00) ウィントフック',
+						value: 'Africa/Windhoek'
 					},
 					{
-						name: "(UTC+02:00) アテネ、ブカレスト、イスタンブール",
-						value: "Europe/Istanbul"
+						name: '(UTC+02:00) アテネ、ブカレスト、イスタンブール',
+						value: 'Europe/Istanbul'
 					},
 					{
-						name: "(UTC+02:00) ヘルシンキ、キエフ、リガ、ソフィア、タリン、ビリニュス",
-						value: "Europe/Kiev"
+						name: '(UTC+02:00) ヘルシンキ、キエフ、リガ、ソフィア、タリン、ビリニュス',
+						value: 'Europe/Kiev'
 					},
 					{
-						name: "(UTC+02:00) カイロ",
-						value: "Africa/Cairo"
+						name: '(UTC+02:00) カイロ',
+						value: 'Africa/Cairo'
 					},
 					{
-						name: "(UTC+02:00) ダマスカス",
-						value: "Asia/Damascus"
+						name: '(UTC+02:00) ダマスカス',
+						value: 'Asia/Damascus'
 					},
 					{
-						name: "(UTC+02:00) アンマン",
-						value: "Asia/Amman"
+						name: '(UTC+02:00) アンマン',
+						value: 'Asia/Amman'
 					},
 					{
-						name: "(UTC+02:00) ハラーレ、プレトリア",
-						value: "Africa/Johannesburg"
+						name: '(UTC+02:00) ハラーレ、プレトリア',
+						value: 'Africa/Johannesburg'
 					},
 					{
-						name: "(UTC+02:00) エルサレム",
-						value: "Asia/Jerusalem"
+						name: '(UTC+02:00) エルサレム',
+						value: 'Asia/Jerusalem'
 					},
 					{
-						name: "(UTC+02:00) ベイルート",
-						value: "Asia/Beirut"
+						name: '(UTC+02:00) ベイルート',
+						value: 'Asia/Beirut'
 					},
 					{
-						name: "(UTC+03:00) バグダッド",
-						value: "Asia/Baghdad"
+						name: '(UTC+03:00) バグダッド',
+						value: 'Asia/Baghdad'
 					},
 					{
-						name: "(UTC+03:00) ミンスク",
-						value: "Europe/Minsk"
+						name: '(UTC+03:00) ミンスク',
+						value: 'Europe/Minsk'
 					},
 					{
-						name: "(UTC+03:00) クエート、リヤド",
-						value: "Asia/Riyadh"
+						name: '(UTC+03:00) クエート、リヤド',
+						value: 'Asia/Riyadh'
 					},
 					{
-						name: "(UTC+03:00) ナイロビ",
-						value: "Africa/Nairobi"
+						name: '(UTC+03:00) ナイロビ',
+						value: 'Africa/Nairobi'
 					},
 					{
-						name: "(UTC+03:30) テヘラン",
-						value: "Asia/Tehran"
+						name: '(UTC+03:30) テヘラン',
+						value: 'Asia/Tehran'
 					},
 					{
-						name: "(UTC+04:00) モスクワ、サンクトペテルブルグ、ボルゴグラード",
-						value: "Europe/Moscow"
+						name: '(UTC+04:00) モスクワ、サンクトペテルブルグ、ボルゴグラード',
+						value: 'Europe/Moscow'
 					},
 					{
-						name: "(UTC+04:00) トビリシ",
-						value: "Asia/Tbilisi"
+						name: '(UTC+04:00) トビリシ',
+						value: 'Asia/Tbilisi'
 					},
 					{
-						name: "(UTC+04:00) エレバン",
-						value: "Asia/Yerevan"
+						name: '(UTC+04:00) エレバン',
+						value: 'Asia/Yerevan'
 					},
 					{
-						name: "(UTC+04:00) アブダビ、マスカット",
-						value: "Asia/Dubai"
+						name: '(UTC+04:00) アブダビ、マスカット',
+						value: 'Asia/Dubai'
 					},
 					{
-						name: "(UTC+04:00) バクー",
-						value: "Asia/Baku"
+						name: '(UTC+04:00) バクー',
+						value: 'Asia/Baku'
 					},
 					{
-						name: "(UTC+04:00) ポートルイス",
-						value: "Indian/Mauritius"
+						name: '(UTC+04:00) ポートルイス',
+						value: 'Indian/Mauritius'
 					},
 					{
-						name: "(UTC+04:30) カブール",
-						value: "Asia/Kabul"
+						name: '(UTC+04:30) カブール',
+						value: 'Asia/Kabul'
 					},
 					{
-						name: "(UTC+05:00) タシケント",
-						value: "Asia/Tashkent"
+						name: '(UTC+05:00) タシケント',
+						value: 'Asia/Tashkent'
 					},
 					{
-						name: "(UTC+05:00) イスラマバード、カラチ",
-						value: "Asia/Karachi"
+						name: '(UTC+05:00) イスラマバード、カラチ',
+						value: 'Asia/Karachi'
 					},
 					{
-						name: "(UTC+05:30) スリジャヤワルダナプラコッテ",
-						value: "Asia/Colombo"
+						name: '(UTC+05:30) スリジャヤワルダナプラコッテ',
+						value: 'Asia/Colombo'
 					},
 					{
-						name: "(UTC+05:30) チェンナイ、コルカタ、ムンバイ、ニューデリー",
-						value: "Indian/Kolkata"
+						name: '(UTC+05:30) チェンナイ、コルカタ、ムンバイ、ニューデリー',
+						value: 'Indian/Kolkata'
 					},
 					{
-						name: "(UTC+05:45) カトマンズ",
-						value: "Asia/Kathmandu"
+						name: '(UTC+05:45) カトマンズ',
+						value: 'Asia/Kathmandu'
 					},
 					{
-						name: "(UTC+06:00) アスタナ",
-						value: "Asia/Almaty"
+						name: '(UTC+06:00) アスタナ',
+						value: 'Asia/Almaty'
 					},
 					{
-						name: "(UTC+06:00) ダッカ",
-						value: "Asia/Dhaka"
+						name: '(UTC+06:00) ダッカ',
+						value: 'Asia/Dhaka'
 					},
 					{
-						name: "(UTC+06:00) エカテリンブルグ",
-						value: "Asia/Yekaterinburg"
+						name: '(UTC+06:00) エカテリンブルグ',
+						value: 'Asia/Yekaterinburg'
 					},
 					{
-						name: "(UTC+06:30) ヤンゴン(ラングーン)",
-						value: "Asia/Rangoon"
+						name: '(UTC+06:30) ヤンゴン(ラングーン)',
+						value: 'Asia/Rangoon'
 					},
 					{
-						name: "(UTC+07:00) バンコク、ハノイ、ジャカルタ",
-						value: "Asia/Bangkok"
+						name: '(UTC+07:00) バンコク、ハノイ、ジャカルタ',
+						value: 'Asia/Bangkok'
 					},
 					{
-						name: "(UTC+07:00) ノヴォシビルスク",
-						value: "Asia/Novosibirsk"
+						name: '(UTC+07:00) ノヴォシビルスク',
+						value: 'Asia/Novosibirsk'
 					},
 					{
-						name: "(UTC+08:00) クラスノヤルスク",
-						value: "Asia/Krasnoyarsk"
+						name: '(UTC+08:00) クラスノヤルスク',
+						value: 'Asia/Krasnoyarsk'
 					},
 					{
-						name: "(UTC+08:00) ウランバートル",
-						value: "Asia/Ulaanbaatar"
+						name: '(UTC+08:00) ウランバートル',
+						value: 'Asia/Ulaanbaatar'
 					},
 					{
-						name: "(UTC+08:00) 北京、重慶、香港特別行政区、ウルムチ",
-						value: "Asia/Shanghai"
+						name: '(UTC+08:00) 北京、重慶、香港特別行政区、ウルムチ',
+						value: 'Asia/Shanghai'
 					},
 					{
-						name: "(UTC+08:00) パース",
-						value: "Australia/Perth"
+						name: '(UTC+08:00) パース',
+						value: 'Australia/Perth'
 					},
 					{
-						name: "(UTC+08:00) クアラルンプール、シンガポール",
-						value: "Asia/Singapore"
+						name: '(UTC+08:00) クアラルンプール、シンガポール',
+						value: 'Asia/Singapore'
 					},
 					{
-						name: "(UTC+08:00) 台北",
-						value: "Asia/Taipei"
+						name: '(UTC+08:00) 台北',
+						value: 'Asia/Taipei'
 					},
 					{
-						name: "(UTC+09:00) イルクーツク",
-						value: "Asia/Irkutsk"
+						name: '(UTC+09:00) イルクーツク',
+						value: 'Asia/Irkutsk'
 					},
 					{
-						name: "(UTC+09:00) ソウル",
-						value: "Asia/Seoul"
+						name: '(UTC+09:00) ソウル',
+						value: 'Asia/Seoul'
 					},
 					{
-						name: "(UTC+09:00) 大阪、札幌、東京",
-						value: "Asia/Tokyo"
+						name: '(UTC+09:00) 大阪、札幌、東京',
+						value: 'Asia/Tokyo'
 					},
 					{
-						name: "(UTC+09:30) ダーウィン",
-						value: "Australia/Darwin"
+						name: '(UTC+09:30) ダーウィン',
+						value: 'Australia/Darwin'
 					},
 					{
-						name: "(UTC+09:30) アデレード",
-						value: "Australia/Adelaide"
+						name: '(UTC+09:30) アデレード',
+						value: 'Australia/Adelaide'
 					},
 					{
-						name: "(UTC+10:00) ホバート",
-						value: "Australia/Hobart"
+						name: '(UTC+10:00) ホバート',
+						value: 'Australia/Hobart'
 					},
 					{
-						name: "(UTC+10:00) ヤクーツク",
-						value: "Asia/Yakutsk"
+						name: '(UTC+10:00) ヤクーツク',
+						value: 'Asia/Yakutsk'
 					},
 					{
-						name: "(UTC+10:00) ブリスベン",
-						value: "Australia/Brisbane"
+						name: '(UTC+10:00) ブリスベン',
+						value: 'Australia/Brisbane'
 					},
 					{
-						name: "(UTC+10:00) グアム、ポートモレスビー",
-						value: "Pacific/Port_Moresby"
+						name: '(UTC+10:00) グアム、ポートモレスビー',
+						value: 'Pacific/Port_Moresby'
 					},
 					{
-						name: "(UTC+10:00) キャンベラ、メルボルン、シドニー",
-						value: "Australia/Sydney"
+						name: '(UTC+10:00) キャンベラ、メルボルン、シドニー',
+						value: 'Australia/Sydney'
 					},
 					{
-						name: "(UTC+11:00) ウラジオストク",
-						value: "Asia/Vladivostok"
+						name: '(UTC+11:00) ウラジオストク',
+						value: 'Asia/Vladivostok'
 					},
 					{
-						name: "(UTC+11:00) ソロモン諸島、ニューカレドニア",
-						value: "Pacific/Guadalcanal"
+						name: '(UTC+11:00) ソロモン諸島、ニューカレドニア',
+						value: 'Pacific/Guadalcanal'
 					},
 					{
-						name: "(UTC+12:00) 協定世界時+12",
-						value: "Etc/GMT-12"
+						name: '(UTC+12:00) 協定世界時+12',
+						value: 'Etc/GMT-12'
 					},
 					{
-						name: "(UTC+12:00) フィジー、マーシャル諸島",
-						value: "Pacific/Fiji"
+						name: '(UTC+12:00) フィジー、マーシャル諸島',
+						value: 'Pacific/Fiji'
 					},
 					{
-						name: "(UTC+12:00) マガダン",
-						value: "Asia/Magadan"
+						name: '(UTC+12:00) マガダン',
+						value: 'Asia/Magadan'
 					},
 					{
-						name: "(UTC+12:00) オークランド、ウェリントン",
-						value: "Pacific/Auckland"
+						name: '(UTC+12:00) オークランド、ウェリントン',
+						value: 'Pacific/Auckland'
 					},
 					{
-						name: "(UTC+13:00) ヌクアロファ",
-						value: "Pacific/Tongatapu"
+						name: '(UTC+13:00) ヌクアロファ',
+						value: 'Pacific/Tongatapu'
 					},
 					{
-						name: "(UTC+13:00) サモア",
-						value: "Pacific/Apia"
+						name: '(UTC+13:00) サモア',
+						value: 'Pacific/Apia'
 					}
 				]
 			},
 			{
-				name: "refresh",
-				display_name: "更新頻度",
-				validate: "required,custom[integer],min[1]",
-				style: "width:100px",
-				type: "number",
-				suffix: "秒",
+				name: 'refresh',
+				display_name: '更新頻度',
+				validate: 'required,custom[integer],min[1]',
+				style: 'width:100px',
+				type: 'number',
+				suffix: '秒',
 				default_value: 1
 			}
 		],
@@ -482,6 +482,8 @@
 
 	var jsonDatasource = function (settings, updateCallback) {
 		var self = this;
+		var PROXY_URL = 'thingproxy.freeboard.io/fetch/';
+
 		var updateTimer = null;
 		var currentSettings = settings;
 		var errorStage = 0; 	// 0 = try standard request
@@ -509,8 +511,8 @@
 
 			var requestURL = currentSettings.url;
 
-			if (errorStage == 2 && currentSettings.use_thingproxy) {
-				requestURL = (location.protocol == "https:" ? "https:" : "http:") + "//thingproxy.freeboard.io/fetch/" + encodeURI(currentSettings.url);
+			if (errorStage === 2 && currentSettings.use_thingproxy) {
+				requestURL = (location.protocol == 'https:' ? 'https:' : 'http:') + '//' + PROXY_URL + encodeURI(currentSettings.url);
 			}
 
 			var body = currentSettings.body;
@@ -526,8 +528,8 @@
 
 			$.ajax({
 				url: requestURL,
-				dataType: (errorStage == 1) ? "JSONP" : "JSON",
-				type: currentSettings.method || "GET",
+				dataType: (errorStage === 1) ? 'JSONP' : 'JSON',
+				type: currentSettings.method || 'GET',
 				data: body,
 				beforeSend: function (xhr) {
 					try {
@@ -573,81 +575,81 @@
 	};
 
 	freeboard.loadDatasourcePlugin({
-		type_name: "JSON",
-		display_name: "JSON",
-		description: "指定のURLからJSONデータを受信します。",
+		type_name: 'JSON',
+		display_name: 'JSON',
+		description: '指定のURLからJSONデータを受信します。',
 		settings: [
 			{
-				name: "url",
-				display_name: "URL",
-				validate: "required,custom[url]",
-				type: "text"
+				name: 'url',
+				display_name: 'URL',
+				validate: 'required,custom[url]',
+				type: 'text'
 			},
 			{
-				name: "use_thingproxy",
-				display_name: "プロキシサーバー試行",
+				name: 'use_thingproxy',
+				display_name: 'プロキシサーバー試行',
 				description: 'まず直接接続し、失敗した場合、JSONP接続を試みます。これも失敗した場合、プロキシサーバーを使用することができます。使用することで多くのAPI接続トラブルを解決できるでしょう。<a href="https://github.com/Freeboard/thingproxy" target="_blank">詳細</a>',
-				type: "boolean",
+				type: 'boolean',
 				default_value: true
 			},
 			{
-				name: "refresh",
-				display_name: "更新頻度",
-				validate: "required,custom[integer],min[1]",
-				style: "width:100px",
-				type: "number",
-				suffix: "秒",
+				name: 'refresh',
+				display_name: '更新頻度',
+				validate: 'required,custom[integer],min[1]',
+				style: 'width:100px',
+				type: 'number',
+				suffix: '秒',
 				default_value: 5
 			},
 			{
-				name: "method",
-				display_name: "メソッド",
-				type: "option",
-				style: "width:200px",
+				name: 'method',
+				display_name: 'メソッド',
+				type: 'option',
+				style: 'width:200px',
 				options: [
 					{
-						name: "GET",
-						value: "GET"
+						name: 'GET',
+						value: 'GET'
 					},
 					{
-						name: "POST",
-						value: "POST"
+						name: 'POST',
+						value: 'POST'
 					},
 					{
-						name: "PUT",
-						value: "PUT"
+						name: 'PUT',
+						value: 'PUT'
 					},
 					{
-						name: "DELETE",
-						value: "DELETE"
+						name: 'DELETE',
+						value: 'DELETE'
 					}
 				]
 			},
 			{
-				name: "body",
-				display_name: "Body",
-				type: "json",
-				validate: "optional,maxSize[2000]",
-				description: "リクエスト本文。通常はPOSTメソッド時に使用される。最大2000文字"
+				name: 'body',
+				display_name: 'Body',
+				type: 'json',
+				validate: 'optional,maxSize[2000]',
+				description: 'リクエスト本文。通常はPOSTメソッド時に使用される。最大2000文字'
 			},
 			{
-				name: "headers",
-				display_name: "Header",
-				type: "array",
+				name: 'headers',
+				display_name: 'Header',
+				type: 'array',
 				settings: [
 					{
-						name: "name",
-						display_name: "名前",
-						type: "text",
-						validate: "optional,maxSize[500]",
-						description: "最大500文字"
+						name: 'name',
+						display_name: '名前',
+						type: 'text',
+						validate: 'optional,maxSize[500]',
+						description: '最大500文字'
 					},
 					{
-						name: "value",
-						display_name: "値",
-						type: "text",
-						validate: "optional,maxSize[500]",
-						description: "最大500文字"
+						name: 'value',
+						display_name: '値',
+						type: 'text',
+						validate: 'optional,maxSize[500]',
+						description: '最大500文字'
 					}
 				]
 			}
@@ -677,14 +679,14 @@
 		var CONNECTION_DELAY = 3000;
 
 		function onConnect(frame) {
-			console.info("MQTT Connected to %s", currentSettings.hostname);
-			client.subscribe(_.isUndefined(currentSettings.topic) ? "" : currentSettings.topic);
+			console.info('MQTT Connected to %s', currentSettings.hostname);
+			client.subscribe(_.isUndefined(currentSettings.topic) ? '' : currentSettings.topic);
 		}
 
 		function onConnectionLost(responseObject) {
-			console.info("MQTT ConnectionLost %s %s", currentSettings.hostname, responseObject.errorMessage);
-			if (dispose == false) {
-				if (dispose == false && currentSettings.reconnect == true) {
+			console.info('MQTT ConnectionLost %s %s', currentSettings.hostname, responseObject.errorMessage);
+			if (dispose === false) {
+				if (dispose === false && currentSettings.reconnect === true) {
 					_.delay(function() {
 						connect();
 					}, CONNECTION_DELAY);
@@ -694,14 +696,14 @@
 
 		function onConnectFailure(error) {
 			client = null;
-			console.error("MQTT Failed Connect to %s", currentSettings.hostname);
+			console.error('MQTT Failed Connect to %s', currentSettings.hostname);
 		}
 
 		function onMessageArrived(message) {
-			console.info("MQTT Received %s from %s", message,  currentSettings.hostname);
+			console.info('MQTT Received %s from %s', message,  currentSettings.hostname);
 
 			var objdata = JSON.parse(message.payloadString);
-			if (_.isObject("object")) {
+			if (_.isObject('object')) {
 				updateCallback(objdata);
 			} else {
 				updateCallback(message.payloadString);
@@ -718,15 +720,15 @@
 		function connect() {
 			try {
 				client = new Paho.MQTT.Client(
-					_.isUndefined(currentSettings.hostname) ? "" : currentSettings.hostname,
-					_.isUndefined(currentSettings.port) ? "" : currentSettings.port,
-					_.isUndefined(currentSettings.clientID) ? "" : currentSettings.clientID);
+					_.isUndefined(currentSettings.hostname) ? '' : currentSettings.hostname,
+					_.isUndefined(currentSettings.port) ? '' : currentSettings.port,
+					_.isUndefined(currentSettings.clientID) ? '' : currentSettings.clientID);
 				client.onConnect = onConnect;
 				client.onMessageArrived = onMessageArrived;
 				client.onConnectionLost = onConnectionLost;
 				client.connect({
-					userName: _.isUndefined(currentSettings.username) ? "" : currentSettings.username,
-					password: _.isUndefined(currentSettings.password) ? "" : currentSettings.password,
+					userName: _.isUndefined(currentSettings.username) ? '' : currentSettings.username,
+					password: _.isUndefined(currentSettings.password) ? '' : currentSettings.password,
 					onSuccess: onConnect,
 					onFailure: onConnectFailure
 				});
@@ -760,62 +762,62 @@
 	};
 
 	freeboard.loadDatasourcePlugin({
-		type_name : "mqtt",
-		display_name : "MQTT over Websocket",
-		description : "<a href='http://mqtt.org/', target='_blank'>MQTT</a>プロトコルをWebSocketを介し、MQTTブローカーサーバーからJSONデータを受信します。",
-		external_scripts : [ "plugins/thirdparty/mqttws31.min.js" ],
+		type_name : 'mqtt',
+		display_name : 'MQTT over Websocket',
+		description : '<a href="http://mqtt.org/", target="_blank">MQTT</a>プロトコルをWebSocketを介し、MQTTブローカーサーバーからJSONデータを受信します。',
+		external_scripts : [ 'plugins/thirdparty/mqttws31.min.js' ],
 		settings : [
 			{
-				name : "hostname",
-				display_name : "DNSホスト名",
-				validate: "required,maxSize[1000]",
-				type: "text",
-				description: "最大1000文字<br>MQTTブローカーサーバーのDNSホスト名を設定して下さい。<br>例: location.hostname"
+				name : 'hostname',
+				display_name : 'DNSホスト名',
+				validate: 'required,maxSize[1000]',
+				type: 'text',
+				description: '最大1000文字<br>MQTTブローカーサーバーのDNSホスト名を設定して下さい。<br>例: location.hostname'
 			},
 			{
-				name : "port",
-				display_name : "ポート番号",
-				validate: "required,custom[integer],min[1]",
-				type: "number",
-				style: "width:100px",
+				name : 'port',
+				display_name : 'ポート番号',
+				validate: 'required,custom[integer],min[1]',
+				type: 'number',
+				style: 'width:100px',
 				default_value: 8080
 			},
 			{
-				name : "clientID",
-				display_name : "クライアントID",
-				validate: "required,maxSize[23]",
-				type: "text",
-				description: "最大23文字<br>任意のクライアントID文字列",
-				default_value: "SensorCorpus"
+				name : 'clientID',
+				display_name : 'クライアントID',
+				validate: 'required,maxSize[23]',
+				type: 'text',
+				description: '最大23文字<br>任意のクライアントID文字列',
+				default_value: 'SensorCorpus'
 			},
 			{
-				name : "topic",
-				display_name : "トピック",
-				validate: "required,maxSize[500]",
-				type: "text",
-				description: "最大500文字<br>購読するトピック名を設定して下さい。<br>例: my/topic",
-				default_value: ""
+				name : 'topic',
+				display_name : 'トピック',
+				validate: 'required,maxSize[500]',
+				type: 'text',
+				description: '最大500文字<br>購読するトピック名を設定して下さい。<br>例: my/topic',
+				default_value: ''
 			},
 			{
-				name : "username",
-				display_name : "(オプション) ユーザー名",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字<br>必要ない場合は空白。"
+				name : 'username',
+				display_name : '(オプション) ユーザー名',
+				validate: 'optional,maxSize[100]',
+				type: 'text',
+				description: '最大100文字<br>必要ない場合は空白。'
 			},
 			{
-				name : "password",
-				display_name : "(オプション) パスワード",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字<br>必要ない場合は空白。"
+				name : 'password',
+				display_name : '(オプション) パスワード',
+				validate: 'optional,maxSize[100]',
+				type: 'text',
+				description: '最大100文字<br>必要ない場合は空白。'
 			},
 			{
-				name: "reconnect",
-				display_name: "自動再接続",
-				type: "boolean",
+				name: 'reconnect',
+				display_name: '自動再接続',
+				type: 'boolean',
 				default_value: true,
-				description: "接続が切れた際自動的に再接続します。"
+				description: '接続が切れた際自動的に再接続します。'
 			}
 		],
 		newInstance : function(settings, newInstanceCallback, updateCallback) {
@@ -845,25 +847,23 @@
 
 		function onNewMessageHandler(message) {
 			var objdata = JSON.parse(message);
-			if (typeof objdata == "object") {
+			if (_.isObject('object'))
 				updateCallback(objdata);
-			} else {
+			else
 				updateCallback(message);
-			}
 		}
 
 		function joinRoom(roomName, roomEvent) {
 			// Sends request to join the new room
 			// (handle event on server-side)
 			self.socket.emit(roomEvent, roomName);
-			console.info("Joining room '%s' with event '%s'", roomName, roomEvent);
+			console.info('Joining room "%s" with event "%s"', roomName, roomEvent);
 		}
 
 		function discardSocket() {
 			// Disconnect datasource websocket
-			if (self.socket) {
+			if (self.socket)
 				self.socket.disconnect();
-			}
 		}
 
 		function connectToServer(url, rooms) {
@@ -873,7 +873,7 @@
 
 			// Join the rooms
 			self.socket.on('connect', function() {
-				console.info("Connecting to Node.js at: %s", self.url);
+				console.info('Connecting to Node.js at: %s', self.url);
 			});
 
 			// Join the rooms
@@ -888,15 +888,15 @@
 			});
 
 			self.socket.on('connect_error', function(object) {
-				console.error("It was not possible to connect to Node.js at: %s", self.url);
+				console.error('It was not possible to connect to Node.js at: %s', self.url);
 			});
 
 			self.socket.on('reconnect_error', function(object) {
-				console.error("Still was not possible to re-connect to Node.js at: %s", self.url);
+				console.error('Still was not possible to re-connect to Node.js at: %s', self.url);
 			});
 
 			self.socket.on('reconnect_failed', function(object) {
-				console.error("Re-connection to Node.js failed at: %s", self.url);
+				console.error('Re-connection to Node.js failed at: %s', self.url);
 				discardSocket();
 			});
 
@@ -913,7 +913,7 @@
 			self.newMessageCallback = onNewMessageHandler;
 			_.each(currentSettings.events, function(eventConfig) {
 				var event = eventConfig.eventName;
-				console.info("Subscribing to event: %s", event);
+				console.info('Subscribing to event: %s', event);
 				self.socket.on(event, function(message) {
 					self.newMessageCallback(message);
 				});
@@ -942,45 +942,45 @@
 	};
 
 	freeboard.loadDatasourcePlugin({
-		type_name : "node_js",
-		display_name : "Node.js (Socket.io)",
-		description : "<a href='http://socket.io/', target='_blank'>Socket.io</a>を使用したnode.jsサーバーからJSONデータを受信します。",
-		external_scripts : [ "https://cdn.socket.io/socket.io-1.2.1.js" ],
+		type_name : 'node_js',
+		display_name : 'Node.js (Socket.io)',
+		description : '<a href="http://socket.io/", target="_blank">Socket.io</a>を使用したnode.jsサーバーからJSONデータを受信します。',
+		external_scripts : [ 'https://cdn.socket.io/socket.io-1.2.1.js' ],
 		settings : [
 			{
-				name: "url",
-				display_name: "サーバーURL",
-				validate: "required,maxSize[1000]",
-				type: "text",
-				description: "最大1000文字 (オプション) カスタム名前空間を使用する場合、URLの最後に名前空間を追加して下さい。<br>例: http://localhost/chat"
+				name: 'url',
+				display_name: 'サーバーURL',
+				validate: 'required,maxSize[1000]',
+				type: 'text',
+				description: '最大1000文字 (オプション) カスタム名前空間を使用する場合、URLの最後に名前空間を追加して下さい。<br>例: http://localhost/chat'
 			},
 			{
-				name : "events",
-				display_name : "イベント",
-				description : "データソースへ追加するイベント名を指定して下さい。",
-				type : "array",
+				name : 'events',
+				display_name : 'イベント',
+				description : 'データソースへ追加するイベント名を指定して下さい。',
+				type : 'array',
 				settings : [ {
-					name : "eventName",
-					display_name : "イベント名",
-					validate: "optional,maxSize[100]",
-					type: "text"
+					name : 'eventName',
+					display_name : 'イベント名',
+					validate: 'optional,maxSize[100]',
+					type: 'text'
 				} ]
 			},
 			{
-				name : "rooms",
-				display_name : "(オプション) ルーム",
-				description : "ルームを使用する場合, 追加したいルーム名を指定して下さい。その他の場合は空白のままにしておいて下さい。",
-				type : "array",
+				name : 'rooms',
+				display_name : '(オプション) ルーム',
+				description : 'ルームを使用する場合, 追加したいルーム名を指定して下さい。その他の場合は空白のままにしておいて下さい。',
+				type : 'array',
 				settings : [ {
-					name : "roomName",
-					display_name : "ルーム名",
-					validate: "optional,maxSize[100]",
-					type: "text"
+					name : 'roomName',
+					display_name : 'ルーム名',
+					validate: 'optional,maxSize[100]',
+					type: 'text'
 				}, {
-					name : "roomEvent",
-					display_name : "ルームに参加するイベント名",
-					validate: "optional,maxSize[100]",
-					type: "text"
+					name : 'roomEvent',
+					display_name : 'ルームに参加するイベント名',
+					validate: 'optional,maxSize[100]',
+					type: 'text'
 				} ]
 			}
 		],
@@ -1044,14 +1044,12 @@
 
 			$.ajax({
 				url: currentSettings.datafile,
-				dataType: (currentSettings.is_jsonp) ? "JSONP" : "JSON",
+				dataType: (currentSettings.is_jsonp) ? 'JSONP' : 'JSON',
 				success: function (data) {
-					if (_.isArray(data)) {
+					if (_.isArray(data))
 						currentDataset = data;
-					}
-					else {
+					else
 						currentDataset = [];
-					}
 
 					currentIndex = 0;
 
@@ -1073,35 +1071,35 @@
 	};
 
 	freeboard.loadDatasourcePlugin({
-		type_name: "playback",
-		display_name: "Playback",
-		description: "指定された間隔で連続したデータを再生します。オブジェクトの配列を含む有効なJSONファイルを受信します。",
+		type_name: 'playback',
+		display_name: 'Playback',
+		description: '指定された間隔で連続したデータを再生します。オブジェクトの配列を含む有効なJSONファイルを受信します。',
 		settings: [
 			{
-				name: "datafile",
-				display_name: "データファイルURL",
-				validate: "required,custom[url]",
-				type: "text",
-				description: "JSON配列データへのリンク"
+				name: 'datafile',
+				display_name: 'データファイルURL',
+				validate: 'required,custom[url]',
+				type: 'text',
+				description: 'JSON配列データへのリンク'
 			},
 			{
-				name: "is_jsonp",
-				display_name: "JSONP使用",
-				type: "boolean"
+				name: 'is_jsonp',
+				display_name: 'JSONP使用',
+				type: 'boolean'
 			},
 			{
-				name: "loop",
-				display_name: "ループ再生",
-				type: "boolean",
-				description: "巻戻しとループ再生時終了"
+				name: 'loop',
+				display_name: 'ループ再生',
+				type: 'boolean',
+				description: '巻戻しとループ再生時終了'
 			},
 			{
-				name: "refresh",
-				display_name: "更新頻度",
-				validate: "required,custom[integer],min[1]",
-				style: "width:100px",
-				type: "number",
-				suffix: "秒",
+				name: 'refresh',
+				display_name: '更新頻度',
+				validate: 'required,custom[integer],min[1]',
+				style: 'width:100px',
+				type: 'number',
+				suffix: '秒',
 				default_value: 5
 			}
 		],
@@ -1132,13 +1130,13 @@
 			ws = new WebSocket(currentSettings.uri);
 
 			ws.onopen = function(evt) {
-				console.info("WebSocket Connected to %s", ws.url);
+				console.info('WebSocket Connected to %s', ws.url);
 				retryCount = 0;
 			};
 
 			ws.onclose = function(evt) {
-				console.info("WebSocket Disconnected from %s", evt.srcElement.url);
-				if (dispose == false && currentSettings.reconnect == true) {
+				console.info('WebSocket Disconnected from %s', evt.srcElement.url);
+				if (dispose === false && currentSettings.reconnect === true) {
 					_.delay(function() {
 						wsOpen();
 					}, CONNECTION_DELAY);
@@ -1150,12 +1148,12 @@
 					var obj = JSON.parse(evt.data);
 					updateCallback(obj);
 				} catch (e) {
-					console.error("WebSocket Bad parse", evt.data);
+					console.error('WebSocket Bad parse', evt.data);
 				}
 			}
 
 			ws.onerror = function(evt) {
-				console.error("WebSocket Error", evt);
+				console.error('WebSocket Error', evt);
 			}
 		}
 
@@ -1191,23 +1189,23 @@
 	};
 
 	freeboard.loadDatasourcePlugin({
-		type_name: "websocket",
-		display_name: "WebSocket",
-		description: "WebSocket APIを使用し、JSONデータを受信します。",
+		type_name: 'websocket',
+		display_name: 'WebSocket',
+		description: 'WebSocket APIを使用し、JSONデータを受信します。',
 		settings: [
 			{
-				name: "uri",
-				display_name: "サーバーURI",
-				validate: "required,maxSize[1000]",
-				type: "text",
-				description: "最大1000文字 例: ws://server:port/path "
+				name: 'uri',
+				display_name: 'サーバーURI',
+				validate: 'required,maxSize[1000]',
+				type: 'text',
+				description: '最大1000文字 例: ws://server:port/path '
 			},
 			{
-				name: "reconnect",
-				display_name: "自動再接続",
-				type: "boolean",
+				name: 'reconnect',
+				display_name: '自動再接続',
+				type: 'boolean',
 				default_value: true,
-				description: "接続が切れた際自動的に再接続します。"
+				description: '接続が切れた際自動的に再接続します。'
 			}
 		],
 		newInstance: function(settings, newInstanceCallback, updateCallback) {
@@ -1235,54 +1233,54 @@
 
 		// condition code
 		var conditionMap = [
-			"竜巻",                     // 0   tornado
-			"台風",                     // 1   tropical storm
-			"ハリケーン",               // 2   hurricane
-			"激しい雷雨",               // 3   severe thunderstorms
-			"雷雨",                     // 4   thunderstorms
-			"雪混じりの雨",             // 5   mixed rain and snow
-			"みぞれ混じりの雨",         // 6   mixed rain and sleet
-			"みぞれ混じりの雪",         // 7   mixed snow and sleet
-			"着氷性の霧雨",             // 8   freezing drizzle
-			"霧雨",                     // 9   drizzle
-			"着氷性の雨",               // 10  freezing rain
-			"にわか雨",                 // 11  showers
-			"にわか雨",                 // 12  showers
-			"雪の突風",                 // 13  snow flurries
-			"時々雪",                   // 14  light snow showers
-			"吹雪",                     // 15  blowing snow
-			"雪",                       // 16  snow
-			"雹",                       // 17  hail
-			"みぞれ",                   // 18  sleet
-			"ほこり",                   // 19  dust
-			"霧",                       // 20  foggy
-			"靄",                       // 21  haze
-			"埃っぽい",                 // 22  smoky
-			"荒れ模様",                 // 23  blustery
-			"強風",                     // 24  windy
-			"寒い",                     // 25  cold
-			"曇り",                     // 26  cloudy
-			"おおむね曇り(夜)",         // 27  mostly cloudy (night)
-			"おおむね曇り(昼)",         // 28  mostly cloudy (day)
-			"ところにより曇り(夜)",     // 29  partly cloudy (night)
-			"ところにより曇り(昼)",     // 30  partly cloudy (day)
-			"快晴(夜)",                 // 31  clear (night)
-			"陽気な晴れ",               // 32  sunny
-			"晴れ(夜)",                 // 33  fair (night)
-			"晴れ(昼)",                 // 34  fair (day)
-			"雨と雹",                   // 35  mixed rain and hail
-			"暑い",                     // 36  hot
-			"局地的に雷雨",             // 37  isolated thunderstorms
-			"ところにより雷雨",         // 38  scattered thunderstorms
-			"ところにより雷雨",         // 39  scattered thunderstorms
-			"ところによりにわか雨",     // 40  scattered showers
-			"大雪",                     // 41  heavy snow
-			"吹雪",                     // 42  scattered snow showers
-			"大雪",                     // 43  heavy snow
-			"ところにより曇り",         // 44  partly cloudy
-			"雷雨",                     // 45  thundershowers
-			"吹雪",                     // 46  snow showers
-			"ところにより雷雨"          // 47  isolated thundershowers
+			'竜巻',                     // 0   tornado
+			'台風',                     // 1   tropical storm
+			'ハリケーン',               // 2   hurricane
+			'激しい雷雨',               // 3   severe thunderstorms
+			'雷雨',                     // 4   thunderstorms
+			'雪混じりの雨',             // 5   mixed rain and snow
+			'みぞれ混じりの雨',         // 6   mixed rain and sleet
+			'みぞれ混じりの雪',         // 7   mixed snow and sleet
+			'着氷性の霧雨',             // 8   freezing drizzle
+			'霧雨',                     // 9   drizzle
+			'着氷性の雨',               // 10  freezing rain
+			'にわか雨',                 // 11  showers
+			'にわか雨',                 // 12  showers
+			'雪の突風',                 // 13  snow flurries
+			'時々雪',                   // 14  light snow showers
+			'吹雪',                     // 15  blowing snow
+			'雪',                       // 16  snow
+			'雹',                       // 17  hail
+			'みぞれ',                   // 18  sleet
+			'ほこり',                   // 19  dust
+			'霧',                       // 20  foggy
+			'靄',                       // 21  haze
+			'埃っぽい',                 // 22  smoky
+			'荒れ模様',                 // 23  blustery
+			'強風',                     // 24  windy
+			'寒い',                     // 25  cold
+			'曇り',                     // 26  cloudy
+			'おおむね曇り(夜)',         // 27  mostly cloudy (night)
+			'おおむね曇り(昼)',         // 28  mostly cloudy (day)
+			'ところにより曇り(夜)',     // 29  partly cloudy (night)
+			'ところにより曇り(昼)',     // 30  partly cloudy (day)
+			'快晴(夜)',                 // 31  clear (night)
+			'陽気な晴れ',               // 32  sunny
+			'晴れ(夜)',                 // 33  fair (night)
+			'晴れ(昼)',                 // 34  fair (day)
+			'雨と雹',                   // 35  mixed rain and hail
+			'暑い',                     // 36  hot
+			'局地的に雷雨',             // 37  isolated thunderstorms
+			'ところにより雷雨',         // 38  scattered thunderstorms
+			'ところにより雷雨',         // 39  scattered thunderstorms
+			'ところによりにわか雨',     // 40  scattered showers
+			'大雪',                     // 41  heavy snow
+			'吹雪',                     // 42  scattered snow showers
+			'大雪',                     // 43  heavy snow
+			'ところにより曇り',         // 44  partly cloudy
+			'雷雨',                     // 45  thundershowers
+			'吹雪',                     // 46  snow showers
+			'ところにより雷雨'          // 47  isolated thundershowers
 		];
 
 		function updateRefresh(refreshTime) {
@@ -1296,28 +1294,28 @@
 		}
 
 		this.updateNow = function () {
-			var units = (currentSettings.units === "metric") ? "c" : "f";
+			var units = (currentSettings.units === 'metric') ? 'c' : 'f';
 			var query = "select * from weather.bylocation where location='" + currentSettings.location + "' and unit='" + units + "'";
-			var uri = "https://query.yahooapis.com/v1/public/yql?q="
+			var uri = 'https://query.yahooapis.com/v1/public/yql?q='
 					+ encodeURIComponent(query)
 					+ '&format=json&env='
-					+ encodeURIComponent("store://datatables.org/alltableswithkeys");
+					+ encodeURIComponent('store://datatables.org/alltableswithkeys');
 			$.ajax({
 				url: uri,
-				dataType: "JSONP"
+				dataType: 'JSONP'
 			})
 			.done(function (data) {
 				if (!_.isObject(data))
 					return;
 				if (_.has(data, 'error')) {
-					console.error("Yahoo Weather API error: " + data.error.description);
+					console.error('Yahoo Weather API error: ' + data.error.description);
 					return;
 				}
 				if (!_.has(data, 'query') && _.has(data, 'query.results'))
 					return;
 				data = data.query.results.weather.rss.channel;
 				var easy = {
-					place_name: !_.isUndefined(data.location.city) ? data.location.city : "",
+					place_name: _.isUndefined(data.location.city) ? '' : data.location.city,
 					latitude: Number(data.item.lat),
 					longitude: Number(data.item.long),
 					sunrise: data.astronomy.sunrise,
@@ -1334,7 +1332,7 @@
 				updateCallback(_.merge(data, easy));
 			})
 			.fail(function (xhr, status) {
-				console.error("Yahoo Weather API error: " + status);
+				console.error('Yahoo Weather API error: ' + status);
 			});
 		}
 
@@ -1353,41 +1351,41 @@
 	};
 
 	freeboard.loadDatasourcePlugin({
-		type_name: "yahooweather",
-		display_name: "Yahoo Weather API",
+		type_name: 'yahooweather',
+		display_name: 'Yahoo Weather API',
 		description: '<a href="https://developer.yahoo.com/weather/documentation.html" target="_blank">Yahoo Weather API</a>を使用し、天候や予測含む各種気象データを受信します。',
 		settings: [
 			{
-				name: "location",
-				display_name: "ロケーション郵便番号",
-				validate: "required,maxSize[100]",
-				type: "text",
-				description: "最大100文字 半角英字の地名でも可"
+				name: 'location',
+				display_name: 'ロケーション郵便番号',
+				validate: 'required,maxSize[100]',
+				type: 'text',
+				description: '最大100文字 半角英字の地名でも可'
 			},
 			{
-				name: "units",
-				display_name: "単位",
-				style: "width:200px",
-				type: "option",
-				default_value: "metric",
+				name: 'units',
+				display_name: '単位',
+				style: 'width:200px',
+				type: 'option',
+				default_value: 'metric',
 				options: [
 					{
-						name: "メトリック",
-						value: "metric"
+						name: 'メトリック',
+						value: 'metric'
 					},
 					{
-						name: "インペリアル",
-						value: "imperial"
+						name: 'インペリアル',
+						value: 'imperial'
 					}
 				]
 			},
 			{
-				name: "refresh",
-				display_name: "更新頻度",
-				validate: "required,custom[integer],min[1]",
-				style: "width:100px",
-				type: "number",
-				suffix: "秒",
+				name: 'refresh',
+				display_name: '更新頻度',
+				validate: 'required,custom[integer],min[1]',
+				style: 'width:100px',
+				type: 'number',
+				suffix: '秒',
 				default_value: 5
 			}
 		],
@@ -1408,7 +1406,10 @@
 
 	var c3jsWidget = function (settings) {
 		var self = this;
-		var currentID = _.uniqueId("c3js_");
+		var BLOCK_HEIGHT = 60;
+		var TITLE_MARGIN = 7;
+
+		var currentID = _.uniqueId('c3js_');
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var chartElement = $('<div id="' + currentID + '"></div>');
 		var currentSettings;
@@ -1417,11 +1418,11 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
-			var height = 60 * blocks - titleElement.outerHeight() - 7;
+			var height = BLOCK_HEIGHT * blocks - titleElement.outerHeight() - TITLE_MARGIN;
 			chartElement.css({
-				"max-height": height + "px",
-				"height": height + "px",
-				"width": "100%"
+				'max-height': height + 'px',
+				'height': height + 'px',
+				'width': '100%'
 			});
 		}
 
@@ -1436,7 +1437,7 @@
 
 			if (!_.isUndefined(chartsettings.options)) {
 				try {
-					options = JSON.parse(chartsettings.options.replace(/'/g, "\\\""), function(k,v) {
+					options = JSON.parse(chartsettings.options.replace(/'/g, '\\\"'), function(k,v) {
 						var ret;
 						var str = v.toString();
 						if (str.indexOf('function') === 0)
@@ -1448,7 +1449,7 @@
 						return ret;
 					});
 				} catch (e) {
-					alert("チャートオプションが不正です。 " + e);
+					alert('チャートオプションが不正です。 ' + e);
 					console.error(e);
 					return;
 				}
@@ -1493,7 +1494,7 @@
 			data = _.omit(data, '_op');
 
 			try {
-			switch (op) {
+				switch (op) {
 				case 'load':
 					chart.load(data);
 					break;
@@ -1557,16 +1558,16 @@
 
 		this.render = function (element) {
 			$(element).append(titleElement).append(chartElement);
-			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
+			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
 		}
 
 		this.onSettingsChanged = function (newSettings) {
-			if (titleElement.outerHeight() == 0) {
+			if (titleElement.outerHeight() === 0) {
 				currentSettings = newSettings;
 				return;
 			}
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			setBlocks(newSettings.blocks);
 			if (newSettings.options != currentSettings.options)
 				destroyChart();
@@ -1595,48 +1596,48 @@
 	};
 
 	freeboard.loadWidgetPlugin({
-		type_name: "c3js",
-		display_name: "C3チャート",
-		description: "様々な形式のチャートを表示するウィジェットです。詳細は <a href='http://c3js.org/' target='_blank'>http://c3js.org/</a>",
+		type_name: 'c3js',
+		display_name: 'C3チャート',
+		description: '様々な形式のチャートを表示するウィジェットです。詳細は <a href="http://c3js.org/" target="_blank">http://c3js.org/</a>',
 		external_scripts : [
-			"plugins/thirdparty/d3.v3.min.js",
-			"plugins/thirdparty/c3.min.js"
+			'plugins/thirdparty/d3.v3.min.js',
+			'plugins/thirdparty/c3.min.js'
 		],
 		settings: [
 			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
+				name: 'title',
+				display_name: 'タイトル',
+				validate: 'optional,maxSize[100]',
+				type: 'text',
+				description: '最大100文字'
 			},
 			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[2],max[20]",
-				type: "number",
-				style: "width:100px",
+				name: 'blocks',
+				display_name: '高さ (ブロック数)',
+				validate: 'required,custom[integer],min[2],max[20]',
+				type: 'number',
+				style: 'width:100px',
 				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
+				description: '1ブロック60ピクセル。20ブロックまで'
 			},
 			{
-				name: "value",
-				display_name: "値",
-				validate: "optional,maxSize[5000]",
-				type: "calculated",
-				description: "最大5000文字"
+				name: 'value',
+				display_name: '値',
+				validate: 'optional,maxSize[5000]',
+				type: 'calculated',
+				description: '最大5000文字'
 			},
 			{
-				name: "options",
-				display_name: "チャートオプション",
-				validate: "optional,maxSize[5000]",
-				type: "json",
+				name: 'options',
+				display_name: 'チャートオプション',
+				validate: 'optional,maxSize[5000]',
+				type: 'json',
 				default_value: '{\n\
 	"data": {\n\
 		"type": "line"\n\
 	}\n\
 }',
-				description: "最大5000文字 JSON形式文字列。"
+				description: '最大5000文字 JSON形式文字列。'
 			}
 		],
 
@@ -1664,7 +1665,7 @@
 	var gaugeWidget = function (settings) {
 		var self = this;
 
-		var currentID = _.uniqueId("gauge-");
+		var currentID = _.uniqueId('gauge-');
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var wrapperElement = $('<div class="gauge-widget-wrapper"></div>');
 		var gaugeElement = $('<div class="gauge-widget" id="' + currentID + '"></div>');
@@ -1691,7 +1692,7 @@
 				levelColors: [ currentSettings.gauge_lower_color, currentSettings.gauge_mid_color, currentSettings.gauge_upper_color ],
 				gaugeWidthScale: currentSettings.gauge_widthscale/100.0,
 				gaugeColor: currentSettings.gauge_color,
-				labelClass: "ultralight-text",
+				labelClass: 'ultralight-text',
 				labelFontColor: currentSettings.value_fontcolor,
 				valueFontColor: currentSettings.value_fontcolor
 			});
@@ -1707,13 +1708,13 @@
 
 		this.onSettingsChanged = function (newSettings) {
 			if (_.isUndefined(gaugeObject)) {
-				titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+				titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 				currentSettings = newSettings;
 				return;
 			}
 			currentSettings = newSettings;
 			createGauge();
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -1735,121 +1736,121 @@
 	};
 
 	freeboard.loadWidgetPlugin({
-		type_name: "gauge",
-		display_name: "ゲージ",
-		description: "ゲージを表示するウィジェットです。",
+		type_name: 'gauge',
+		display_name: 'ゲージ',
+		description: 'ゲージを表示するウィジェットです。',
 		external_scripts : [
-			"plugins/thirdparty/raphael.2.1.0.min.js",
-			"plugins/thirdparty/justgage.min.js"
+			'plugins/thirdparty/raphael.2.1.0.min.js',
+			'plugins/thirdparty/justgage.min.js'
 		],
 		settings: [
 			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
+				name: 'title',
+				display_name: 'タイトル',
+				validate: 'optional,maxSize[100]',
+				type: 'text',
+				description: '最大100文字'
 			},
 			{
-				name: "value",
-				display_name: "値",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
+				name: 'value',
+				display_name: '値',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字'
 			},
 			{
-				name: "shape",
-				display_name: "型",
-				type: "option",
+				name: 'shape',
+				display_name: '型',
+				type: 'option',
 				options: [
 					{
-						name: "ハーフ",
+						name: 'ハーフ',
 						value: 0
 					},
 					{
-						name: "ファン",
+						name: 'ファン',
 						value: 1
 					},
 					{
-						name: "ドーナッツ",
+						name: 'ドーナッツ',
 						value: 2
 					}
 				]
 			},
 			{
-				name: "units",
-				display_name: "単位",
-				validate: "optional,maxSize[20],custom[illegalEscapeChar]",
-				style: "width:150px",
-				type: "text",
-				description: "最大20文字"
+				name: 'units',
+				display_name: '単位',
+				validate: 'optional,maxSize[20],custom[illegalEscapeChar]',
+				style: 'width:150px',
+				type: 'text',
+				description: '最大20文字'
 			},
 			{
-				name: "value_fontcolor",
-				display_name: "値フォント色",
-				type: "color",
-				validate: "required,custom[hexcolor]",
-				default_value: "#d3d4d4",
-				description: "デフォルト色: #d3d4d4"
+				name: 'value_fontcolor',
+				display_name: '値フォント色',
+				type: 'color',
+				validate: 'required,custom[hexcolor]',
+				default_value: '#d3d4d4',
+				description: 'デフォルト色: #d3d4d4'
 			},
 			{
-				name: "gauge_upper_color",
-				display_name: "ゲージ色 Upper",
-				type: "color",
-				validate: "required,custom[hexcolor]",
-				default_value: "#ff0000",
-				description: "デフォルト色: #ff0000"
+				name: 'gauge_upper_color',
+				display_name: 'ゲージ色 Upper',
+				type: 'color',
+				validate: 'required,custom[hexcolor]',
+				default_value: '#ff0000',
+				description: 'デフォルト色: #ff0000'
 			},
 			{
-				name: "gauge_mid_color",
-				display_name: "ゲージ色 Mid",
-				type: "color",
-				validate: "required,custom[hexcolor]",
-				default_value: "#f9c802",
-				description: "デフォルト色: #f9c802"
+				name: 'gauge_mid_color',
+				display_name: 'ゲージ色 Mid',
+				type: 'color',
+				validate: 'required,custom[hexcolor]',
+				default_value: '#f9c802',
+				description: 'デフォルト色: #f9c802'
 			},
 			{
-				name: "gauge_lower_color",
-				display_name: "ゲージ色 Lower",
-				type: "color",
-				validate: "required,custom[hexcolor]",
-				default_value: "#a9d70b",
-				description: "デフォルト色: #a9d70b"
+				name: 'gauge_lower_color',
+				display_name: 'ゲージ色 Lower',
+				type: 'color',
+				validate: 'required,custom[hexcolor]',
+				default_value: '#a9d70b',
+				description: 'デフォルト色: #a9d70b'
 			},
 			{
-				name: "gauge_color",
-				display_name: "ゲージ背景色",
-				type: "color",
-				validate: "required,custom[hexcolor]",
-				default_value: "#edebeb",
-				description: "デフォルト色: #edebeb"
+				name: 'gauge_color',
+				display_name: 'ゲージ背景色',
+				type: 'color',
+				validate: 'required,custom[hexcolor]',
+				default_value: '#edebeb',
+				description: 'デフォルト色: #edebeb'
 			},
 			{
-				name: "gauge_widthscale",
-				display_name: "ゲージ太さ",
-				type: "number",
-				style: "width:100px",
-				validate: "required,custom[integer],min[0],max[200]",
+				name: 'gauge_widthscale',
+				display_name: 'ゲージ太さ',
+				type: 'number',
+				style: 'width:100px',
+				validate: 'required,custom[integer],min[0],max[200]',
 				default_value: 100,
-				description: "0から200まで"
+				description: '0から200まで'
 			},
 			{
-				name: "min_value",
-				display_name: "最小値",
-				type: "number",
-				style: "width:100px",
-				validate: "required,custom[number],min[-100000000],max[100000000]",
+				name: 'min_value',
+				display_name: '最小値',
+				type: 'number',
+				style: 'width:100px',
+				validate: 'required,custom[number],min[-100000000],max[100000000]',
 				default_value: 0,
-				description: "数値のみ"
+				description: '数値のみ'
 			},
 			{
-				name: "max_value",
-				display_name: "最大値",
-				type: "number",
-				style: "width:100px",
-				validate: "required,custom[number],min[-100000000],max[100000000]",
+				name: 'max_value',
+				display_name: '最大値',
+				type: 'number',
+				style: 'width:100px',
+				validate: 'required,custom[number],min[-100000000],max[100000000]',
 				default_value: 100,
-				description: "最小値以上"
+				description: '最小値以上'
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {
@@ -1870,10 +1871,12 @@
 
 (function() {
 
-	freeboard.addStyle('.gm-style-cc a', "text-shadow:none;");
+	freeboard.addStyle('.gm-style-cc a', 'text-shadow:none;');
 
 	var googleMapWidget = function (settings) {
 		var self = this;
+		var BLOCK_HEIGHT = 60;
+
 		var currentSettings = settings;
 		var map;
 		var marker;
@@ -1894,10 +1897,10 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(mapElement) || _.isUndefined(blocks))
 				return;
-			var height = 60 * blocks;
+			var height = BLOCK_HEIGHT * blocks;
 			mapElement.css({
-				"height": height + "px",
-				"width": "100%"
+				'height': height + 'px',
+				'width': '100%'
 			});
 		}
 
@@ -1954,7 +1957,7 @@
 				initializeMap();
 			} else {
 				window.gmap_initialize = initializeMap;
-				head.js("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=gmap_initialize");
+				head.js('https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=gmap_initialize');
 			}
 		}
 
@@ -1977,9 +1980,9 @@
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (settingName == "lat")
+			if (settingName === 'lat')
 				currentPosition.lat = newValue;
-			else if (settingName == "lon")
+			else if (settingName === 'lon')
 				currentPosition.lon = newValue;
 
 			updatePosition();
@@ -2000,38 +2003,38 @@
 	};
 
 	freeboard.loadWidgetPlugin({
-		type_name: "google_map",
-		display_name: "Google Map",
-		description: "GoogleMapを表示するウィジェットです。緯度経度に値を設定するとその周辺の地図が表示されます。",
+		type_name: 'google_map',
+		display_name: 'Google Map',
+		description: 'GoogleMapを表示するウィジェットです。緯度経度に値を設定するとその周辺の地図が表示されます。',
 		fill_size: true,
 		settings: [
 			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[4],max[20]",
-				type: "number",
-				style: "width:100px",
+				name: 'blocks',
+				display_name: '高さ (ブロック数)',
+				validate: 'required,custom[integer],min[4],max[20]',
+				type: 'number',
+				style: 'width:100px',
 				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
+				description: '1ブロック60ピクセル。20ブロックまで'
 			},
 			{
-				name: "lat",
-				display_name: "緯度",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
+				name: 'lat',
+				display_name: '緯度',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字'
 			},
 			{
-				name: "lon",
-				display_name: "経度",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
+				name: 'lon',
+				display_name: '経度',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字'
 			},
 			{
-				name: "drawpath",
-				display_name: "移動経路の表示",
-				type: "boolean",
+				name: 'drawpath',
+				display_name: '移動経路の表示',
+				type: 'boolean',
 				default_value: false
 			}
 		],
@@ -2053,10 +2056,11 @@
 
 (function() {
 
-	freeboard.addStyle('.indicator-light', "border-radius:50%;width:22px;height:22px;border:2px solid #3d3d3d;margin-top:5px;float:left;background-color:#222;margin-right:10px;");
-	freeboard.addStyle('.indicator-light.on', "background-color:#FFC773;box-shadow: 0px 0px 15px #FF9900;border-color:#FDF1DF;");
-	freeboard.addStyle('.indicator-text', "margin-top:10px;");
-	var indicatorWidget = function (settings) {
+	freeboard.addStyle('.indicator-light', 'border-radius:50%;width:22px;height:22px;border:2px solid #3d3d3d;margin-top:5px;float:left;background-color:#222;margin-right:10px;');
+	freeboard.addStyle('.indicator-light.on', 'background-color:#FFC773;box-shadow: 0px 0px 15px #FF9900;border-color:#FDF1DF;');
+	freeboard.addStyle('.indicator-text', 'margin-top:10px;');
+
+	var indicatorWidget = function(settings) {
 		var self = this;
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var stateElement = $('<div class="indicator-text"></div>');
@@ -2065,13 +2069,13 @@
 		var isOn = false;
 
 		function updateState() {
-			indicatorElement.toggleClass("on", isOn);
+			indicatorElement.toggleClass('on', isOn);
 
 			if (isOn) {
-				stateElement.text((_.isUndefined(currentSettings.on_text) ? "" : currentSettings.on_text));
+				stateElement.text((_.isUndefined(currentSettings.on_text) ? '' : currentSettings.on_text));
 			}
 			else {
-				stateElement.text((_.isUndefined(currentSettings.off_text) ? "" : currentSettings.off_text));
+				stateElement.text((_.isUndefined(currentSettings.off_text) ? '' : currentSettings.off_text));
 			}
 		}
 
@@ -2081,12 +2085,12 @@
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			updateState();
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (settingName == "value") {
+			if (settingName === 'value') {
 				isOn = Boolean(newValue);
 			}
 
@@ -2104,37 +2108,37 @@
 	};
 
 	freeboard.loadWidgetPlugin({
-		type_name: "indicator",
-		display_name: "点灯ライト",
-		description: "指定した値の条件でライトが点灯するウィジェットです。ONにするには 1 を、OFFにするには 0 を値に設定して下さい。",
+		type_name: 'indicator',
+		display_name: '点灯ライト',
+		description: '指定した値の条件でライトが点灯するウィジェットです。ONにするには 1 を、OFFにするには 0 を値に設定して下さい。',
 		settings: [
 			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
+				name: 'title',
+				display_name: 'タイトル',
+				validate: 'optional,maxSize[100]',
+				type: 'text',
+				description: '最大100文字'
 			},
 			{
-				name: "value",
-				display_name: "値",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
+				name: 'value',
+				display_name: '値',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字'
 			},
 			{
-				name: "on_text",
-				display_name: "ON時テキスト",
-				validate: "optional,maxSize[500]",
-				type: "calculated",
-				description: "最大500文字"
+				name: 'on_text',
+				display_name: 'ON時テキスト',
+				validate: 'optional,maxSize[500]',
+				type: 'calculated',
+				description: '最大500文字'
 			},
 			{
-				name: "off_text",
-				display_name: "OFF時テキスト",
-				validate: "optional,maxSize[500]",
-				type: "calculated",
-				description: "最大500文字"
+				name: 'off_text',
+				display_name: 'OFF時テキスト',
+				validate: 'optional,maxSize[500]',
+				type: 'calculated',
+				description: '最大500文字'
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {
@@ -2155,10 +2159,13 @@
 
 (function() {
 
-	freeboard.addStyle('.picture-widget', "background-size:contain; background-position:center; background-repeat: no-repeat;");
+	freeboard.addStyle('.picture-widget', 'background-size:contain; background-position:center; background-repeat: no-repeat;');
 
 	var pictureWidget = function(settings) {
 		var self = this;
+		var BLOCK_HEIGHT = 60;
+		var TITLE_MARGIN = 7;
+
 		var widgetElement = $('<div class="picture-widget"></div>');
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var currentSettings;
@@ -2168,10 +2175,10 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
-			var height = 60 * blocks - titleElement.outerHeight() - 7;
+			var height = BLOCK_HEIGHT * blocks - titleElement.outerHeight() - TITLE_MARGIN;
 			widgetElement.css({
-				"height": height + "px",
-				"width": "100%"
+				'height': height + 'px',
+				'width': '100%'
 			});
 		}
 
@@ -2184,22 +2191,22 @@
 
 		function updateImage() {
 			if (widgetElement && imageURL) {
-				var cacheBreakerURL = imageURL + (imageURL.indexOf("?") == -1 ? "?" : "&") + Date.now();
+				var cacheBreakerURL = imageURL + (imageURL.indexOf('?') === -1 ? '?' : '&') + Date.now();
 
 				$(widgetElement).css({
-					"background-image" :  "url(" + cacheBreakerURL + ")"
+					'background-image' :  'url(' + cacheBreakerURL + ')'
 				});
 			}
 		}
 
 		this.render = function(element) {
 			$(element).append(titleElement).append(widgetElement);
-			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
+			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
 		}
 
 		this.onSettingsChanged = function(newSettings) {
-			if (titleElement.outerHeight() == 0) {
+			if (titleElement.outerHeight() === 0) {
 				currentSettings = newSettings;
 				return;
 			}
@@ -2208,13 +2215,13 @@
 			if (newSettings.refresh && newSettings.refresh > 0)
 				timer = setInterval(updateImage, Number(newSettings.refresh) * 1000);
 
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			setBlocks(newSettings.blocks);
 			currentSettings = newSettings;
 		}
 
 		this.onCalculatedValueChanged = function(settingName, newValue) {
-			if (settingName == "src")
+			if (settingName === 'src')
 				imageURL = newValue;
 
 			updateImage();
@@ -2232,41 +2239,41 @@
 	};
 
 	freeboard.loadWidgetPlugin({
-		type_name: "picture",
-		display_name: "画像",
-		description: "画像を表示するウィジェットです。Webカメラなどの映像を表示する事に使用します。",
+		type_name: 'picture',
+		display_name: '画像',
+		description: '画像を表示するウィジェットです。Webカメラなどの映像を表示する事に使用します。',
 		settings: [
 			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
+				name: 'title',
+				display_name: 'タイトル',
+				validate: 'optional,maxSize[100]',
+				type: 'text',
+				description: '最大100文字'
 			},
 			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[4],max[20]",
-				type: "number",
-				style: "width:100px",
+				name: 'blocks',
+				display_name: '高さ (ブロック数)',
+				validate: 'required,custom[integer],min[4],max[20]',
+				type: 'number',
+				style: 'width:100px',
 				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
+				description: '1ブロック60ピクセル。20ブロックまで'
 			},
 			{
-				name: "src",
-				display_name: "画像URL",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
+				name: 'src',
+				display_name: '画像URL',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字'
 			},
 			{
-				type: "number",
-				display_name: "更新頻度",
-				validate: "optional,custom[integer],min[1]",
-				style: "width:100px",
-				name: "number",
-				suffix: "秒",
-				description:"更新する必要がない場合は空白のまま"
+				type: 'number',
+				display_name: '更新頻度',
+				validate: 'optional,custom[integer],min[1]',
+				style: 'width:100px',
+				name: 'number',
+				suffix: '秒',
+				description:'更新する必要がない場合は空白のまま'
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {
@@ -2287,19 +2294,20 @@
 
 (function() {
 
-	freeboard.addStyle('.pointer-widget', "width:100%;");
+	freeboard.addStyle('.pointer-widget', 'width:100%;');
 
 	var pointerWidget = function (settings) {
 		var self = this;
 
 		var CIRCLE_WIDTH = 3;
 		var BLOCK_HEIGHT = 60;
+		var TITLE_MARGIN = 7;
 
-		var currentID = _.uniqueId("pointer_");
+		var currentID = _.uniqueId('pointer_');
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var widgetElement = $('<div class="pointer-widget" id="' + currentID + '"></div>');
 		var currentSettings = settings;
-		var fontcolor = freeboard.getStyleObject("values")['color'];
+		var fontcolor = freeboard.getStyleObject('values')['color'];
 
 		// d3 variables
 		var svg, center, pointer, textValue, textUnits, circle;
@@ -2307,10 +2315,10 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
-			var height = BLOCK_HEIGHT * blocks - titleElement.outerHeight() - 7;
+			var height = BLOCK_HEIGHT * blocks - titleElement.outerHeight() - TITLE_MARGIN;
 			widgetElement.css({
-				"height": height + "px",
-				"width": "100%"
+				height: height + 'px',
+				width: '100%'
 			});
 		}
 
@@ -2327,7 +2335,7 @@
 		}
 
 		function getCenteringTransform(rc) {
-			return "translate(" + (rc.width/2) + "," + (rc.height/2) + ")"
+			return 'translate(' + (rc.width/2) + ',' + (rc.height/2) + ')'
 		}
 
 		function getRadius(rc) {
@@ -2352,59 +2360,59 @@
 
 			var rc = widgetElement[0].getBoundingClientRect();
 
-			svg.attr("height", rc.height);
-			svg.attr("width", rc.width);
+			svg.attr('height', rc.height);
+			svg.attr('width', rc.width);
 
-			center.attr("transform", getCenteringTransform(rc));
+			center.attr('transform', getCenteringTransform(rc));
 
 			var r = getRadius(rc);
-			circle.attr("r", r);
+			circle.attr('r', r);
 
-			pointer.attr("d", getPointerPath(r));
+			pointer.attr('d', getPointerPath(r));
 
-			textValue.attr("font-size", calcValueFontSize(r) + "em");
-			textUnits.attr("font-size", calcUnitsFontSize(r) + "em");
-			textUnits.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px");
+			textValue.attr('font-size', calcValueFontSize(r) + 'em');
+			textUnits.attr('font-size', calcUnitsFontSize(r) + 'em');
+			textUnits.attr('dy', parseInt(textValue.node().getBBox().height/2.1) + 'px');
 		}
 
 		function createWidget() {
 
 			var rc = widgetElement[0].getBoundingClientRect();
 
-			svg = d3.select("#" + currentID)
-				.append("svg")
-				.attr("width", rc.width)
-				.attr("height", rc.height);
+			svg = d3.select('#' + currentID)
+				.append('svg')
+				.attr('width', rc.width)
+				.attr('height', rc.height);
 
-			center = svg.append("g")
-				.attr("transform", getCenteringTransform(rc));
+			center = svg.append('g')
+				.attr('transform', getCenteringTransform(rc));
 
 			var r = getRadius(rc);
-			circle = center.append("circle")
-				.attr("r", r)
-				.style("fill", "rgba(0, 0, 0, 0)")
-				.style("stroke-width", CIRCLE_WIDTH)
-				.style("stroke", currentSettings.circle_color)
+			circle = center.append('circle')
+				.attr('r', r)
+				.style('fill', 'rgba(0, 0, 0, 0)')
+				.style('stroke-width', CIRCLE_WIDTH)
+				.style('stroke', currentSettings.circle_color)
 
-			textValue = center.append("text")
-				.text("0")
-				.style("fill", fontcolor)
-				.style("text-anchor", "middle")
-				.attr("dy", ".3em")
-				.attr("font-size", calcValueFontSize(r) + "em")
-				.attr("class", "ultralight-text");
+			textValue = center.append('text')
+				.text('0')
+				.style('fill', fontcolor)
+				.style('text-anchor', 'middle')
+				.attr('dy', '.3em')
+				.attr('font-size', calcValueFontSize(r) + 'em')
+				.attr('class', 'ultralight-text');
 
-			textUnits = center.append("text")
+			textUnits = center.append('text')
 				.text(currentSettings.units)
-				.style("fill", fontcolor)
-				.style("text-anchor", "middle")
-				.attr("dy", parseInt(textValue.node().getBBox().height/2.1) + "px")
-				.attr("font-size", calcUnitsFontSize(r) + "em")
-				.attr("class", "ultralight-text");
+				.style('fill', fontcolor)
+				.style('text-anchor', 'middle')
+				.attr('dy', parseInt(textValue.node().getBBox().height/2.1) + 'px')
+				.attr('font-size', calcUnitsFontSize(r) + 'em')
+				.attr('class', 'ultralight-text');
 
-			pointer = center.append("path")
-				.style("fill", currentSettings.pointer_color)
-				.attr("d", getPointerPath(r));
+			pointer = center.append('path')
+				.style('fill', currentSettings.pointer_color)
+				.attr('d', getPointerPath(r));
 
 			// svg chart fit to container
 			widgetElement.resize(_.debounce(function() {
@@ -2414,7 +2422,7 @@
 
 		this.render = function (element) {
 			$(element).append(titleElement).append(widgetElement);
-			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
+			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
 			createWidget();
 		}
@@ -2425,10 +2433,10 @@
 				return;
 			}
 
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-			circle.style("stroke", newSettings.circle_color);
-			pointer.style("fill", newSettings.pointer_color);
-			textUnits.text((_.isUndefined(newSettings.units) ? "" : newSettings.units))
+			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+			circle.style('stroke', newSettings.circle_color);
+			pointer.style('fill', newSettings.pointer_color);
+			textUnits.text((_.isUndefined(newSettings.units) ? '' : newSettings.units))
 			setBlocks(newSettings.blocks);
 
 			currentSettings = newSettings;
@@ -2437,19 +2445,19 @@
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (_.isUndefined(svg))
 				return;
-			if (settingName == "direction") {
+			if (settingName === 'direction') {
 				pointer.transition()
 					.duration(250)
-					.ease("bounce")
-					.attrTween("transform", function(d, i, a) {
-						return d3.interpolateString(a, "rotate(" + parseInt(newValue) + ", 0, 0)");
+					.ease('bounce')
+					.attrTween('transform', function(d, i, a) {
+						return d3.interpolateString(a, 'rotate(' + parseInt(newValue) + ', 0, 0)');
 					});
-			} else if (settingName == "value_text") {
+			} else if (settingName === 'value_text') {
 				if (_.isUndefined(newValue))
 					return;
 				textValue.transition()
 					.duration(500)
-					.tween("text", function() {
+					.tween('text', function() {
 						var i = d3.interpolate(this.textContent, Number(newValue));
 						return function(t) {
 							this.textContent = i(t).toFixed(1);
@@ -2470,66 +2478,66 @@
 	};
 
 	freeboard.loadWidgetPlugin({
-		type_name: "pointer",
-		display_name: "ポインタ",
-		description: "方角と値を表示するウィジェットです。",
+		type_name: 'pointer',
+		display_name: 'ポインタ',
+		description: '方角と値を表示するウィジェットです。',
 		external_scripts : [
-			"plugins/thirdparty/d3.v3.min.js",
+			'plugins/thirdparty/d3.v3.min.js',
 		],
 		settings: [
 			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
+				name: 'title',
+				display_name: 'タイトル',
+				validate: 'optional,maxSize[100]',
+				type: 'text',
+				description: '最大100文字'
 			},
 			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[4],max[10]",
-				type: "number",
-				style: "width:100px",
+				name: 'blocks',
+				display_name: '高さ (ブロック数)',
+				validate: 'required,custom[integer],min[4],max[10]',
+				type: 'number',
+				style: 'width:100px',
 				default_value: 4,
-				description: "1ブロック60ピクセル。10ブロックまで"
+				description: '1ブロック60ピクセル。10ブロックまで'
 			},
 			{
-				name: "direction",
-				display_name: "方向",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字<br>角度を入力して下さい。"
+				name: 'direction',
+				display_name: '方向',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字<br>角度を入力して下さい。'
 			},
 			{
-				name: "value_text",
-				display_name: "値テキスト",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
+				name: 'value_text',
+				display_name: '値テキスト',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字'
 			},
 			{
-				name: "units",
-				display_name: "単位",
-				validate: "optional,maxSize[20]",
-				style: "width:150px",
-				type: "text",
-				description: "最大20文字"
+				name: 'units',
+				display_name: '単位',
+				validate: 'optional,maxSize[20]',
+				style: 'width:150px',
+				type: 'text',
+				description: '最大20文字'
 			},
 			{
-				name: "circle_color",
-				display_name: "サークル色",
-				validate: "required,custom[hexcolor]",
-				type: "color",
-				default_value: "#ff9900",
-				description: "デフォルト色: #ff9900"
+				name: 'circle_color',
+				display_name: 'サークル色',
+				validate: 'required,custom[hexcolor]',
+				type: 'color',
+				default_value: '#ff9900',
+				description: 'デフォルト色: #ff9900'
 			},
 			{
-				name: "pointer_color",
-				display_name: "ポインタ色",
-				validate: "required,custom[hexcolor]",
-				type: "color",
-				default_value: "#fff",
-				description: "デフォルト色: #fff"
+				name: 'pointer_color',
+				display_name: 'ポインタ色',
+				validate: 'required,custom[hexcolor]',
+				type: 'color',
+				default_value: '#fff',
+				description: 'デフォルト色: #fff'
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {
@@ -2551,7 +2559,7 @@
 (function() {
 
 	var SPARKLINE_HISTORY_LENGTH = 100;
-	var SPARKLINE_COLORS = ["#FF9900", "#FFFFFF", "#B3B4B4", "#6B6B6B", "#28DE28", "#13F7F9", "#E6EE18", "#C41204", "#CA3CB8", "#0B1CFB"];
+	var SPARKLINE_COLORS = ['#FF9900', '#FFFFFF', '#B3B4B4', '#6B6B6B', '#28DE28', '#13F7F9', '#E6EE18', '#C41204', '#CA3CB8', '#0B1CFB'];
 
 	function easeTransitionText(newValue, textElement, duration) {
 
@@ -2609,10 +2617,10 @@
 			}
 			values[plotIndex].push(Number(val));
 
-			if(valueMin === undefined || val < valueMin) {
+			if(_.isUndefined(valueMin) || val < valueMin) {
 				valueMin = val;
 			}
-			if(valueMax === undefined || val > valueMax) {
+			if(_.isUndefined(valueMax) || val > valueMax) {
 				valueMax = val;
 			}
 		}
@@ -2629,19 +2637,19 @@
 		var composite = false;
 		_.each(values, function(valueArray, valueIndex) {
 			$(element).sparkline(valueArray, {
-				type: "line",
+				type: 'line',
 				composite: composite,
-				height: "100%",
-				width: "100%",
+				height: '100%',
+				width: '100%',
 				fillColor: false,
 				lineColor: SPARKLINE_COLORS[valueIndex % SPARKLINE_COLORS.length],
 				lineWidth: 2,
 				spotRadius: 3,
 				spotColor: false,
-				minSpotColor: "#78AB49",
-				maxSpotColor: "#78AB49",
-				highlightSpotColor: "#9D3926",
-				highlightLineColor: "#9D3926",
+				minSpotColor: '#78AB49',
+				maxSpotColor: '#78AB49',
+				highlightSpotColor: '#9D3926',
+				highlightLineColor: '#9D3926',
 				chartRangeMin: valueMin,
 				chartRangeMax: valueMax
 			});
@@ -2649,9 +2657,9 @@
 		});
 	}
 
-	var valueStyle = freeboard.getStyleString("values");
+	var valueStyle = freeboard.getStyleString('values');
 
-	freeboard.addStyle('.widget-big-text', valueStyle + "font-size:75px;");
+	freeboard.addStyle('.widget-big-text', valueStyle + 'font-size:75px;');
 	freeboard.addStyle('.tw-container', 'position:relative;');
 	freeboard.addStyle('.tw-value-block', 'display:table;')
 	freeboard.addStyle('.tw-value', valueStyle + 'vertical-align:middle; display:table-cell; text-overflow: ellipsis;');
@@ -2661,6 +2669,8 @@
 	var textWidget = function (settings) {
 
 		var self = this;
+		var BLOCK_HEIGHT = 60;
+		var TITLE_MARGIN = 7;
 
 		var currentSettings = settings;
 		var titleElement = $('<h2 class="section-title"></h2>');
@@ -2672,29 +2682,29 @@
 
 		function recalcLayout() {
 			var titlemargin;
-			titlemargin = (titleElement.css('display') == 'none') ? 0 : titleElement.outerHeight();
+			titlemargin = (titleElement.css('display') === 'none') ? 0 : titleElement.outerHeight();
 
-			var height = 60 * self.getHeight() - titlemargin - 10;
+			var height = BLOCK_HEIGHT * self.getHeight() - titlemargin - TITLE_MARGIN;
 			containerElement.css({
-				"height": height + "px",
-				"width": "100%"
+				'height': height + 'px',
+				'width': '100%'
 			});
 
 			var sparkmargin;
-			sparkmargin = (sparklineElement.css('display') == 'none') ? 0 : sparklineElement.outerHeight();
+			sparkmargin = (sparklineElement.css('display') === 'none') ? 0 : sparklineElement.outerHeight();
 
 			valueBlockElement.css({
-				"height": height - sparkmargin + "px"
+				'height': height - sparkmargin + 'px'
 			});
 
 			var padding = 0.7;
-			if (currentSettings.size == "big") {
+			if (currentSettings.size === 'big') {
 				padding = 3.0;
 				if(currentSettings.sparkline)
 					padding = 2.4
 			}
 			unitsElement.css({
-				"padding-top": padding + "em"
+				'padding-top': padding + 'em'
 			});
 		}
 
@@ -2713,27 +2723,27 @@
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 
-			var shouldDisplayTitle = (!_.isUndefined(newSettings.title) && newSettings.title != "");
+			var shouldDisplayTitle = (!_.isUndefined(newSettings.title) && newSettings.title != '');
 			if (shouldDisplayTitle) {
 				titleElement.html(newSettings.title);
-				titleElement.attr("style", null);
+				titleElement.attr('style', null);
 			} else {
 				titleElement.empty();
 				titleElement.hide();
 			}
 
 			if (newSettings.sparkline) {
-				sparklineElement.attr("style", null);
+				sparklineElement.attr('style', null);
 			} else {
 				delete sparklineElement.data().values;
 				sparklineElement.empty();
 				sparklineElement.hide();
 			}
 
-			var shouldDisplayUnits = (!_.isUndefined(newSettings.units) && newSettings.units != "");
+			var shouldDisplayUnits = (!_.isUndefined(newSettings.units) && newSettings.units != '');
 			if (shouldDisplayUnits) {
-				unitsElement.html((_.isUndefined(newSettings.units) ? "" : newSettings.units));
-				unitsElement.attr("style", null);
+				unitsElement.html((_.isUndefined(newSettings.units) ? '' : newSettings.units));
+				unitsElement.attr('style', null);
 			} else {
 				unitsElement.empty();
 				unitsElement.hide();
@@ -2741,18 +2751,18 @@
 
 			var valueFontSize = 30;
 
-			if (newSettings.size == "big") {
+			if (newSettings.size === 'big') {
 				valueFontSize = 75;
 				if(newSettings.sparkline)
 					valueFontSize = 60;
 			}
-			valueElement.css({"font-size" : valueFontSize + "px"});
+			valueElement.css({'font-size' : valueFontSize + 'px'});
 
 			recalcLayout();
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (settingName == "value") {
+			if (settingName === 'value') {
 				if (currentSettings.animate)
 					easeTransitionText(newValue, valueElement, 500);
 				else
@@ -2768,67 +2778,67 @@
 		}
 
 		this.getHeight = function () {
-			return (currentSettings.size == "big" || currentSettings.sparkline) ? 2 : 1;
+			return (currentSettings.size === 'big' || currentSettings.sparkline) ? 2 : 1;
 		}
 
 		this.onSettingsChanged(settings);
 	};
 
 	freeboard.loadWidgetPlugin({
-		type_name: "text_widget",
-		display_name: "テキスト",
-		description: "テキストと簡易チャートが表示できるウィジェットです。",
+		type_name: 'text_widget',
+		display_name: 'テキスト',
+		description: 'テキストと簡易チャートが表示できるウィジェットです。',
 		external_scripts : [
-			"plugins/thirdparty/jquery.sparkline.min.js"
+			'plugins/thirdparty/jquery.sparkline.min.js'
 		],
 		settings: [
 			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
+				name: 'title',
+				display_name: 'タイトル',
+				validate: 'optional,maxSize[100]',
+				type: 'text',
+				description: '最大100文字'
 			},
 			{
-				name: "size",
-				display_name: "テキストサイズ",
-				type: "option",
+				name: 'size',
+				display_name: 'テキストサイズ',
+				type: 'option',
 				options: [
 					{
-						name: "レギュラー",
-						value: "regular"
+						name: 'レギュラー',
+						value: 'regular'
 					},
 					{
-						name: "ビッグ",
-						value: "big"
+						name: 'ビッグ',
+						value: 'big'
 					}
 				]
 			},
 			{
-				name: "value",
-				display_name: "値",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
+				name: 'value',
+				display_name: '値',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字'
 			},
 			{
-				name: "sparkline",
-				display_name: "簡易チャートを含む",
-				type: "boolean"
+				name: 'sparkline',
+				display_name: '簡易チャートを含む',
+				type: 'boolean'
 			},
 			{
-				name: "animate",
-				display_name: "値変化アニメーション",
-				type: "boolean",
+				name: 'animate',
+				display_name: '値変化アニメーション',
+				type: 'boolean',
 				default_value: true
 			},
 			{
-				name: "units",
-				display_name: "単位",
-				validate: "optional,maxSize[20]",
-				type: "text",
-				style: "width:150px",
-				description: "最大20文字"
+				name: 'units',
+				display_name: '単位',
+				validate: 'optional,maxSize[20]',
+				type: 'text',
+				style: 'width:150px',
+				description: '最大20文字'
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {
