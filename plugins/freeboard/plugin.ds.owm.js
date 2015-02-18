@@ -37,28 +37,28 @@
 			$.ajax({
 				url: "http://api.openweathermap.org/data/2.5/weather?q=" + encodeURIComponent(currentSettings.location) + "&units=" + currentSettings.units,
 				dataType: "JSONP",
-				success: function (data) {
-					// Rejigger our data into something easier to understand
-					var newData = {
-						place_name: data.name,
-						latitude: data.coord.lat,
-						longitude: data.coord.lon,
-						sunrise: (new Date(data.sys.sunrise * 1000)).toLocaleTimeString(),
-						sunset: (new Date(data.sys.sunset * 1000)).toLocaleTimeString(),
-						conditions: toTitleCase(data.weather[0].description),
-						current_temp: data.main.temp,
-						high_temp: data.main.temp_max,
-						low_temp: data.main.temp_min,
-						pressure: data.main.pressure,
-						humidity: data.main.humidity,
-						wind_speed: data.wind.speed,
-						wind_direction: data.wind.deg
-					};
-
-					updateCallback(newData);
-				},
-				error: function (xhr, status, error) {
-				}
+			})
+			.done(function (data) {
+				// Rejigger our data into something easier to understand
+				var easy = {
+					place_name: data.name,
+					latitude: data.coord.lat,
+					longitude: data.coord.lon,
+					sunrise: (new Date(data.sys.sunrise * 1000)).toLocaleTimeString(),
+					sunset: (new Date(data.sys.sunset * 1000)).toLocaleTimeString(),
+					conditions: toTitleCase(data.weather[0].description),
+					current_temp: data.main.temp,
+					high_temp: data.main.temp_max,
+					low_temp: data.main.temp_min,
+					pressure: data.main.pressure,
+					humidity: data.main.humidity,
+					wind_speed: data.wind.speed,
+					wind_direction: data.wind.deg
+				};
+				updateCallback(_.merge(data, easy));
+			})
+			.fail(function (xhr, status) {
+				console.error('Open Weather Map API error: ' + status);
 			});
 		}
 
@@ -106,7 +106,7 @@
 			{
 				name: "refresh",
 				display_name: "更新頻度",
-				validate: "required,custom[integer],min[1]",
+				validate: "required,custom[integer],min[5]",
 				style: "width:100px",
 				type: "number",
 				suffix: "秒",

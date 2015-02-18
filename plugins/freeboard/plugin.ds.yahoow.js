@@ -166,11 +166,11 @@
 			{
 				name: 'refresh',
 				display_name: '更新頻度',
-				validate: 'required,custom[integer],min[1]',
+				validate: 'required,custom[integer],min[30]',
 				style: 'width:100px',
 				type: 'number',
 				suffix: '秒',
-				default_value: 5
+				default_value: 30
 			}
 		],
 		newInstance: function (settings, newInstanceCallback, updateCallback) {
