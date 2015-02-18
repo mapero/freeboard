@@ -10,10 +10,13 @@
 
 (function() {
 
-	freeboard.addStyle('.picture-widget', "background-size:contain; background-position:center; background-repeat: no-repeat;");
+	freeboard.addStyle('.picture-widget', 'background-size:contain; background-position:center; background-repeat: no-repeat;');
 
 	var pictureWidget = function(settings) {
 		var self = this;
+		var BLOCK_HEIGHT = 60;
+		var TITLE_MARGIN = 7;
+
 		var widgetElement = $('<div class="picture-widget"></div>');
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var currentSettings;
@@ -23,10 +26,10 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
-			var height = 60 * blocks - titleElement.outerHeight() - 7;
+			var height = BLOCK_HEIGHT * blocks - titleElement.outerHeight() - TITLE_MARGIN;
 			widgetElement.css({
-				"height": height + "px",
-				"width": "100%"
+				'height': height + 'px',
+				'width': '100%'
 			});
 		}
 
@@ -39,22 +42,22 @@
 
 		function updateImage() {
 			if (widgetElement && imageURL) {
-				var cacheBreakerURL = imageURL + (imageURL.indexOf("?") == -1 ? "?" : "&") + Date.now();
+				var cacheBreakerURL = imageURL + (imageURL.indexOf('?') === -1 ? '?' : '&') + Date.now();
 
 				$(widgetElement).css({
-					"background-image" :  "url(" + cacheBreakerURL + ")"
+					'background-image' :  'url(' + cacheBreakerURL + ')'
 				});
 			}
 		}
 
 		this.render = function(element) {
 			$(element).append(titleElement).append(widgetElement);
-			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
+			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
 		}
 
 		this.onSettingsChanged = function(newSettings) {
-			if (titleElement.outerHeight() == 0) {
+			if (titleElement.outerHeight() === 0) {
 				currentSettings = newSettings;
 				return;
 			}
@@ -63,13 +66,13 @@
 			if (newSettings.refresh && newSettings.refresh > 0)
 				timer = setInterval(updateImage, Number(newSettings.refresh) * 1000);
 
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			setBlocks(newSettings.blocks);
 			currentSettings = newSettings;
 		}
 
 		this.onCalculatedValueChanged = function(settingName, newValue) {
-			if (settingName == "src")
+			if (settingName === 'src')
 				imageURL = newValue;
 
 			updateImage();
@@ -87,41 +90,41 @@
 	};
 
 	freeboard.loadWidgetPlugin({
-		type_name: "picture",
-		display_name: "画像",
-		description: "画像を表示するウィジェットです。Webカメラなどの映像を表示する事に使用します。",
+		type_name: 'picture',
+		display_name: '画像',
+		description: '画像を表示するウィジェットです。Webカメラなどの映像を表示する事に使用します。',
 		settings: [
 			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
+				name: 'title',
+				display_name: 'タイトル',
+				validate: 'optional,maxSize[100]',
+				type: 'text',
+				description: '最大100文字'
 			},
 			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[4],max[20]",
-				type: "number",
-				style: "width:100px",
+				name: 'blocks',
+				display_name: '高さ (ブロック数)',
+				validate: 'required,custom[integer],min[4],max[20]',
+				type: 'number',
+				style: 'width:100px',
 				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
+				description: '1ブロック60ピクセル。20ブロックまで'
 			},
 			{
-				name: "src",
-				display_name: "画像URL",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
+				name: 'src',
+				display_name: '画像URL',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字'
 			},
 			{
-				type: "number",
-				display_name: "更新頻度",
-				validate: "optional,custom[integer],min[1]",
-				style: "width:100px",
-				name: "number",
-				suffix: "秒",
-				description:"更新する必要がない場合は空白のまま"
+				type: 'number',
+				display_name: '更新頻度',
+				validate: 'optional,custom[integer],min[1]',
+				style: 'width:100px',
+				name: 'number',
+				suffix: '秒',
+				description:'更新する必要がない場合は空白のまま'
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {

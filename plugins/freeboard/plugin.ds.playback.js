@@ -52,14 +52,12 @@
 
 			$.ajax({
 				url: currentSettings.datafile,
-				dataType: (currentSettings.is_jsonp) ? "JSONP" : "JSON",
+				dataType: (currentSettings.is_jsonp) ? 'JSONP' : 'JSON',
 				success: function (data) {
-					if (_.isArray(data)) {
+					if (_.isArray(data))
 						currentDataset = data;
-					}
-					else {
+					else
 						currentDataset = [];
-					}
 
 					currentIndex = 0;
 
@@ -81,35 +79,35 @@
 	};
 
 	freeboard.loadDatasourcePlugin({
-		type_name: "playback",
-		display_name: "Playback",
-		description: "指定された間隔で連続したデータを再生します。オブジェクトの配列を含む有効なJSONファイルを受信します。",
+		type_name: 'playback',
+		display_name: 'Playback',
+		description: '指定された間隔で連続したデータを再生します。オブジェクトの配列を含む有効なJSONファイルを受信します。',
 		settings: [
 			{
-				name: "datafile",
-				display_name: "データファイルURL",
-				validate: "required,custom[url]",
-				type: "text",
-				description: "JSON配列データへのリンク"
+				name: 'datafile',
+				display_name: 'データファイルURL',
+				validate: 'required,custom[url]',
+				type: 'text',
+				description: 'JSON配列データへのリンク'
 			},
 			{
-				name: "is_jsonp",
-				display_name: "JSONP使用",
-				type: "boolean"
+				name: 'is_jsonp',
+				display_name: 'JSONP使用',
+				type: 'boolean'
 			},
 			{
-				name: "loop",
-				display_name: "ループ再生",
-				type: "boolean",
-				description: "巻戻しとループ再生時終了"
+				name: 'loop',
+				display_name: 'ループ再生',
+				type: 'boolean',
+				description: '巻戻しとループ再生時終了'
 			},
 			{
-				name: "refresh",
-				display_name: "更新頻度",
-				validate: "required,custom[integer],min[1]",
-				style: "width:100px",
-				type: "number",
-				suffix: "秒",
+				name: 'refresh',
+				display_name: '更新頻度',
+				validate: 'required,custom[integer],min[1]',
+				style: 'width:100px',
+				type: 'number',
+				suffix: '秒',
 				default_value: 5
 			}
 		],

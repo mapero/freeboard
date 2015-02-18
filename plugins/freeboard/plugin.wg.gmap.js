@@ -10,10 +10,12 @@
 
 (function() {
 
-	freeboard.addStyle('.gm-style-cc a', "text-shadow:none;");
+	freeboard.addStyle('.gm-style-cc a', 'text-shadow:none;');
 
 	var googleMapWidget = function (settings) {
 		var self = this;
+		var BLOCK_HEIGHT = 60;
+
 		var currentSettings = settings;
 		var map;
 		var marker;
@@ -34,10 +36,10 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(mapElement) || _.isUndefined(blocks))
 				return;
-			var height = 60 * blocks;
+			var height = BLOCK_HEIGHT * blocks;
 			mapElement.css({
-				"height": height + "px",
-				"width": "100%"
+				'height': height + 'px',
+				'width': '100%'
 			});
 		}
 
@@ -94,7 +96,7 @@
 				initializeMap();
 			} else {
 				window.gmap_initialize = initializeMap;
-				head.js("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=gmap_initialize");
+				head.js('https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=gmap_initialize');
 			}
 		}
 
@@ -117,9 +119,9 @@
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (settingName == "lat")
+			if (settingName === 'lat')
 				currentPosition.lat = newValue;
-			else if (settingName == "lon")
+			else if (settingName === 'lon')
 				currentPosition.lon = newValue;
 
 			updatePosition();
@@ -140,38 +142,38 @@
 	};
 
 	freeboard.loadWidgetPlugin({
-		type_name: "google_map",
-		display_name: "Google Map",
-		description: "GoogleMapを表示するウィジェットです。緯度経度に値を設定するとその周辺の地図が表示されます。",
+		type_name: 'google_map',
+		display_name: 'Google Map',
+		description: 'GoogleMapを表示するウィジェットです。緯度経度に値を設定するとその周辺の地図が表示されます。',
 		fill_size: true,
 		settings: [
 			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[4],max[20]",
-				type: "number",
-				style: "width:100px",
+				name: 'blocks',
+				display_name: '高さ (ブロック数)',
+				validate: 'required,custom[integer],min[4],max[20]',
+				type: 'number',
+				style: 'width:100px',
 				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
+				description: '1ブロック60ピクセル。20ブロックまで'
 			},
 			{
-				name: "lat",
-				display_name: "緯度",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
+				name: 'lat',
+				display_name: '緯度',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字'
 			},
 			{
-				name: "lon",
-				display_name: "経度",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
+				name: 'lon',
+				display_name: '経度',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字'
 			},
 			{
-				name: "drawpath",
-				display_name: "移動経路の表示",
-				type: "boolean",
+				name: 'drawpath',
+				display_name: '移動経路の表示',
+				type: 'boolean',
 				default_value: false
 			}
 		],

@@ -10,10 +10,11 @@
 
 (function() {
 
-	freeboard.addStyle('.indicator-light', "border-radius:50%;width:22px;height:22px;border:2px solid #3d3d3d;margin-top:5px;float:left;background-color:#222;margin-right:10px;");
-	freeboard.addStyle('.indicator-light.on', "background-color:#FFC773;box-shadow: 0px 0px 15px #FF9900;border-color:#FDF1DF;");
-	freeboard.addStyle('.indicator-text', "margin-top:10px;");
-	var indicatorWidget = function (settings) {
+	freeboard.addStyle('.indicator-light', 'border-radius:50%;width:22px;height:22px;border:2px solid #3d3d3d;margin-top:5px;float:left;background-color:#222;margin-right:10px;');
+	freeboard.addStyle('.indicator-light.on', 'background-color:#FFC773;box-shadow: 0px 0px 15px #FF9900;border-color:#FDF1DF;');
+	freeboard.addStyle('.indicator-text', 'margin-top:10px;');
+
+	var indicatorWidget = function(settings) {
 		var self = this;
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var stateElement = $('<div class="indicator-text"></div>');
@@ -22,13 +23,13 @@
 		var isOn = false;
 
 		function updateState() {
-			indicatorElement.toggleClass("on", isOn);
+			indicatorElement.toggleClass('on', isOn);
 
 			if (isOn) {
-				stateElement.text((_.isUndefined(currentSettings.on_text) ? "" : currentSettings.on_text));
+				stateElement.text((_.isUndefined(currentSettings.on_text) ? '' : currentSettings.on_text));
 			}
 			else {
-				stateElement.text((_.isUndefined(currentSettings.off_text) ? "" : currentSettings.off_text));
+				stateElement.text((_.isUndefined(currentSettings.off_text) ? '' : currentSettings.off_text));
 			}
 		}
 
@@ -38,12 +39,12 @@
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			updateState();
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (settingName == "value") {
+			if (settingName === 'value') {
 				isOn = Boolean(newValue);
 			}
 
@@ -61,37 +62,37 @@
 	};
 
 	freeboard.loadWidgetPlugin({
-		type_name: "indicator",
-		display_name: "点灯ライト",
-		description: "指定した値の条件でライトが点灯するウィジェットです。ONにするには 1 を、OFFにするには 0 を値に設定して下さい。",
+		type_name: 'indicator',
+		display_name: '点灯ライト',
+		description: '指定した値の条件でライトが点灯するウィジェットです。ONにするには 1 を、OFFにするには 0 を値に設定して下さい。',
 		settings: [
 			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
+				name: 'title',
+				display_name: 'タイトル',
+				validate: 'optional,maxSize[100]',
+				type: 'text',
+				description: '最大100文字'
 			},
 			{
-				name: "value",
-				display_name: "値",
-				validate: "optional,maxSize[2000]",
-				type: "calculated",
-				description: "最大2000文字"
+				name: 'value',
+				display_name: '値',
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: '最大2000文字'
 			},
 			{
-				name: "on_text",
-				display_name: "ON時テキスト",
-				validate: "optional,maxSize[500]",
-				type: "calculated",
-				description: "最大500文字"
+				name: 'on_text',
+				display_name: 'ON時テキスト',
+				validate: 'optional,maxSize[500]',
+				type: 'calculated',
+				description: '最大500文字'
 			},
 			{
-				name: "off_text",
-				display_name: "OFF時テキスト",
-				validate: "optional,maxSize[500]",
-				type: "calculated",
-				description: "最大500文字"
+				name: 'off_text',
+				display_name: 'OFF時テキスト',
+				validate: 'optional,maxSize[500]',
+				type: 'calculated',
+				description: '最大500文字'
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {

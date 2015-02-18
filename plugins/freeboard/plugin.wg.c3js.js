@@ -10,7 +10,10 @@
 
 	var c3jsWidget = function (settings) {
 		var self = this;
-		var currentID = _.uniqueId("c3js_");
+		var BLOCK_HEIGHT = 60;
+		var TITLE_MARGIN = 7;
+
+		var currentID = _.uniqueId('c3js_');
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var chartElement = $('<div id="' + currentID + '"></div>');
 		var currentSettings;
@@ -19,11 +22,11 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
-			var height = 60 * blocks - titleElement.outerHeight() - 7;
+			var height = BLOCK_HEIGHT * blocks - titleElement.outerHeight() - TITLE_MARGIN;
 			chartElement.css({
-				"max-height": height + "px",
-				"height": height + "px",
-				"width": "100%"
+				'max-height': height + 'px',
+				'height': height + 'px',
+				'width': '100%'
 			});
 		}
 
@@ -38,7 +41,7 @@
 
 			if (!_.isUndefined(chartsettings.options)) {
 				try {
-					options = JSON.parse(chartsettings.options.replace(/'/g, "\\\""), function(k,v) {
+					options = JSON.parse(chartsettings.options.replace(/'/g, '\\\"'), function(k,v) {
 						var ret;
 						var str = v.toString();
 						if (str.indexOf('function') === 0)
@@ -50,7 +53,7 @@
 						return ret;
 					});
 				} catch (e) {
-					alert("チャートオプションが不正です。 " + e);
+					alert('チャートオプションが不正です。 ' + e);
 					console.error(e);
 					return;
 				}
@@ -95,7 +98,7 @@
 			data = _.omit(data, '_op');
 
 			try {
-			switch (op) {
+				switch (op) {
 				case 'load':
 					chart.load(data);
 					break;
@@ -159,16 +162,16 @@
 
 		this.render = function (element) {
 			$(element).append(titleElement).append(chartElement);
-			titleElement.html((_.isUndefined(currentSettings.title) ? "" : currentSettings.title));
+			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
 		}
 
 		this.onSettingsChanged = function (newSettings) {
-			if (titleElement.outerHeight() == 0) {
+			if (titleElement.outerHeight() === 0) {
 				currentSettings = newSettings;
 				return;
 			}
-			titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			setBlocks(newSettings.blocks);
 			if (newSettings.options != currentSettings.options)
 				destroyChart();
@@ -197,48 +200,48 @@
 	};
 
 	freeboard.loadWidgetPlugin({
-		type_name: "c3js",
-		display_name: "C3チャート",
-		description: "様々な形式のチャートを表示するウィジェットです。詳細は <a href='http://c3js.org/' target='_blank'>http://c3js.org/</a>",
+		type_name: 'c3js',
+		display_name: 'C3チャート',
+		description: '様々な形式のチャートを表示するウィジェットです。詳細は <a href="http://c3js.org/" target="_blank">http://c3js.org/</a>',
 		external_scripts : [
-			"plugins/thirdparty/d3.v3.min.js",
-			"plugins/thirdparty/c3.min.js"
+			'plugins/thirdparty/d3.v3.min.js',
+			'plugins/thirdparty/c3.min.js'
 		],
 		settings: [
 			{
-				name: "title",
-				display_name: "タイトル",
-				validate: "optional,maxSize[100]",
-				type: "text",
-				description: "最大100文字"
+				name: 'title',
+				display_name: 'タイトル',
+				validate: 'optional,maxSize[100]',
+				type: 'text',
+				description: '最大100文字'
 			},
 			{
-				name: "blocks",
-				display_name: "高さ (ブロック数)",
-				validate: "required,custom[integer],min[2],max[20]",
-				type: "number",
-				style: "width:100px",
+				name: 'blocks',
+				display_name: '高さ (ブロック数)',
+				validate: 'required,custom[integer],min[2],max[20]',
+				type: 'number',
+				style: 'width:100px',
 				default_value: 4,
-				description: "1ブロック60ピクセル。20ブロックまで"
+				description: '1ブロック60ピクセル。20ブロックまで'
 			},
 			{
-				name: "value",
-				display_name: "値",
-				validate: "optional,maxSize[5000]",
-				type: "calculated",
-				description: "最大5000文字"
+				name: 'value',
+				display_name: '値',
+				validate: 'optional,maxSize[5000]',
+				type: 'calculated',
+				description: '最大5000文字'
 			},
 			{
-				name: "options",
-				display_name: "チャートオプション",
-				validate: "optional,maxSize[5000]",
-				type: "json",
+				name: 'options',
+				display_name: 'チャートオプション',
+				validate: 'optional,maxSize[5000]',
+				type: 'json',
 				default_value: '{\n\
 	"data": {\n\
 		"type": "line"\n\
 	}\n\
 }',
-				description: "最大5000文字 JSON形式文字列。"
+				description: '最大5000文字 JSON形式文字列。'
 			}
 		],
 

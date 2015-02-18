@@ -20,13 +20,13 @@
 			ws = new WebSocket(currentSettings.uri);
 
 			ws.onopen = function(evt) {
-				console.info("WebSocket Connected to %s", ws.url);
+				console.info('WebSocket Connected to %s', ws.url);
 				retryCount = 0;
 			};
 
 			ws.onclose = function(evt) {
-				console.info("WebSocket Disconnected from %s", evt.srcElement.url);
-				if (dispose == false && currentSettings.reconnect == true) {
+				console.info('WebSocket Disconnected from %s', evt.srcElement.url);
+				if (dispose === false && currentSettings.reconnect === true) {
 					_.delay(function() {
 						wsOpen();
 					}, CONNECTION_DELAY);
@@ -38,12 +38,12 @@
 					var obj = JSON.parse(evt.data);
 					updateCallback(obj);
 				} catch (e) {
-					console.error("WebSocket Bad parse", evt.data);
+					console.error('WebSocket Bad parse', evt.data);
 				}
 			}
 
 			ws.onerror = function(evt) {
-				console.error("WebSocket Error", evt);
+				console.error('WebSocket Error', evt);
 			}
 		}
 
@@ -79,23 +79,23 @@
 	};
 
 	freeboard.loadDatasourcePlugin({
-		type_name: "websocket",
-		display_name: "WebSocket",
-		description: "WebSocket APIを使用し、JSONデータを受信します。",
+		type_name: 'websocket',
+		display_name: 'WebSocket',
+		description: 'WebSocket APIを使用し、JSONデータを受信します。',
 		settings: [
 			{
-				name: "uri",
-				display_name: "サーバーURI",
-				validate: "required,maxSize[1000]",
-				type: "text",
-				description: "最大1000文字 例: ws://server:port/path "
+				name: 'uri',
+				display_name: 'サーバーURI',
+				validate: 'required,maxSize[1000]',
+				type: 'text',
+				description: '最大1000文字 例: ws://server:port/path '
 			},
 			{
-				name: "reconnect",
-				display_name: "自動再接続",
-				type: "boolean",
+				name: 'reconnect',
+				display_name: '自動再接続',
+				type: 'boolean',
 				default_value: true,
-				description: "接続が切れた際自動的に再接続します。"
+				description: '接続が切れた際自動的に再接続します。'
 			}
 		],
 		newInstance: function(settings, newInstanceCallback, updateCallback) {

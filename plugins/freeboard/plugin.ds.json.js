@@ -12,6 +12,8 @@
 
 	var jsonDatasource = function (settings, updateCallback) {
 		var self = this;
+		var PROXY_URL = 'thingproxy.freeboard.io/fetch/';
+
 		var updateTimer = null;
 		var currentSettings = settings;
 		var errorStage = 0; 	// 0 = try standard request
@@ -39,8 +41,8 @@
 
 			var requestURL = currentSettings.url;
 
-			if (errorStage == 2 && currentSettings.use_thingproxy) {
-				requestURL = (location.protocol == "https:" ? "https:" : "http:") + "//thingproxy.freeboard.io/fetch/" + encodeURI(currentSettings.url);
+			if (errorStage === 2 && currentSettings.use_thingproxy) {
+				requestURL = (location.protocol == 'https:' ? 'https:' : 'http:') + '//' + PROXY_URL + encodeURI(currentSettings.url);
 			}
 
 			var body = currentSettings.body;
@@ -56,8 +58,8 @@
 
 			$.ajax({
 				url: requestURL,
-				dataType: (errorStage == 1) ? "JSONP" : "JSON",
-				type: currentSettings.method || "GET",
+				dataType: (errorStage === 1) ? 'JSONP' : 'JSON',
+				type: currentSettings.method || 'GET',
 				data: body,
 				beforeSend: function (xhr) {
 					try {
@@ -103,81 +105,81 @@
 	};
 
 	freeboard.loadDatasourcePlugin({
-		type_name: "JSON",
-		display_name: "JSON",
-		description: "指定のURLからJSONデータを受信します。",
+		type_name: 'JSON',
+		display_name: 'JSON',
+		description: '指定のURLからJSONデータを受信します。',
 		settings: [
 			{
-				name: "url",
-				display_name: "URL",
-				validate: "required,custom[url]",
-				type: "text"
+				name: 'url',
+				display_name: 'URL',
+				validate: 'required,custom[url]',
+				type: 'text'
 			},
 			{
-				name: "use_thingproxy",
-				display_name: "プロキシサーバー試行",
+				name: 'use_thingproxy',
+				display_name: 'プロキシサーバー試行',
 				description: 'まず直接接続し、失敗した場合、JSONP接続を試みます。これも失敗した場合、プロキシサーバーを使用することができます。使用することで多くのAPI接続トラブルを解決できるでしょう。<a href="https://github.com/Freeboard/thingproxy" target="_blank">詳細</a>',
-				type: "boolean",
+				type: 'boolean',
 				default_value: true
 			},
 			{
-				name: "refresh",
-				display_name: "更新頻度",
-				validate: "required,custom[integer],min[1]",
-				style: "width:100px",
-				type: "number",
-				suffix: "秒",
+				name: 'refresh',
+				display_name: '更新頻度',
+				validate: 'required,custom[integer],min[1]',
+				style: 'width:100px',
+				type: 'number',
+				suffix: '秒',
 				default_value: 5
 			},
 			{
-				name: "method",
-				display_name: "メソッド",
-				type: "option",
-				style: "width:200px",
+				name: 'method',
+				display_name: 'メソッド',
+				type: 'option',
+				style: 'width:200px',
 				options: [
 					{
-						name: "GET",
-						value: "GET"
+						name: 'GET',
+						value: 'GET'
 					},
 					{
-						name: "POST",
-						value: "POST"
+						name: 'POST',
+						value: 'POST'
 					},
 					{
-						name: "PUT",
-						value: "PUT"
+						name: 'PUT',
+						value: 'PUT'
 					},
 					{
-						name: "DELETE",
-						value: "DELETE"
+						name: 'DELETE',
+						value: 'DELETE'
 					}
 				]
 			},
 			{
-				name: "body",
-				display_name: "Body",
-				type: "json",
-				validate: "optional,maxSize[2000]",
-				description: "リクエスト本文。通常はPOSTメソッド時に使用される。最大2000文字"
+				name: 'body',
+				display_name: 'Body',
+				type: 'json',
+				validate: 'optional,maxSize[2000]',
+				description: 'リクエスト本文。通常はPOSTメソッド時に使用される。最大2000文字'
 			},
 			{
-				name: "headers",
-				display_name: "Header",
-				type: "array",
+				name: 'headers',
+				display_name: 'Header',
+				type: 'array',
 				settings: [
 					{
-						name: "name",
-						display_name: "名前",
-						type: "text",
-						validate: "optional,maxSize[500]",
-						description: "最大500文字"
+						name: 'name',
+						display_name: '名前',
+						type: 'text',
+						validate: 'optional,maxSize[500]',
+						description: '最大500文字'
 					},
 					{
-						name: "value",
-						display_name: "値",
-						type: "text",
-						validate: "optional,maxSize[500]",
-						description: "最大500文字"
+						name: 'value',
+						display_name: '値',
+						type: 'text',
+						validate: 'optional,maxSize[500]',
+						description: '最大500文字'
 					}
 				]
 			}
