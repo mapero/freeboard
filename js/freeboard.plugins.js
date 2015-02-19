@@ -39,18 +39,18 @@
 			};
 
 			updateCallback(data);
-		}
+		};
 
 		this.onDispose = function () {
 			stopTimer();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			if (_.isUndefined(currentSettings.timezone))
 				currentSettings.timezone = 'Asia/Tokyo';
 			updateTimer();
-		}
+		};
 
 		updateTimer();
 	};
@@ -557,12 +557,12 @@
 					}
 				}
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			clearInterval(updateTimer);
 			updateTimer = null;
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			lockErrorStage = false;
@@ -571,7 +571,7 @@
 			currentSettings = newSettings;
 			updateRefresh(currentSettings.refresh * 1000);
 			self.updateNow();
-		}
+		};
 	};
 
 	freeboard.loadDatasourcePlugin({
@@ -1052,18 +1052,18 @@
 			.fail(function (xhr, status) {
 				console.error('Open Weather Map API error: ' + status);
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			clearInterval(updateTimer);
 			updateTimer = null;
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			self.updateNow();
 			updateRefresh(currentSettings.refresh * 1000);
-		}
+		};
 	};
 
 	freeboard.loadDatasourcePlugin({
@@ -1178,16 +1178,16 @@
 				error: function (xhr, status, error) {
 				}
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			stopTimeout();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			self.updateNow();
-		}
+		};
 	};
 
 	freeboard.loadDatasourcePlugin({
@@ -1251,7 +1251,6 @@
 
 			ws.onopen = function(evt) {
 				console.info('WebSocket Connected to %s', ws.url);
-				retryCount = 0;
 			};
 
 			ws.onclose = function(evt) {
@@ -1261,7 +1260,7 @@
 						wsOpen();
 					}, CONNECTION_DELAY);
 				}
-			}
+			};
 
 			ws.onmessage = function(evt) {
 				try {
@@ -1270,11 +1269,11 @@
 				} catch (e) {
 					console.error('WebSocket Bad parse', evt.data);
 				}
-			}
+			};
 
 			ws.onerror = function(evt) {
 				console.error('WebSocket Error', evt);
-			}
+			};
 		}
 
 		function wsClose() {
@@ -1285,12 +1284,12 @@
 		}
 
 		this.updateNow = function() {
-		}
+		};
 
 		this.onDispose = function() {
 			dispose = true;
 			wsClose();
-		}
+		};
 
 		this.onSettingsChanged = function(newSettings) {
 			var reconnect = newSettings.reconnect;
@@ -1303,7 +1302,7 @@
 				currentSettings.reconnect = reconnect;
 				wsOpen();
 			}, CONNECTION_DELAY);
-		}
+		};
 
 		wsOpen();
 	};
@@ -1416,10 +1415,10 @@
 		this.updateNow = function () {
 			var units = (currentSettings.units === 'metric') ? 'c' : 'f';
 			var query = "select * from weather.bylocation where location='" + currentSettings.location + "' and unit='" + units + "'";
-			var uri = 'https://query.yahooapis.com/v1/public/yql?q='
-					+ encodeURIComponent(query)
-					+ '&format=json&env='
-					+ encodeURIComponent('store://datatables.org/alltableswithkeys');
+			var uri = 'https://query.yahooapis.com/v1/public/yql?q=' +
+					encodeURIComponent(query) +
+					'&format=json&env=' +
+					encodeURIComponent('store://datatables.org/alltableswithkeys');
 			$.ajax({
 				url: uri,
 				dataType: 'JSONP'
@@ -1454,18 +1453,18 @@
 			.fail(function (xhr, status) {
 				console.error('Yahoo Weather API error: ' + status);
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			clearInterval(updateTimer);
 			updateTimer = null;
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			self.updateNow();
 			updateRefresh(currentSettings.refresh * 1000);
-		}
+		};
 
 		updateRefresh(currentSettings.refresh * 1000);
 	};
@@ -1680,7 +1679,7 @@
 			$(element).append(titleElement).append(chartElement);
 			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (titleElement.outerHeight() === 0) {
@@ -1692,7 +1691,7 @@
 			if (newSettings.options != currentSettings.options)
 				destroyChart();
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (!_.isObject(newValue))
@@ -1702,15 +1701,15 @@
 				createWidget(newValue, currentSettings);
 			else
 				plotData(newValue);
-		}
+		};
 
 		this.onDispose = function () {
 			destroyChart();
-		}
+		};
 
 		this.getHeight = function () {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -1824,7 +1823,7 @@
 			_.delay(function() {
 				createGauge();
 			}, 500);
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (_.isUndefined(gaugeObject)) {
@@ -1835,22 +1834,22 @@
 			currentSettings = newSettings;
 			createGauge();
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (!_.isUndefined(gaugeObject)) {
 				gaugeObject.refresh(Number(newValue));
 			}
-		}
+		};
 
 		this.onDispose = function () {
 			if (!_.isUndefined(gaugeObject))
 				gaugeObject = null;
-		}
+		};
 
 		this.getHeight = function () {
 			return 4;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -2021,7 +2020,7 @@
 
 			gaugeElement.empty();
 
-			var config = {
+			gauge = new GaugeD3({
 				bindto: currentID,
 				value: {
 					val: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
@@ -2046,9 +2045,7 @@
 				shadow: {
 					hide: true
 				}
-			};
-
-			gauge = new GaugeD3(config);
+			});
 
 			gaugeElement.resize(_.debounce(function() {
 				gauge.resize();
@@ -2057,21 +2054,23 @@
 
 		this.render = function (element) {
 			$(element).append(titleElement).append(gaugeElement);
-			createGauge();
 			setBlocks(currentSettings.blocks);
+			createGauge();
 		}
 
 		this.onSettingsChanged = function (newSettings) {
-			if (titleElement.outerHeight() === 0) {
+			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+			if (_.isUndefined(gauge)) {
 				currentSettings = newSettings;
 				return;
 			}
-			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			setBlocks(newSettings.blocks);
 			currentSettings = newSettings;
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
+			if (!_.isUndefined(gauge))
+				gauge.refresh(Number(newValue));
 		}
 
 		this.onDispose = function () {
@@ -2080,7 +2079,7 @@
 		}
 
 		this.getHeight = function () {
-			return 4;
+			return currentSettings.blocks;
 		}
 
 		this.onSettingsChanged(settings);
@@ -2101,6 +2100,15 @@
 				validate: 'optional,maxSize[100]',
 				type: 'text',
 				description: '最大100文字'
+			},
+			{
+				name: 'blocks',
+				display_name: '高さ (ブロック数)',
+				validate: 'required,custom[integer],min[4],max[20]',
+				type: 'number',
+				style: 'width:100px',
+				default_value: 4,
+				description: '1ブロック60ピクセル。20ブロックまで'
 			},
 			{
 				name: 'value',
@@ -2232,7 +2240,7 @@
 		var map;
 		var marker;
 		var poly;
-		var mapElement = $('<div></div>')
+		var mapElement = $('<div></div>');
 		var currentPosition = {};
 
 		function updatePosition() {
@@ -2316,7 +2324,7 @@
 			$(element).append(mapElement);
 			setBlocks(currentSettings.blocks);
 			createWidget();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (_.isUndefined(map)) {
@@ -2328,7 +2336,7 @@
 			if (!newSettings.drawpath)
 				poly.getPath().clear();
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (settingName === 'lat')
@@ -2337,18 +2345,18 @@
 				currentPosition.lon = newValue;
 
 			updatePosition();
-		}
+		};
 
 		this.onDispose = function () {
 			// for memoryleak
 			map = null;
 			marker = null;
 			poly = null;
-		}
+		};
 
 		this.getHeight = function () {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -2432,13 +2440,13 @@
 
 		this.render = function (element) {
 			$(element).append(titleElement).append(indicatorElement).append(stateElement);
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			updateState();
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (settingName === 'value') {
@@ -2446,14 +2454,14 @@
 			}
 
 			updateState();
-		}
+		};
 
 		this.onDispose = function () {
-		}
+		};
 
 		this.getHeight = function () {
 			return 1;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -2554,7 +2562,7 @@
 			$(element).append(titleElement).append(widgetElement);
 			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
-		}
+		};
 
 		this.onSettingsChanged = function(newSettings) {
 			if (titleElement.outerHeight() === 0) {
@@ -2569,22 +2577,22 @@
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			setBlocks(newSettings.blocks);
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function(settingName, newValue) {
 			if (settingName === 'src')
 				imageURL = newValue;
 
 			updateImage();
-		}
+		};
 
 		this.onDispose = function() {
 			stopTimer();
-		}
+		};
 
 		this.getHeight = function() {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -2658,7 +2666,7 @@
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var widgetElement = $('<div class="pointer-widget" id="' + currentID + '"></div>');
 		var currentSettings = settings;
-		var fontcolor = freeboard.getStyleObject('values')['color'];
+		var fontcolor = freeboard.getStyleObject('values').color;
 
 		// d3 variables
 		var svg, center, pointer, textValue, textUnits, circle;
@@ -2686,7 +2694,7 @@
 		}
 
 		function getCenteringTransform(rc) {
-			return 'translate(' + (rc.width/2) + ',' + (rc.height/2) + ')'
+			return 'translate(' + (rc.width/2) + ',' + (rc.height/2) + ')';
 		}
 
 		function getRadius(rc) {
@@ -2702,7 +2710,7 @@
 		}
 
 		function getPointerPath(r) {
-			return polygonPath([0, - r + CIRCLE_WIDTH, 15, -(r-20), -15, -(r-20)])
+			return polygonPath([0, - r + CIRCLE_WIDTH, 15, -(r-20), -15, -(r-20)]);
 		}
 
 		function resize() {
@@ -2743,7 +2751,7 @@
 				.attr('r', r)
 				.style('fill', 'rgba(0, 0, 0, 0)')
 				.style('stroke-width', CIRCLE_WIDTH)
-				.style('stroke', currentSettings.circle_color)
+				.style('stroke', currentSettings.circle_color);
 
 			textValue = center.append('text')
 				.text('0')
@@ -2776,7 +2784,7 @@
 			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
 			createWidget();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (_.isUndefined(svg)) {
@@ -2787,11 +2795,11 @@
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			circle.style('stroke', newSettings.circle_color);
 			pointer.style('fill', newSettings.pointer_color);
-			textUnits.text((_.isUndefined(newSettings.units) ? '' : newSettings.units))
+			textUnits.text((_.isUndefined(newSettings.units) ? '' : newSettings.units));
 			setBlocks(newSettings.blocks);
 
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (_.isUndefined(svg))
@@ -2815,15 +2823,15 @@
 						};
 					});
 			}
-		}
+		};
 
 		this.onDispose = function () {
 			svg = circle = center = pointer = textValue = textUnits = null;
-		}
+		};
 
 		this.getHeight = function () {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -2974,7 +2982,7 @@
 			if(_.isUndefined(valueMax) || val > valueMax) {
 				valueMax = val;
 			}
-		}
+		};
 
 		if(_.isArray(value)) {
 			_.each(value, collateValues);
@@ -3012,7 +3020,7 @@
 
 	freeboard.addStyle('.widget-big-text', valueStyle + 'font-size:75px;');
 	freeboard.addStyle('.tw-container', 'position:relative;');
-	freeboard.addStyle('.tw-value-block', 'display:table;')
+	freeboard.addStyle('.tw-value-block', 'display:table;');
 	freeboard.addStyle('.tw-value', valueStyle + 'vertical-align:middle; display:table-cell; text-overflow: ellipsis;');
 	freeboard.addStyle('.tw-units', 'display:table-cell; padding-left: 10px; vertical-align:middle;');
 	freeboard.addStyle('.tw-sparkline', 'position:absolute; height:20px; width:100%;');
@@ -3052,7 +3060,7 @@
 			if (currentSettings.size === 'big') {
 				padding = 3.0;
 				if(currentSettings.sparkline)
-					padding = 2.4
+					padding = 2.4;
 			}
 			unitsElement.css({
 				'padding-top': padding + 'em'
@@ -3069,12 +3077,12 @@
 			$(element).append(titleElement).append(containerElement);
 
 			recalcLayout();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 
-			var shouldDisplayTitle = (!_.isUndefined(newSettings.title) && newSettings.title != '');
+			var shouldDisplayTitle = (!_.isUndefined(newSettings.title) && newSettings.title !== '');
 			if (shouldDisplayTitle) {
 				titleElement.html(newSettings.title);
 				titleElement.attr('style', null);
@@ -3091,7 +3099,7 @@
 				sparklineElement.hide();
 			}
 
-			var shouldDisplayUnits = (!_.isUndefined(newSettings.units) && newSettings.units != '');
+			var shouldDisplayUnits = (!_.isUndefined(newSettings.units) && newSettings.units !== '');
 			if (shouldDisplayUnits) {
 				unitsElement.html((_.isUndefined(newSettings.units) ? '' : newSettings.units));
 				unitsElement.attr('style', null);
@@ -3110,7 +3118,7 @@
 			valueElement.css({'font-size' : valueFontSize + 'px'});
 
 			recalcLayout();
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (settingName === 'value') {
@@ -3122,15 +3130,15 @@
 				if (currentSettings.sparkline)
 					addValueToSparkline(sparklineElement, newValue);
 			}
-		}
+		};
 
 		this.onDispose = function () {
 
-		}
+		};
 
 		this.getHeight = function () {
 			return (currentSettings.size === 'big' || currentSettings.sparkline) ? 2 : 1;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};

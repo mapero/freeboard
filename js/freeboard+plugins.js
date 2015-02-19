@@ -28,22 +28,20 @@ DatasourceModel = function(theFreeboardModel, datasourcePlugins) {
 	this.name = ko.observable();
 	this.latestData = ko.observable();
 	this.settings = ko.observable({});
-	this.settings.subscribe(function(newValue)
-	{
+	this.settings.subscribe(function(newValue) {
 		if(!_.isUndefined(self.datasourceInstance) && _.isFunction(self.datasourceInstance.onSettingsChanged))
 		{
 			self.datasourceInstance.onSettingsChanged(newValue);
 		}
 	});
 
-	this.updateCallback = function(newData)
-	{
+	this.updateCallback = function(newData) {
 		theFreeboardModel.processDatasourceUpdate(self, newData);
 
 		self.latestData(newData);
 
 		self.last_updated(moment().format('HH:mm:ss'));
-	}
+	};
 
 	this.type = ko.observable();
 	this.type.subscribe(function(newValue)
@@ -87,20 +85,20 @@ DatasourceModel = function(theFreeboardModel, datasourcePlugins) {
 			type    : self.type(),
 			settings: self.settings()
 		};
-	}
+	};
 
 	this.deserialize = function(object)
 	{
 		self.settings(object.settings);
 		self.name(object.name);
 		self.type(object.type);
-	}
+	};
 
 	this.getDataRepresentation = function(dataPath)
 	{
 		var valueFunction = new Function('data', 'return ' + dataPath + ';');
 		return valueFunction.call(undefined, self.latestData());
-	}
+	};
 
 	this.updateNow = function()
 	{
@@ -108,13 +106,13 @@ DatasourceModel = function(theFreeboardModel, datasourcePlugins) {
 		{
 			self.datasourceInstance.updateNow();
 		}
-	}
+	};
 
 	this.dispose = function()
 	{
 		disposeDatasourceInstance();
-	}
-}
+	};
+};
 
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ F R E E B O A R D                                                  │ \\
@@ -186,7 +184,7 @@ DeveloperConsole = function(theFreeboardModel)
 			addNewScriptRow();
 		});
 
-		new DialogBox(container, 'Developer Console', 'OK', null, function(okcancel){
+		var db = new DialogBox(container, 'Developer Console', 'OK', null, function(okcancel){
 			if (okcancel === 'ok') {
 				// Unload our previous scripts
 				_.each(theFreeboardModel.plugins(), function(pluginSource){
@@ -219,8 +217,8 @@ DeveloperConsole = function(theFreeboardModel)
 		{
 			showDeveloperConsole();
 		}
-	}
-}
+	};
+};
 
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ F R E E B O A R D                                                  │ \\
@@ -345,7 +343,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 				widget.processDatasourceUpdate(datasourceName);
 			});
 		});
-	}
+	};
 
 	this._datasourceTypes = ko.observable();
 	this.datasourceTypes = ko.computed({
@@ -398,7 +396,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 	this.addPluginSource = function(pluginSource) {
 		if (pluginSource && self.plugins.indexOf(pluginSource) === -1)
 			self.plugins.push(pluginSource);
-	}
+	};
 
 	this.serialize = function() {
 		var panes = [];
@@ -422,7 +420,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			datasources : datasources,
 			columns     : freeboardUI.getUserColumns()
 		};
-	}
+	};
 
 	this.deserialize = function(object, finishedCallback) {
 		self.clearDashboard();
@@ -476,7 +474,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		} else {
 			finishLoad();
 		}
-	}
+	};
 
 	this.clearDashboard = function() {
 		freeboardUI.removeAllPanes();
@@ -492,7 +490,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		self.plugins.removeAll();
 		self.datasources.removeAll();
 		self.panes.removeAll();
-	}
+	};
 
 	this.loadDashboard = function(dashboardData, callback) {
 		freeboardUI.showLoadingIndicator(true);
@@ -506,7 +504,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 				freeboard.emit('dashboard_loaded');
 			});
 		}, 50);
-	}
+	};
 
 	this.loadDashboardFromLocalFile = function() {
 		// Check for the various File API support.
@@ -552,7 +550,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		} else {
 			alert('Unable to load a file in this browser.');
 		}
-	}
+	};
 
 	this.saveDashboard = function() {
 		var contentType = 'application/octet-stream';
@@ -571,47 +569,47 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			a.download = file;
 			a.dispatchEvent(e);
 		}
-	}
+	};
 
 	this.addDatasource = function(datasource) {
 		self.datasources.push(datasource);
-	}
+	};
 
 	this.deleteDatasource = function(datasource) {
 		delete self.datasourceData[datasource.name()];
 		datasource.dispose();
 		self.datasources.remove(datasource);
-	}
+	};
 
 	this.createPane = function() {
 		var newPane = new PaneModel(self, widgetPlugins);
 		self.addPane(newPane);
-	}
+	};
 
 	this.addGridColumnLeft = function() {
 		freeboardUI.addGridColumnLeft();
-	}
+	};
 
 	this.addGridColumnRight = function() {
 		freeboardUI.addGridColumnRight();
-	}
+	};
 
 	this.subGridColumnLeft = function() {
 		freeboardUI.subGridColumnLeft();
-	}
+	};
 
 	this.subGridColumnRight = function() {
 		freeboardUI.subGridColumnRight();
-	}
+	};
 
 	this.addPane = function(pane) {
 		self.panes.push(pane);
-	}
+	};
 
 	this.deletePane = function(pane) {
 		pane.dispose();
 		self.panes.remove(pane);
-	}
+	};
 
 	this.deleteWidget = function(widget) {
 		ko.utils.arrayForEach(self.panes(), function(pane) {
@@ -619,7 +617,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		});
 
 		widget.dispose();
-	}
+	};
 
 	this.updateDatasourceNameRef = function(newDatasourceName, oldDatasourceName) {
 		_.each(self.panes(), function(pane) {
@@ -627,7 +625,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 				widget.updateDatasourceNameRef(newDatasourceName, oldDatasourceName);
 			});
 		});
-	}
+	};
 
 	$.fn.transform = function(axis) {
 		var ret = 0;
@@ -640,7 +638,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		if (_.isUndefined(ret))
 			ret = 0;
 		return ret;
-	}
+	};
 
 	this.setEditing = function(editing, animate) {
 		// Don't allow editing if it's not allowed
@@ -649,7 +647,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 
 		self.isEditing(editing);
 
-		if (editing == false) {
+		if (editing === false) {
 			if (self.isVisibleDatasources())
 				self.setVisibilityDatasources(false);
 			if (self.isVisibleBoardTools())
@@ -692,7 +690,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		}
 
 		freeboardUI.showPaneEditIcons(editing, true);
-	}
+	};
 
 	this.setVisibilityDatasources = function(visibility, animate) {
 		// Don't allow editing if it's not allowed
@@ -704,7 +702,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		var ds = $('#datasources');
 		var width = ds.outerWidth();
 
-		if (visibility == true) {
+		if (visibility === true) {
 			ds.css('display', 'block');
 			ds.css('transform', 'translateX(-' + width + 'px)');
 		} else {
@@ -713,7 +711,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 				ds.css('display', 'none');
 			}, 300);
 		}
-	}
+	};
 
 	this.setVisibilityBoardTools = function(visibility, animate) {
 		// Don't allow editing if it's not allowed
@@ -737,7 +735,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			}
 		}, 500);
 
-		if (visibility == true) {
+		if (visibility === true) {
 			$('html').addClass('boardtools-opening');
 			$('#board-actions > ul').removeClass('collapse');
 
@@ -764,19 +762,19 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 
 			$(window).off('resize', debounce);
 		}
-	}
+	};
 
 	this.toggleEditing = function() {
 		self.setEditing(!self.isEditing());
-	}
+	};
 
 	this.toggleDatasources = function() {
 		self.setVisibilityDatasources(!self.isVisibleDatasources());
-	}
+	};
 
 	this.toggleBoardTools = function() {
 		self.setVisibilityBoardTools(!self.isVisibleBoardTools());
-	}
+	};
 }
 
 // ┌────────────────────────────────────────────────────────────────────┐ \\
@@ -816,7 +814,7 @@ function FreeboardUI()
 					.attr('data-col', newPosition.col);
 
 				paneModel.processSizeChange();
-			}
+			};
 		}
 
 		updateGridWidth(Math.min(maxDisplayableColumns, userColumns));
@@ -863,12 +861,12 @@ function FreeboardUI()
 				var prevColumnIndex = grid.cols + 1;
 				var prevCol = paneModel.col[prevColumnIndex];
 				var prevRow = paneModel.row[prevColumnIndex];
-				var newPosition;
+				var newPosition, newCol;
 				if (shift) {
-					var newCol = prevCol > 1 ? prevCol - 1 : 1;
+					newCol = prevCol > 1 ? prevCol - 1 : 1;
 					newPosition = {row: prevRow, col: newCol};
 				} else {
-					var newCol = prevCol <= grid.cols ? prevCol : grid.cols;
+					newCol = prevCol <= grid.cols ? prevCol : grid.cols;
 					newPosition = {row: prevRow, col: newCol};
 				}
 				$(paneElement).attr('data-sizex', Math.min(paneModel.col_width(), grid.cols))
@@ -949,11 +947,11 @@ function FreeboardUI()
 				}
 			}).data('gridster');
 
-			processResize(false)
+			processResize(false);
 
 			grid.disable();
 		}
-	}
+	};
 
 	function addPane(element, viewModel, isEditing) {
 		var position = getPositionForScreenSize(viewModel);
@@ -1008,7 +1006,7 @@ function FreeboardUI()
 			_.delay(function() {
 				loadingIndicator.removeClass('show').addClass('hide');
 				_.delay(function() {
-					loadingIndicator.remove()
+					loadingIndicator.remove();
 				}, 500);
 			}, 500);
 		}
@@ -1055,9 +1053,6 @@ function FreeboardUI()
 			tool.css('display', 'block').removeClass('hide').addClass('show');
 		else {
 			tool.removeClass('show').addClass('hide');
-			_.delay(function() {
-				tool.css('display', 'none');
-			}, 200);
 		}
 	}
 
@@ -1168,7 +1163,7 @@ function FreeboardUI()
 		setUserColumns : function(numCols) {
 			setUserColumns(numCols);
 		}
-	}
+	};
 }
 
 // ┌────────────────────────────────────────────────────────────────────┐ \\
@@ -1273,10 +1268,10 @@ JSEditor = function() {
 		},
 
 		setAssetRoot: function (assetRoot) {
-			setAssetRoot(assetRoot)
+			setAssetRoot(assetRoot);
 		}
-	}
-}
+	};
+};
 
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ F R E E B O A R D                                                  │ \\
@@ -1305,16 +1300,16 @@ function PaneModel(theFreeboardModel, widgetPlugins) {
 
 	this.addWidget = function (widget) {
 		this.widgets.push(widget);
-	}
+	};
 
 	this.widgetCanMoveUp = function (widget) {
 		return (self.widgets.indexOf(widget) >= 1);
-	}
+	};
 
 	this.widgetCanMoveDown = function (widget) {
 		var i = self.widgets.indexOf(widget);
 		return (i < self.widgets().length - 1);
-	}
+	};
 
 	this.moveWidgetUp = function (widget) {
 		if (self.widgetCanMoveUp(widget)) {
@@ -1322,7 +1317,7 @@ function PaneModel(theFreeboardModel, widgetPlugins) {
 			var array = self.widgets();
 			self.widgets.splice(i - 1, 2, array[i], array[i - 1]);
 		}
-	}
+	};
 
 	this.moveWidgetDown = function (widget) {
 		if (self.widgetCanMoveDown(widget)) {
@@ -1330,7 +1325,7 @@ function PaneModel(theFreeboardModel, widgetPlugins) {
 			var array = self.widgets();
 			self.widgets.splice(i, 2, array[i + 1], array[i]);
 		}
-	}
+	};
 
 	this.processSizeChange = function() {
 		// Give the animation a moment to complete. Really hacky.
@@ -1340,7 +1335,7 @@ function PaneModel(theFreeboardModel, widgetPlugins) {
 				widget.processSizeChange();
 			});
 		}, 1000);
-	}
+	};
 
 	this.getCalculatedHeight = function () {
 		var memo = 0;
@@ -1356,7 +1351,7 @@ function PaneModel(theFreeboardModel, widgetPlugins) {
 		var rows = Math.ceil((sumHeights + 20) / 30);
 
 		return Math.max(4, rows);
-	}
+	};
 
 	this.serialize = function () {
 		var widgets = [];
@@ -1373,7 +1368,7 @@ function PaneModel(theFreeboardModel, widgetPlugins) {
 			col_width: self.col_width(),
 			widgets: widgets
 		};
-	}
+	};
 
 	this.deserialize = function (object) {
 		self.title(object.title);
@@ -1388,13 +1383,13 @@ function PaneModel(theFreeboardModel, widgetPlugins) {
 			widget.deserialize(widgetConfig);
 			self.widgets.push(widget);
 		});
-	}
+	};
 
 	this.dispose = function () {
 		_.each(self.widgets(), function (widget) {
 			widget.dispose();
 		});
-	}
+	};
 }
 
 // ┌────────────────────────────────────────────────────────────────────┐ \\
@@ -1535,6 +1530,7 @@ PluginEditor = function(jsEditor, valueEditor)
 					currentSettingsValues[settingDef.name] = _.unescape(currentSettingsValues[settingDef.name]);
 
 				var valueCell = createSettingRow(settingDef.name, displayName);
+				var input, defaultValue;
 
 				switch (settingDef.type) {
 					case 'array':
@@ -1627,7 +1623,7 @@ PluginEditor = function(jsEditor, valueEditor)
 
 						var onOffSwitch = $('<div class="onoffswitch"><label class="onoffswitch-label" for="' + settingDef.name + '-onoff"><div class="onoffswitch-inner"><span class="on">はい</span><span class="off">いいえ</span></div><div class="onoffswitch-switch"></div></label></div>').appendTo(valueCell);
 
-						var input = $('<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="' + settingDef.name + '-onoff">').prependTo(onOffSwitch).change(function() {
+						input = $('<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="' + settingDef.name + '-onoff">').prependTo(onOffSwitch).change(function() {
 							newSettings.settings[settingDef.name] = this.checked;
 						});
 
@@ -1636,9 +1632,9 @@ PluginEditor = function(jsEditor, valueEditor)
 						break;
 
 					case 'option':
-						var defaultValue = currentSettingsValues[settingDef.name];
+						defaultValue = currentSettingsValues[settingDef.name];
 
-						var input = $('<select></select>')
+						input = $('<select></select>')
 											.addClass(_toValidateClassString(settingDef.validate))
 											.attr('style', settingDef.style)
 											.appendTo($('<div class="styled-select"></div>')
@@ -1675,8 +1671,8 @@ PluginEditor = function(jsEditor, valueEditor)
 					case 'color':
 						var curColorPickerID = _.uniqueId('picker-');
 						var thisColorPickerID = '#' + curColorPickerID;
-						var defaultValue = currentSettingsValues[settingDef.name];
-						var input = $('<input id="' + curColorPickerID + '" type="text">').addClass(_toValidateClassString(settingDef.validate, 'text-input')).appendTo(valueCell);
+						defaultValue = currentSettingsValues[settingDef.name];
+						input = $('<input id="' + curColorPickerID + '" type="text">').addClass(_toValidateClassString(settingDef.validate, 'text-input')).appendTo(valueCell);
 
 						newSettings.settings[settingDef.name] = defaultValue;
 
@@ -1715,7 +1711,7 @@ PluginEditor = function(jsEditor, valueEditor)
 					case 'json':
 						newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
 
-						var input = $('<textarea class="calculated-value-input" style="z-index: 3000"></textarea>')
+						input = $('<textarea class="calculated-value-input" style="z-index: 3000"></textarea>')
 								.addClass(_toValidateClassString(settingDef.validate, 'text-input'))
 								.attr('style', settingDef.style)
 								.appendTo(valueCell).change(function() {
@@ -1769,7 +1765,7 @@ PluginEditor = function(jsEditor, valueEditor)
 								$(valueCell).siblings('.form-label').append(inputAdder);
 							}
 						} else {
-							var input = $('<input type="text">')
+							input = $('<input type="text">')
 												.addClass(_toValidateClassString(settingDef.validate, 'text-input'))
 												.attr('style', settingDef.style)
 												.appendTo(valueCell).change(function() {
@@ -1793,7 +1789,7 @@ PluginEditor = function(jsEditor, valueEditor)
 			});
 		}
 
-		new DialogBox(form, title, '保存', 'キャンセル', function(okcancel) {
+		var db = new DialogBox(form, title, '保存', 'キャンセル', function(okcancel) {
 			if (okcancel === 'ok') {
 				// escape text value
 				_.each(selectedType.settings, function(def) {
@@ -1879,8 +1875,8 @@ PluginEditor = function(jsEditor, valueEditor)
 					settingsSavedCallback) {
 			createPluginEditor(title, pluginTypes, currentInstanceName, currentTypeName, currentSettingsValues, settingsSavedCallback);
 		}
-	}
-}
+	};
+};
 
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ F R E E B O A R D                                                  │ \\
@@ -1977,7 +1973,7 @@ ValueEditor = function(theFreeboardModel)
 
 				if (!_.isUndefined(datasource))	{
 					var dataPath = 'data';
-					var remainder = ''
+					var remainder = '';
 
 					// Parse the partial JSON selectors
 					if (!_.isUndefined(match[2])) {
@@ -2008,7 +2004,7 @@ ValueEditor = function(theFreeboardModel)
 					} else if(_.isObject(dataValue)) {
 						// For objects, list out the keys
 						_.each(dataValue, function(value, name) {
-							if (name.indexOf(remainder) == 0) {
+							if (name.indexOf(remainder) === 0) {
 								if (_isPotentialTypeMatch(value, expectsType)) {
 									options.push({value: name, entity: value,
 										precede_char: '[\"', follow_char: '\"]'});
@@ -2103,8 +2099,7 @@ ValueEditor = function(theFreeboardModel)
 		$(element).addClass('calculated-value-input')
 			.bind('keyup mouseup freeboard-eval', function(event) {
 				// Ignore arrow keys and enter keys
-				if(dropdown && event.type === 'keyup'
-					&& (event.keyCode === 38 || event.keyCode === 40 || event.keyCode === 13)) {
+				if(dropdown && event.type === 'keyup' && (event.keyCode === 38 || event.keyCode === 40 || event.keyCode === 13)) {
 					event.preventDefault();
 					return;
 				}
@@ -2168,8 +2163,8 @@ ValueEditor = function(theFreeboardModel)
 				createValueEditor(element, EXPECTED_TYPE.ANY);
 		},
 		EXPECTED_TYPE : EXPECTED_TYPE
-	}
-}
+	};
+};
 
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ F R E E B O A R D                                                  │ \\
@@ -2208,14 +2203,14 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 		if ((newValue in widgetPlugins) && _.isFunction(widgetPlugins[newValue].newInstance)) {
 			var widgetType = widgetPlugins[newValue];
 
-			function finishLoad() {
+			var finishLoad = function() {
 				widgetType.newInstance(self.settings(), function (widgetInstance) {
 					self.fillSize((widgetType.fill_size === true));
 					self.widgetInstance = widgetInstance;
 					self.shouldRender(true);
 					self._heightUpdate.valueHasMutated();
 				});
-			}
+			};
 
 			// Do we need to load any external scripts?
 			if (widgetType.external_scripts)
@@ -2242,20 +2237,20 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 				self.processCalculatedSetting(settingName);
 			});
 		}
-	}
+	};
 
 	this.callValueFunction = function(theFunction, globalVariables) {
 		return theFunction.call(undefined, theFreeboardModel.datasourceData, globalVariables);
-	}
+	};
 
 	this.processSizeChange = function() {
 		if (!_.isUndefined(self.widgetInstance) && _.isFunction(self.widgetInstance.onSizeChanged))
 			self.widgetInstance.onSizeChanged();
-	}
+	};
 
 	this.processCalculatedSetting = function(settingName) {
 		if (_.isFunction(self.calculatedSettingScripts[settingName])) {
-			var returnValue = undefined;
+			var returnValue;
 
 			try {
 				returnValue = self.callValueFunction(self.calculatedSettingScripts[settingName], self.scriptGlobalVariables[settingName]);
@@ -2279,7 +2274,7 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 				}
 			}
 		}
-	}
+	};
 
 	this.updateDatasourceNameRef = function (newDatasourceName, oldDatasourceName) {
 		if (_.isUndefined(self.type()))
@@ -2301,7 +2296,7 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 				}
 			}
 		});
-	}
+	};
 
 	this.updateCalculatedSettings = function () {
 		self.datasourceRefreshNotifications = {};
@@ -2365,7 +2360,7 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 				}
 			}
 		});
-	}
+	};
 
 	this._heightUpdate = ko.observable();
 	this.height = ko.computed({
@@ -2385,11 +2380,11 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 			self.widgetInstance.render(element);
 			self.updateCalculatedSettings();
 		}
-	}
+	};
 
 	this.dispose = function () {
 
-	}
+	};
 
 	this.serialize = function () {
 		return {
@@ -2397,13 +2392,13 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 			type: self.type(),
 			settings: self.settings()
 		};
-	}
+	};
 
 	this.deserialize = function (object) {
 		self.title(object.title);
 		self.settings(object.settings);
 		self.type(object.type);
-	}
+	};
 }
 
 // ┌────────────────────────────────────────────────────────────────────┐ \\
@@ -2424,11 +2419,11 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 
 		if(p.addEventListener) {
 			p.addEventListener('DOMAttrModified', function() {
-				flag = true
+				flag = true;
 			}, false);
 		} else if(p.attachEvent) {
 			p.attachEvent('onDOMAttrModified', function() {
-				flag = true
+				flag = true;
 			});
 		} else {
 			return false;
@@ -2483,7 +2478,7 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 		// get attributes old value
 		if(cfg.trackValues) {
 			//get attributes old value
-			$(this).each(function(i, el) {
+			$(this).each(function(j, el) {
 				var attributes = {};
 				for(var attr, i = 0, attrs = el.attributes, l = attrs.length; i < l; i++) {
 					attr = attrs.item(i);
@@ -2547,7 +2542,7 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 		}
 
 		return this;
-	}
+	};
 })(jQuery);
 
 (function(jQuery) {
@@ -2603,7 +2598,7 @@ var freeboard = (function() {
 			var options = ko.unwrap(valueAccessor());
 
 			var types = {};
-			var settings = undefined;
+			var settings;
 			var title = '';
 
 			if (options.type === 'datasource') {
@@ -2619,7 +2614,7 @@ var freeboard = (function() {
 			$(element).click(function(event) {
 				if (options.operation === 'delete') {
 					var phraseElement = $('<p>' + title + ' を削除してもよろしいですか？</p>');
-					new DialogBox(phraseElement, '削除確認', 'はい', 'いいえ', function(okcancel) {
+					var db = new DialogBox(phraseElement, '削除確認', 'はい', 'いいえ', function(okcancel) {
 						if (okcancel === 'ok') {
 							if (options.type === 'datasource')
 								theFreeboardModel.deleteDatasource(viewModel);
@@ -2630,7 +2625,7 @@ var freeboard = (function() {
 						}
 					});
 				} else {
-					var instanceType = undefined;
+					var instanceType;
 
 					if (options.type === 'datasource') {
 						if(options.operation ===  'add') {
@@ -2678,13 +2673,14 @@ var freeboard = (function() {
 									}
 								]
 							}
-						}
+						};
 					}
 
 					var saveSettingCallback = function(newSettings) {
 						if (options.operation === 'add') {
+							var newViewModel;
 							if (options.type === 'datasource') {
-								var newViewModel = new DatasourceModel(theFreeboardModel, datasourcePlugins);
+								newViewModel = new DatasourceModel(theFreeboardModel, datasourcePlugins);
 								theFreeboardModel.addDatasource(newViewModel);
 
 								newViewModel.name(newSettings.settings.name);
@@ -2693,7 +2689,7 @@ var freeboard = (function() {
 								newViewModel.settings(newSettings.settings);
 								newViewModel.type(newSettings.type);
 							} else if (options.type === 'widget') {
-								var newViewModel = new WidgetModel(theFreeboardModel, widgetPlugins);
+								newViewModel = new WidgetModel(theFreeboardModel, widgetPlugins);
 								newViewModel.settings(newSettings.settings);
 								newViewModel.type(newSettings.type);
 
@@ -2718,27 +2714,27 @@ var freeboard = (function() {
 								viewModel.settings(newSettings.settings);
 							}
 						}
-					}
+					};
 
 					var cancelCallback = function() {
 						if (options.operation === 'edit') {
 							if (options.type === 'widget' || options.type === 'datasource')
 								viewModel.isEditing(false);
 						}
-					}
+					};
 
 					pluginEditor.createPluginEditor(title, types, instanceType, settings, saveSettingCallback, cancelCallback);
 				}
 			});
 		}
-	}
+	};
 
 	ko.virtualElements.allowedBindings.datasourceTypeSettings = true;
 	ko.bindingHandlers.datasourceTypeSettings = {
 		update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
 			processPluginSettings(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
 		}
-	}
+	};
 
 	ko.bindingHandlers.pane = {
 		init  : function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -2754,7 +2750,7 @@ var freeboard = (function() {
 				freeboardUI.removePane(element);
 			freeboardUI.updatePane(element, viewModel);
 		}
-	}
+	};
 
 	ko.bindingHandlers.widget = {
 		init  : function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -2768,12 +2764,12 @@ var freeboard = (function() {
 				viewModel.render(element);
 			}
 		}
-	}
+	};
 
 	function getParameterByName(name) {
 		name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
 		var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'), results = regex.exec(location.search);
-		return results == null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+		return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 	}
 
 	function showNotSupport() {
@@ -2830,7 +2826,7 @@ var freeboard = (function() {
 
 			theFreeboardModel.setEditing(allowEdit);
 
-			if (freeboardLocation != '') {
+			if (freeboardLocation !== '') {
 				$.ajax({
 					url    : freeboardLocation,
 					success: function(data) {
@@ -2882,7 +2878,7 @@ var freeboard = (function() {
 				});
 				if (!_.isUndefined(res))
 					return options.allrules.alreadyusedname.alertText;
-			}
+			};
 
 			// Add a required setting called name to the beginning
 			plugin.settings.unshift({
@@ -2938,7 +2934,7 @@ var freeboard = (function() {
 		},
 
 		showDialog          : function(contentElement, title, okTitle, cancelTitle, okCallback) {
-			new DialogBox(contentElement, title, okTitle, cancelTitle, okCallback);
+			var db = new DialogBox(contentElement, title, okTitle, cancelTitle, okCallback);
 		},
 
 		getDatasourceSettings : function(datasourceName) {
@@ -3035,18 +3031,18 @@ $.extend(freeboard, jQuery.eventEmitter);
 			};
 
 			updateCallback(data);
-		}
+		};
 
 		this.onDispose = function () {
 			stopTimer();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			if (_.isUndefined(currentSettings.timezone))
 				currentSettings.timezone = 'Asia/Tokyo';
 			updateTimer();
-		}
+		};
 
 		updateTimer();
 	};
@@ -3553,12 +3549,12 @@ $.extend(freeboard, jQuery.eventEmitter);
 					}
 				}
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			clearInterval(updateTimer);
 			updateTimer = null;
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			lockErrorStage = false;
@@ -3567,7 +3563,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			currentSettings = newSettings;
 			updateRefresh(currentSettings.refresh * 1000);
 			self.updateNow();
-		}
+		};
 	};
 
 	freeboard.loadDatasourcePlugin({
@@ -4048,18 +4044,18 @@ $.extend(freeboard, jQuery.eventEmitter);
 			.fail(function (xhr, status) {
 				console.error('Open Weather Map API error: ' + status);
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			clearInterval(updateTimer);
 			updateTimer = null;
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			self.updateNow();
 			updateRefresh(currentSettings.refresh * 1000);
-		}
+		};
 	};
 
 	freeboard.loadDatasourcePlugin({
@@ -4174,16 +4170,16 @@ $.extend(freeboard, jQuery.eventEmitter);
 				error: function (xhr, status, error) {
 				}
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			stopTimeout();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			self.updateNow();
-		}
+		};
 	};
 
 	freeboard.loadDatasourcePlugin({
@@ -4247,7 +4243,6 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 			ws.onopen = function(evt) {
 				console.info('WebSocket Connected to %s', ws.url);
-				retryCount = 0;
 			};
 
 			ws.onclose = function(evt) {
@@ -4257,7 +4252,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 						wsOpen();
 					}, CONNECTION_DELAY);
 				}
-			}
+			};
 
 			ws.onmessage = function(evt) {
 				try {
@@ -4266,11 +4261,11 @@ $.extend(freeboard, jQuery.eventEmitter);
 				} catch (e) {
 					console.error('WebSocket Bad parse', evt.data);
 				}
-			}
+			};
 
 			ws.onerror = function(evt) {
 				console.error('WebSocket Error', evt);
-			}
+			};
 		}
 
 		function wsClose() {
@@ -4281,12 +4276,12 @@ $.extend(freeboard, jQuery.eventEmitter);
 		}
 
 		this.updateNow = function() {
-		}
+		};
 
 		this.onDispose = function() {
 			dispose = true;
 			wsClose();
-		}
+		};
 
 		this.onSettingsChanged = function(newSettings) {
 			var reconnect = newSettings.reconnect;
@@ -4299,7 +4294,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 				currentSettings.reconnect = reconnect;
 				wsOpen();
 			}, CONNECTION_DELAY);
-		}
+		};
 
 		wsOpen();
 	};
@@ -4412,10 +4407,10 @@ $.extend(freeboard, jQuery.eventEmitter);
 		this.updateNow = function () {
 			var units = (currentSettings.units === 'metric') ? 'c' : 'f';
 			var query = "select * from weather.bylocation where location='" + currentSettings.location + "' and unit='" + units + "'";
-			var uri = 'https://query.yahooapis.com/v1/public/yql?q='
-					+ encodeURIComponent(query)
-					+ '&format=json&env='
-					+ encodeURIComponent('store://datatables.org/alltableswithkeys');
+			var uri = 'https://query.yahooapis.com/v1/public/yql?q=' +
+					encodeURIComponent(query) +
+					'&format=json&env=' +
+					encodeURIComponent('store://datatables.org/alltableswithkeys');
 			$.ajax({
 				url: uri,
 				dataType: 'JSONP'
@@ -4450,18 +4445,18 @@ $.extend(freeboard, jQuery.eventEmitter);
 			.fail(function (xhr, status) {
 				console.error('Yahoo Weather API error: ' + status);
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			clearInterval(updateTimer);
 			updateTimer = null;
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			self.updateNow();
 			updateRefresh(currentSettings.refresh * 1000);
-		}
+		};
 
 		updateRefresh(currentSettings.refresh * 1000);
 	};
@@ -4676,7 +4671,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			$(element).append(titleElement).append(chartElement);
 			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (titleElement.outerHeight() === 0) {
@@ -4688,7 +4683,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			if (newSettings.options != currentSettings.options)
 				destroyChart();
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (!_.isObject(newValue))
@@ -4698,15 +4693,15 @@ $.extend(freeboard, jQuery.eventEmitter);
 				createWidget(newValue, currentSettings);
 			else
 				plotData(newValue);
-		}
+		};
 
 		this.onDispose = function () {
 			destroyChart();
-		}
+		};
 
 		this.getHeight = function () {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -4820,7 +4815,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			_.delay(function() {
 				createGauge();
 			}, 500);
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (_.isUndefined(gaugeObject)) {
@@ -4831,22 +4826,22 @@ $.extend(freeboard, jQuery.eventEmitter);
 			currentSettings = newSettings;
 			createGauge();
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (!_.isUndefined(gaugeObject)) {
 				gaugeObject.refresh(Number(newValue));
 			}
-		}
+		};
 
 		this.onDispose = function () {
 			if (!_.isUndefined(gaugeObject))
 				gaugeObject = null;
-		}
+		};
 
 		this.getHeight = function () {
 			return 4;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -5017,7 +5012,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 			gaugeElement.empty();
 
-			var config = {
+			gauge = new GaugeD3({
 				bindto: currentID,
 				value: {
 					val: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
@@ -5042,9 +5037,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 				shadow: {
 					hide: true
 				}
-			};
-
-			gauge = new GaugeD3(config);
+			});
 
 			gaugeElement.resize(_.debounce(function() {
 				gauge.resize();
@@ -5053,21 +5046,23 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 		this.render = function (element) {
 			$(element).append(titleElement).append(gaugeElement);
-			createGauge();
 			setBlocks(currentSettings.blocks);
+			createGauge();
 		}
 
 		this.onSettingsChanged = function (newSettings) {
-			if (titleElement.outerHeight() === 0) {
+			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+			if (_.isUndefined(gauge)) {
 				currentSettings = newSettings;
 				return;
 			}
-			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			setBlocks(newSettings.blocks);
 			currentSettings = newSettings;
 		}
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
+			if (!_.isUndefined(gauge))
+				gauge.refresh(Number(newValue));
 		}
 
 		this.onDispose = function () {
@@ -5076,7 +5071,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 		}
 
 		this.getHeight = function () {
-			return 4;
+			return currentSettings.blocks;
 		}
 
 		this.onSettingsChanged(settings);
@@ -5097,6 +5092,15 @@ $.extend(freeboard, jQuery.eventEmitter);
 				validate: 'optional,maxSize[100]',
 				type: 'text',
 				description: '最大100文字'
+			},
+			{
+				name: 'blocks',
+				display_name: '高さ (ブロック数)',
+				validate: 'required,custom[integer],min[4],max[20]',
+				type: 'number',
+				style: 'width:100px',
+				default_value: 4,
+				description: '1ブロック60ピクセル。20ブロックまで'
 			},
 			{
 				name: 'value',
@@ -5228,7 +5232,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 		var map;
 		var marker;
 		var poly;
-		var mapElement = $('<div></div>')
+		var mapElement = $('<div></div>');
 		var currentPosition = {};
 
 		function updatePosition() {
@@ -5312,7 +5316,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			$(element).append(mapElement);
 			setBlocks(currentSettings.blocks);
 			createWidget();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (_.isUndefined(map)) {
@@ -5324,7 +5328,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			if (!newSettings.drawpath)
 				poly.getPath().clear();
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (settingName === 'lat')
@@ -5333,18 +5337,18 @@ $.extend(freeboard, jQuery.eventEmitter);
 				currentPosition.lon = newValue;
 
 			updatePosition();
-		}
+		};
 
 		this.onDispose = function () {
 			// for memoryleak
 			map = null;
 			marker = null;
 			poly = null;
-		}
+		};
 
 		this.getHeight = function () {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -5428,13 +5432,13 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 		this.render = function (element) {
 			$(element).append(titleElement).append(indicatorElement).append(stateElement);
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			updateState();
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (settingName === 'value') {
@@ -5442,14 +5446,14 @@ $.extend(freeboard, jQuery.eventEmitter);
 			}
 
 			updateState();
-		}
+		};
 
 		this.onDispose = function () {
-		}
+		};
 
 		this.getHeight = function () {
 			return 1;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -5550,7 +5554,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			$(element).append(titleElement).append(widgetElement);
 			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
-		}
+		};
 
 		this.onSettingsChanged = function(newSettings) {
 			if (titleElement.outerHeight() === 0) {
@@ -5565,22 +5569,22 @@ $.extend(freeboard, jQuery.eventEmitter);
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			setBlocks(newSettings.blocks);
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function(settingName, newValue) {
 			if (settingName === 'src')
 				imageURL = newValue;
 
 			updateImage();
-		}
+		};
 
 		this.onDispose = function() {
 			stopTimer();
-		}
+		};
 
 		this.getHeight = function() {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -5654,7 +5658,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var widgetElement = $('<div class="pointer-widget" id="' + currentID + '"></div>');
 		var currentSettings = settings;
-		var fontcolor = freeboard.getStyleObject('values')['color'];
+		var fontcolor = freeboard.getStyleObject('values').color;
 
 		// d3 variables
 		var svg, center, pointer, textValue, textUnits, circle;
@@ -5682,7 +5686,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 		}
 
 		function getCenteringTransform(rc) {
-			return 'translate(' + (rc.width/2) + ',' + (rc.height/2) + ')'
+			return 'translate(' + (rc.width/2) + ',' + (rc.height/2) + ')';
 		}
 
 		function getRadius(rc) {
@@ -5698,7 +5702,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 		}
 
 		function getPointerPath(r) {
-			return polygonPath([0, - r + CIRCLE_WIDTH, 15, -(r-20), -15, -(r-20)])
+			return polygonPath([0, - r + CIRCLE_WIDTH, 15, -(r-20), -15, -(r-20)]);
 		}
 
 		function resize() {
@@ -5739,7 +5743,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 				.attr('r', r)
 				.style('fill', 'rgba(0, 0, 0, 0)')
 				.style('stroke-width', CIRCLE_WIDTH)
-				.style('stroke', currentSettings.circle_color)
+				.style('stroke', currentSettings.circle_color);
 
 			textValue = center.append('text')
 				.text('0')
@@ -5772,7 +5776,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
 			createWidget();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (_.isUndefined(svg)) {
@@ -5783,11 +5787,11 @@ $.extend(freeboard, jQuery.eventEmitter);
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			circle.style('stroke', newSettings.circle_color);
 			pointer.style('fill', newSettings.pointer_color);
-			textUnits.text((_.isUndefined(newSettings.units) ? '' : newSettings.units))
+			textUnits.text((_.isUndefined(newSettings.units) ? '' : newSettings.units));
 			setBlocks(newSettings.blocks);
 
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (_.isUndefined(svg))
@@ -5811,15 +5815,15 @@ $.extend(freeboard, jQuery.eventEmitter);
 						};
 					});
 			}
-		}
+		};
 
 		this.onDispose = function () {
 			svg = circle = center = pointer = textValue = textUnits = null;
-		}
+		};
 
 		this.getHeight = function () {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
@@ -5970,7 +5974,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			if(_.isUndefined(valueMax) || val > valueMax) {
 				valueMax = val;
 			}
-		}
+		};
 
 		if(_.isArray(value)) {
 			_.each(value, collateValues);
@@ -6008,7 +6012,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.addStyle('.widget-big-text', valueStyle + 'font-size:75px;');
 	freeboard.addStyle('.tw-container', 'position:relative;');
-	freeboard.addStyle('.tw-value-block', 'display:table;')
+	freeboard.addStyle('.tw-value-block', 'display:table;');
 	freeboard.addStyle('.tw-value', valueStyle + 'vertical-align:middle; display:table-cell; text-overflow: ellipsis;');
 	freeboard.addStyle('.tw-units', 'display:table-cell; padding-left: 10px; vertical-align:middle;');
 	freeboard.addStyle('.tw-sparkline', 'position:absolute; height:20px; width:100%;');
@@ -6048,7 +6052,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			if (currentSettings.size === 'big') {
 				padding = 3.0;
 				if(currentSettings.sparkline)
-					padding = 2.4
+					padding = 2.4;
 			}
 			unitsElement.css({
 				'padding-top': padding + 'em'
@@ -6065,12 +6069,12 @@ $.extend(freeboard, jQuery.eventEmitter);
 			$(element).append(titleElement).append(containerElement);
 
 			recalcLayout();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 
-			var shouldDisplayTitle = (!_.isUndefined(newSettings.title) && newSettings.title != '');
+			var shouldDisplayTitle = (!_.isUndefined(newSettings.title) && newSettings.title !== '');
 			if (shouldDisplayTitle) {
 				titleElement.html(newSettings.title);
 				titleElement.attr('style', null);
@@ -6087,7 +6091,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 				sparklineElement.hide();
 			}
 
-			var shouldDisplayUnits = (!_.isUndefined(newSettings.units) && newSettings.units != '');
+			var shouldDisplayUnits = (!_.isUndefined(newSettings.units) && newSettings.units !== '');
 			if (shouldDisplayUnits) {
 				unitsElement.html((_.isUndefined(newSettings.units) ? '' : newSettings.units));
 				unitsElement.attr('style', null);
@@ -6106,7 +6110,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			valueElement.css({'font-size' : valueFontSize + 'px'});
 
 			recalcLayout();
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (settingName === 'value') {
@@ -6118,15 +6122,15 @@ $.extend(freeboard, jQuery.eventEmitter);
 				if (currentSettings.sparkline)
 					addValueToSparkline(sparklineElement, newValue);
 			}
-		}
+		};
 
 		this.onDispose = function () {
 
-		}
+		};
 
 		this.getHeight = function () {
 			return (currentSettings.size === 'big' || currentSettings.sparkline) ? 2 : 1;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
