@@ -87,12 +87,12 @@
 					}
 				}
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			clearInterval(updateTimer);
 			updateTimer = null;
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			lockErrorStage = false;
@@ -101,7 +101,7 @@
 			currentSettings = newSettings;
 			updateRefresh(currentSettings.refresh * 1000);
 			self.updateNow();
-		}
+		};
 	};
 
 	freeboard.loadDatasourcePlugin({

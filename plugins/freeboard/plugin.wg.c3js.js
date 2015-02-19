@@ -164,7 +164,7 @@
 			$(element).append(titleElement).append(chartElement);
 			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (titleElement.outerHeight() === 0) {
@@ -176,7 +176,7 @@
 			if (newSettings.options != currentSettings.options)
 				destroyChart();
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (!_.isObject(newValue))
@@ -186,15 +186,15 @@
 				createWidget(newValue, currentSettings);
 			else
 				plotData(newValue);
-		}
+		};
 
 		this.onDispose = function () {
 			destroyChart();
-		}
+		};
 
 		this.getHeight = function () {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};

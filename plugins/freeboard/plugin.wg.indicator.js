@@ -35,13 +35,13 @@
 
 		this.render = function (element) {
 			$(element).append(titleElement).append(indicatorElement).append(stateElement);
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			updateState();
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (settingName === 'value') {
@@ -49,14 +49,14 @@
 			}
 
 			updateState();
-		}
+		};
 
 		this.onDispose = function () {
-		}
+		};
 
 		this.getHeight = function () {
 			return 1;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};

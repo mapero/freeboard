@@ -66,16 +66,16 @@
 				error: function (xhr, status, error) {
 				}
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			stopTimeout();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			self.updateNow();
-		}
+		};
 	};
 
 	freeboard.loadDatasourcePlugin({

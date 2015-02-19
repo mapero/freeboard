@@ -54,7 +54,7 @@
 			$(element).append(titleElement).append(widgetElement);
 			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
-		}
+		};
 
 		this.onSettingsChanged = function(newSettings) {
 			if (titleElement.outerHeight() === 0) {
@@ -69,22 +69,22 @@
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			setBlocks(newSettings.blocks);
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function(settingName, newValue) {
 			if (settingName === 'src')
 				imageURL = newValue;
 
 			updateImage();
-		}
+		};
 
 		this.onDispose = function() {
 			stopTimer();
-		}
+		};
 
 		this.getHeight = function() {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};

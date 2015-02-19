@@ -39,18 +39,18 @@
 			};
 
 			updateCallback(data);
-		}
+		};
 
 		this.onDispose = function () {
 			stopTimer();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			if (_.isUndefined(currentSettings.timezone))
 				currentSettings.timezone = 'Asia/Tokyo';
 			updateTimer();
-		}
+		};
 
 		updateTimer();
 	};

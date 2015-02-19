@@ -80,10 +80,10 @@
 		this.updateNow = function () {
 			var units = (currentSettings.units === 'metric') ? 'c' : 'f';
 			var query = "select * from weather.bylocation where location='" + currentSettings.location + "' and unit='" + units + "'";
-			var uri = 'https://query.yahooapis.com/v1/public/yql?q='
-					+ encodeURIComponent(query)
-					+ '&format=json&env='
-					+ encodeURIComponent('store://datatables.org/alltableswithkeys');
+			var uri = 'https://query.yahooapis.com/v1/public/yql?q=' +
+					encodeURIComponent(query) +
+					'&format=json&env=' +
+					encodeURIComponent('store://datatables.org/alltableswithkeys');
 			$.ajax({
 				url: uri,
 				dataType: 'JSONP'
@@ -118,18 +118,18 @@
 			.fail(function (xhr, status) {
 				console.error('Yahoo Weather API error: ' + status);
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			clearInterval(updateTimer);
 			updateTimer = null;
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			self.updateNow();
 			updateRefresh(currentSettings.refresh * 1000);
-		}
+		};
 
 		updateRefresh(currentSettings.refresh * 1000);
 	};

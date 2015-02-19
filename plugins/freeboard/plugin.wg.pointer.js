@@ -23,7 +23,7 @@
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var widgetElement = $('<div class="pointer-widget" id="' + currentID + '"></div>');
 		var currentSettings = settings;
-		var fontcolor = freeboard.getStyleObject('values')['color'];
+		var fontcolor = freeboard.getStyleObject('values').color;
 
 		// d3 variables
 		var svg, center, pointer, textValue, textUnits, circle;
@@ -51,7 +51,7 @@
 		}
 
 		function getCenteringTransform(rc) {
-			return 'translate(' + (rc.width/2) + ',' + (rc.height/2) + ')'
+			return 'translate(' + (rc.width/2) + ',' + (rc.height/2) + ')';
 		}
 
 		function getRadius(rc) {
@@ -67,7 +67,7 @@
 		}
 
 		function getPointerPath(r) {
-			return polygonPath([0, - r + CIRCLE_WIDTH, 15, -(r-20), -15, -(r-20)])
+			return polygonPath([0, - r + CIRCLE_WIDTH, 15, -(r-20), -15, -(r-20)]);
 		}
 
 		function resize() {
@@ -108,7 +108,7 @@
 				.attr('r', r)
 				.style('fill', 'rgba(0, 0, 0, 0)')
 				.style('stroke-width', CIRCLE_WIDTH)
-				.style('stroke', currentSettings.circle_color)
+				.style('stroke', currentSettings.circle_color);
 
 			textValue = center.append('text')
 				.text('0')
@@ -141,7 +141,7 @@
 			titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
 			setBlocks(currentSettings.blocks);
 			createWidget();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (_.isUndefined(svg)) {
@@ -152,11 +152,11 @@
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			circle.style('stroke', newSettings.circle_color);
 			pointer.style('fill', newSettings.pointer_color);
-			textUnits.text((_.isUndefined(newSettings.units) ? '' : newSettings.units))
+			textUnits.text((_.isUndefined(newSettings.units) ? '' : newSettings.units));
 			setBlocks(newSettings.blocks);
 
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (_.isUndefined(svg))
@@ -180,15 +180,15 @@
 						};
 					});
 			}
-		}
+		};
 
 		this.onDispose = function () {
 			svg = circle = center = pointer = textValue = textUnits = null;
-		}
+		};
 
 		this.getHeight = function () {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};

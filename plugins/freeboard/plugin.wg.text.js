@@ -75,7 +75,7 @@
 			if(_.isUndefined(valueMax) || val > valueMax) {
 				valueMax = val;
 			}
-		}
+		};
 
 		if(_.isArray(value)) {
 			_.each(value, collateValues);
@@ -113,7 +113,7 @@
 
 	freeboard.addStyle('.widget-big-text', valueStyle + 'font-size:75px;');
 	freeboard.addStyle('.tw-container', 'position:relative;');
-	freeboard.addStyle('.tw-value-block', 'display:table;')
+	freeboard.addStyle('.tw-value-block', 'display:table;');
 	freeboard.addStyle('.tw-value', valueStyle + 'vertical-align:middle; display:table-cell; text-overflow: ellipsis;');
 	freeboard.addStyle('.tw-units', 'display:table-cell; padding-left: 10px; vertical-align:middle;');
 	freeboard.addStyle('.tw-sparkline', 'position:absolute; height:20px; width:100%;');
@@ -153,7 +153,7 @@
 			if (currentSettings.size === 'big') {
 				padding = 3.0;
 				if(currentSettings.sparkline)
-					padding = 2.4
+					padding = 2.4;
 			}
 			unitsElement.css({
 				'padding-top': padding + 'em'
@@ -170,12 +170,12 @@
 			$(element).append(titleElement).append(containerElement);
 
 			recalcLayout();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 
-			var shouldDisplayTitle = (!_.isUndefined(newSettings.title) && newSettings.title != '');
+			var shouldDisplayTitle = (!_.isUndefined(newSettings.title) && newSettings.title !== '');
 			if (shouldDisplayTitle) {
 				titleElement.html(newSettings.title);
 				titleElement.attr('style', null);
@@ -192,7 +192,7 @@
 				sparklineElement.hide();
 			}
 
-			var shouldDisplayUnits = (!_.isUndefined(newSettings.units) && newSettings.units != '');
+			var shouldDisplayUnits = (!_.isUndefined(newSettings.units) && newSettings.units !== '');
 			if (shouldDisplayUnits) {
 				unitsElement.html((_.isUndefined(newSettings.units) ? '' : newSettings.units));
 				unitsElement.attr('style', null);
@@ -211,7 +211,7 @@
 			valueElement.css({'font-size' : valueFontSize + 'px'});
 
 			recalcLayout();
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (settingName === 'value') {
@@ -223,15 +223,15 @@
 				if (currentSettings.sparkline)
 					addValueToSparkline(sparklineElement, newValue);
 			}
-		}
+		};
 
 		this.onDispose = function () {
 
-		}
+		};
 
 		this.getHeight = function () {
 			return (currentSettings.size === 'big' || currentSettings.sparkline) ? 2 : 1;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};

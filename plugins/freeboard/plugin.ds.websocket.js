@@ -21,7 +21,6 @@
 
 			ws.onopen = function(evt) {
 				console.info('WebSocket Connected to %s', ws.url);
-				retryCount = 0;
 			};
 
 			ws.onclose = function(evt) {
@@ -31,7 +30,7 @@
 						wsOpen();
 					}, CONNECTION_DELAY);
 				}
-			}
+			};
 
 			ws.onmessage = function(evt) {
 				try {
@@ -40,11 +39,11 @@
 				} catch (e) {
 					console.error('WebSocket Bad parse', evt.data);
 				}
-			}
+			};
 
 			ws.onerror = function(evt) {
 				console.error('WebSocket Error', evt);
-			}
+			};
 		}
 
 		function wsClose() {
@@ -55,12 +54,12 @@
 		}
 
 		this.updateNow = function() {
-		}
+		};
 
 		this.onDispose = function() {
 			dispose = true;
 			wsClose();
-		}
+		};
 
 		this.onSettingsChanged = function(newSettings) {
 			var reconnect = newSettings.reconnect;
@@ -73,7 +72,7 @@
 				currentSettings.reconnect = reconnect;
 				wsOpen();
 			}, CONNECTION_DELAY);
-		}
+		};
 
 		wsOpen();
 	};

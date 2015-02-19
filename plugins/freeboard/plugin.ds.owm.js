@@ -60,18 +60,18 @@
 			.fail(function (xhr, status) {
 				console.error('Open Weather Map API error: ' + status);
 			});
-		}
+		};
 
 		this.onDispose = function () {
 			clearInterval(updateTimer);
 			updateTimer = null;
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			currentSettings = newSettings;
 			self.updateNow();
 			updateRefresh(currentSettings.refresh * 1000);
-		}
+		};
 	};
 
 	freeboard.loadDatasourcePlugin({

@@ -55,7 +55,7 @@
 			_.delay(function() {
 				createGauge();
 			}, 500);
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (_.isUndefined(gaugeObject)) {
@@ -66,22 +66,22 @@
 			currentSettings = newSettings;
 			createGauge();
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (!_.isUndefined(gaugeObject)) {
 				gaugeObject.refresh(Number(newValue));
 			}
-		}
+		};
 
 		this.onDispose = function () {
 			if (!_.isUndefined(gaugeObject))
 				gaugeObject = null;
-		}
+		};
 
 		this.getHeight = function () {
 			return 4;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};

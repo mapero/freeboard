@@ -20,7 +20,7 @@
 		var map;
 		var marker;
 		var poly;
-		var mapElement = $('<div></div>')
+		var mapElement = $('<div></div>');
 		var currentPosition = {};
 
 		function updatePosition() {
@@ -104,7 +104,7 @@
 			$(element).append(mapElement);
 			setBlocks(currentSettings.blocks);
 			createWidget();
-		}
+		};
 
 		this.onSettingsChanged = function (newSettings) {
 			if (_.isUndefined(map)) {
@@ -116,7 +116,7 @@
 			if (!newSettings.drawpath)
 				poly.getPath().clear();
 			currentSettings = newSettings;
-		}
+		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
 			if (settingName === 'lat')
@@ -125,18 +125,18 @@
 				currentPosition.lon = newValue;
 
 			updatePosition();
-		}
+		};
 
 		this.onDispose = function () {
 			// for memoryleak
 			map = null;
 			marker = null;
 			poly = null;
-		}
+		};
 
 		this.getHeight = function () {
 			return currentSettings.blocks;
-		}
+		};
 
 		this.onSettingsChanged(settings);
 	};
