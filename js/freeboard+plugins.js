@@ -2824,9 +2824,13 @@ var freeboard = (function() {
 			// Check to see if we have a query param called load. If so, we should load that dashboard initially
 			var freeboardLocation = getParameterByName('load');
 
-			if (freeboardLocation != '') {
-				ko.applyBindings(theFreeboardModel);
+			theFreeboardModel.allow_edit(allowEdit);
 
+			ko.applyBindings(theFreeboardModel);
+
+			theFreeboardModel.setEditing(allowEdit);
+
+			if (freeboardLocation != '') {
 				$.ajax({
 					url    : freeboardLocation,
 					success: function(data) {
@@ -2837,12 +2841,6 @@ var freeboard = (function() {
 					}
 				});
 			} else {
-				theFreeboardModel.allow_edit(allowEdit);
-
-				ko.applyBindings(theFreeboardModel);
-
-				theFreeboardModel.setEditing(allowEdit);
-
 				freeboardUI.showLoadingIndicator(false);
 				if (_.isFunction(finishedCallback))
 					finishedCallback();
