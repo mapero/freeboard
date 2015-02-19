@@ -8,12 +8,15 @@ IoT(センサー等)向けレイアウト編集可能なダッシュボード
 [http://infocorpus.github.io/freeboard/](http://infocorpus.github.io/freeboard/)
 
 Open Weather Map
+
 [http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fopen-weathermap-sample.json](http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fopen-weathermap-sample.json)
 
 Graph sample 1
+
 [http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fc3transform_sample01.json](http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fc3transform_sample01.json)
 
 Graph sample 2
+
 [http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fc3showcase(laggy).json](http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fc3showcase(laggy).json)
 
 ### スクリーンショット
