@@ -1463,7 +1463,7 @@ PluginEditor = function(jsEditor, valueEditor)
 		var datasourceTool = $('<li><i class="fa-w fa-plus"></i><label>データソース</label></li>')
 			.mousedown(function(e) {
 				e.preventDefault();
-				$(input).val('').focus().insertAtCaret('datasources[\'').trigger('freeboard-eval');
+				$(input).val('').focus().insertAtCaret('datasources[\"').trigger('freeboard-eval');
 			});
 		datasourceToolbox.append(datasourceTool);
 
