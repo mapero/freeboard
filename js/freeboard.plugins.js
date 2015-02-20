@@ -2668,7 +2668,7 @@
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var widgetElement = $('<div class="pointer-widget" id="' + currentID + '"></div>');
 		var currentSettings = settings;
-		var fontcolor = freeboard.getStyleObject('values').color;
+		var fontcolor = '#d3d4d4';
 
 		// d3 variables
 		var svg, center, pointer, textValue, textUnits, circle;
@@ -3018,12 +3018,9 @@
 		});
 	}
 
-	var valueStyle = freeboard.getStyleString('values');
-
-	freeboard.addStyle('.widget-big-text', valueStyle + 'font-size:75px;');
 	freeboard.addStyle('.tw-container', 'position:relative;');
+	freeboard.addStyle('.tw-value', 'display:table-cell; vertical-align:middle;');
 	freeboard.addStyle('.tw-value-block', 'display:table;');
-	freeboard.addStyle('.tw-value', valueStyle + 'vertical-align:middle; display:table-cell; text-overflow: ellipsis;');
 	freeboard.addStyle('.tw-units', 'display:table-cell; padding-left: 10px; vertical-align:middle;');
 	freeboard.addStyle('.tw-sparkline', 'position:absolute; height:20px; width:100%;');
 
@@ -3037,7 +3034,7 @@
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var containerElement = $('<div class="tw-container"></div>');
 		var valueBlockElement = $('<div class="tw-value-block"></div>');
-		var valueElement = $('<div class="tw-value"></div>');
+		var valueElement = $('<div class="tw-value ultralight-text"></div>');
 		var unitsElement = $('<div class="tw-units"></div>');
 		var sparklineElement = $('<div class="tw-sparkline"></div>');
 
@@ -3110,7 +3107,7 @@
 				unitsElement.hide();
 			}
 
-			var valueFontSize = 30;
+			var valueFontSize = 28;
 
 			if (newSettings.size === 'big') {
 				valueFontSize = 75;
