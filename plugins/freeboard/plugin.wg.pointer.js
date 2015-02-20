@@ -23,7 +23,7 @@
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var widgetElement = $('<div class="pointer-widget" id="' + currentID + '"></div>');
 		var currentSettings = settings;
-		var fontcolor = freeboard.getStyleObject('values').color;
+		var fontcolor = '#d3d4d4';
 
 		// d3 variables
 		var svg, center, pointer, textValue, textUnits, circle;
