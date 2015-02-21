@@ -172,10 +172,19 @@
 				return;
 			}
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+
 			setBlocks(newSettings.blocks);
-			if (newSettings.options != currentSettings.options)
+
+			var updateCalculate = false;
+			if (currentSettings.options != newSettings.options) {
 				destroyChart();
+				updateCalculate = true;
+			}
+			if (currentSettings.value != newSettings.value)
+				updateCalculate = true;
+
 			currentSettings = newSettings;
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {

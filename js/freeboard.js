@@ -2222,10 +2222,12 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 
 	this.settings = ko.observable({});
 	this.settings.subscribe(function(newValue) {
+		var updateCalculate = true;
 		if (!_.isUndefined(self.widgetInstance) && _.isFunction(self.widgetInstance.onSettingsChanged))
-			self.widgetInstance.onSettingsChanged(newValue);
+			updateCalculate = self.widgetInstance.onSettingsChanged(newValue);
 
-		self.updateCalculatedSettings();
+		if (_.isUndefined(updateCalculate) || updateCalculate === true)
+			self.updateCalculatedSettings();
 		self._heightUpdate.valueHasMutated();
 	});
 

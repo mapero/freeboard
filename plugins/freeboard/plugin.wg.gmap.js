@@ -111,11 +111,17 @@
 				currentSettings = newSettings;
 				return;
 			}
-			if (newSettings.blocks != currentSettings.blocks)
+
+			var updateCalculate = false;
+			if (currentSettings.blocks != newSettings.blocks)
 				setBlocks(newSettings.blocks);
 			if (!newSettings.drawpath)
 				poly.getPath().clear();
+
+			if (currentSettings.lat != newSettings.lat || currentSettings.lon != newSettings.lon)
+				updateCalculate = true;
 			currentSettings = newSettings;
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {

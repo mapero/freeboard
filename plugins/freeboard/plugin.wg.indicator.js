@@ -41,6 +41,7 @@
 			currentSettings = newSettings;
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			updateState();
+			return true;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {

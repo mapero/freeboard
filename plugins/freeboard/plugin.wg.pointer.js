@@ -88,7 +88,6 @@
 
 			textValue.attr('font-size', calcValueFontSize(r) + 'em');
 			textUnits.attr('font-size', calcUnitsFontSize(r) + 'em');
-			textUnits.attr('dy', parseInt(textValue.node().getBBox().height/2.1) + 'px');
 		}
 
 		function createWidget() {
@@ -122,7 +121,7 @@
 				.text(currentSettings.units)
 				.style('fill', fontcolor)
 				.style('text-anchor', 'middle')
-				.attr('dy', parseInt(textValue.node().getBBox().height/2.1) + 'px')
+				.attr('dy', '2.8em')
 				.attr('font-size', calcUnitsFontSize(r) + 'em')
 				.attr('class', 'ultralight-text');
 
@@ -155,7 +154,12 @@
 			textUnits.text((_.isUndefined(newSettings.units) ? '' : newSettings.units));
 			setBlocks(newSettings.blocks);
 
+			var updateCalculate = false;
+			if (currentSettings.direction != newSettings.direction ||
+				currentSettings.value_text != newSettings.value_text)
+				updateCalculate = true;
 			currentSettings = newSettings;
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {

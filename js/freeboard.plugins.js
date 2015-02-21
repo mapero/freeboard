@@ -1687,10 +1687,19 @@
 				return;
 			}
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+
 			setBlocks(newSettings.blocks);
-			if (newSettings.options != currentSettings.options)
+
+			var updateCalculate = false;
+			if (currentSettings.options != newSettings.options) {
 				destroyChart();
+				updateCalculate = true;
+			}
+			if (currentSettings.value != newSettings.value)
+				updateCalculate = true;
+
 			currentSettings = newSettings;
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -1831,9 +1840,11 @@
 				currentSettings = newSettings;
 				return;
 			}
+
 			currentSettings = newSettings;
 			createGauge();
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+			return true;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -2091,11 +2102,17 @@
 				currentSettings = newSettings;
 				return;
 			}
-			if (newSettings.blocks != currentSettings.blocks)
+
+			var updateCalculate = false;
+			if (currentSettings.blocks != newSettings.blocks)
 				setBlocks(newSettings.blocks);
 			if (!newSettings.drawpath)
 				poly.getPath().clear();
+
+			if (currentSettings.lat != newSettings.lat || currentSettings.lon != newSettings.lon)
+				updateCalculate = true;
 			currentSettings = newSettings;
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -2206,6 +2223,7 @@
 			currentSettings = newSettings;
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			updateState();
+			return true;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -2335,8 +2353,13 @@
 				timer = setInterval(updateImage, Number(newSettings.refresh) * 1000);
 
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+
 			setBlocks(newSettings.blocks);
+			var updateCalculate = false;
+			if (currentSettings.src != newSettings.src)
+				updateCalculate = true;
 			currentSettings = newSettings;
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function(settingName, newValue) {
@@ -2491,7 +2514,6 @@
 
 			textValue.attr('font-size', calcValueFontSize(r) + 'em');
 			textUnits.attr('font-size', calcUnitsFontSize(r) + 'em');
-			textUnits.attr('dy', parseInt(textValue.node().getBBox().height/2.1) + 'px');
 		}
 
 		function createWidget() {
@@ -2525,7 +2547,7 @@
 				.text(currentSettings.units)
 				.style('fill', fontcolor)
 				.style('text-anchor', 'middle')
-				.attr('dy', parseInt(textValue.node().getBBox().height/2.1) + 'px')
+				.attr('dy', '2.8em')
 				.attr('font-size', calcUnitsFontSize(r) + 'em')
 				.attr('class', 'ultralight-text');
 
@@ -2558,7 +2580,12 @@
 			textUnits.text((_.isUndefined(newSettings.units) ? '' : newSettings.units));
 			setBlocks(newSettings.blocks);
 
+			var updateCalculate = false;
+			if (currentSettings.direction != newSettings.direction ||
+				currentSettings.value_text != newSettings.value_text)
+				updateCalculate = true;
 			currentSettings = newSettings;
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -2837,7 +2864,6 @@
 		};
 
 		this.onSettingsChanged = function (newSettings) {
-			currentSettings = newSettings;
 
 			var shouldDisplayTitle = (!_.isUndefined(newSettings.title) && newSettings.title !== '');
 			if (shouldDisplayTitle) {
@@ -2874,7 +2900,15 @@
 			}
 			valueElement.css({'font-size' : valueFontSize + 'px'});
 
+			var updateCalculate = false;
+			if (currentSettings.value != newSettings.value)
+				updateCalculate = true;
+
+			currentSettings = newSettings;
+
 			recalcLayout();
+
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
