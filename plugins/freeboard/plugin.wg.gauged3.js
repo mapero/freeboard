@@ -18,7 +18,7 @@
 		var currentID = _.uniqueId('gauge-');
 		var titleElement = $('<h2 class="section-title"></h2>');
 		var gaugeElement = $('<div class="gauge-widget" id="' + currentID + '"></div>');
-		var gauge;
+		var gauge = null;
 
 		var currentSettings = settings;
 
@@ -33,9 +33,7 @@
 		}
 
 		function createGauge() {
-			currentSettings.shape = Number(currentSettings.shape);
-
-			if (!_.isUndefined(gauge))
+			if (!_.isNull(gauge))
 				gauge = null;
 
 			gaugeElement.empty();
@@ -47,14 +45,16 @@
 					min: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
 					max: (_.isUndefined(currentSettings.max_value) ? 0 : currentSettings.max_value),
 					color: currentSettings.value_fontcolor,
-					humanFriendly: true,
-					humanFriendlyDecimal: 2,
+					decimal: currentSettings.decimal,
+					humanFriendly: currentSettings.human_friendly,
+					humanFriendlyDecimal: currentSettings.decimal,
+					humanFriendlyMinMax: currentSettings.human_friendly,
 					class: 'ultralight-text'
 				},
 				gauge: {
-					widthScale: currentSettings.gauge_widthscale/100.0,
+					widthScale: currentSettings.gauge_width/100,
 					color: currentSettings.gauge_color,
-					shape: currentSettings.shape
+					type: currentSettings.type
 				},
 				label: {
 					text: currentSettings.units,
@@ -63,9 +63,6 @@
 				},
 				level: {
 					colors: [ currentSettings.gauge_lower_color, currentSettings.gauge_mid_color, currentSettings.gauge_upper_color ]
-				},
-				shadow: {
-					hide: true
 				}
 			});
 
@@ -82,22 +79,43 @@
 
 		this.onSettingsChanged = function (newSettings) {
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
-			if (_.isUndefined(gauge)) {
+			if (_.isNull(gauge)) {
 				currentSettings = newSettings;
 				return;
 			}
 			setBlocks(newSettings.blocks);
-			currentSettings = newSettings;
+
+			var updateCalculate = false;
+
+			if (currentSettings.value != newSettings.value ||
+				currentSettings.decimal != newSettings.decimal ||
+				currentSettings.human_friendly != newSettings.human_friendly ||
+				currentSettings.type != newSettings.type ||
+				currentSettings.units != newSettings.units ||
+				currentSettings.value_fontcolor != newSettings.value_fontcolor ||
+				currentSettings.gauge_upper_color != newSettings.gauge_upper_color ||
+				currentSettings.gauge_mid_color != newSettings.gauge_mid_color ||
+				currentSettings.gauge_lower_color != newSettings.gauge_lower_color ||
+				currentSettings.gauge_color != newSettings.gauge_color ||
+				currentSettings.gauge_width != newSettings.gauge_width ||
+				currentSettings.min_value != newSettings.min_value ||
+				currentSettings.max_value != newSettings.max_value) {
+				updateCalculate = true;
+				currentSettings = newSettings;
+				createGauge();
+			} else {
+				currentSettings = newSettings;
+			}
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (!_.isUndefined(gauge))
+			if (!_.isNull(gauge))
 				gauge.refresh(Number(newValue));
 		};
 
 		this.onDispose = function () {
-			if (!_.isUndefined(gauge))
-				gauge = null;
+			gauge = null;
 		};
 
 		this.getHeight = function () {
@@ -126,11 +144,11 @@
 			{
 				name: 'blocks',
 				display_name: '高さ (ブロック数)',
-				validate: 'required,custom[integer],min[4],max[20]',
+				validate: 'required,custom[integer],min[4],max[10]',
 				type: 'number',
 				style: 'width:100px',
 				default_value: 4,
-				description: '1ブロック60ピクセル。20ブロックまで'
+				description: '1ブロック60ピクセル。10ブロックまで'
 			},
 			{
 				name: 'value',
@@ -140,21 +158,35 @@
 				description: '最大2000文字'
 			},
 			{
-				name: 'shape',
+				name: 'decimal',
+				display_name: '表示小数点以下桁数',
+				type: 'number',
+				style: 'width:100px',
+				default_value: 0
+			},
+			{
+				name: 'human_friendly',
+				display_name: '補助単位',
+				type: 'boolean',
+				default_value: false,
+				description: '1000なら1Kのように値を見やすくします。'
+			},
+			{
+				name: 'type',
 				display_name: '型',
 				type: 'option',
 				options: [
 					{
 						name: 'ハーフ',
-						value: 0
+						value: 'half'
 					},
 					{
-						name: 'ファン',
-						value: 1
+						name: 'パイ',
+						value: 'pie'
 					},
 					{
 						name: 'ドーナッツ',
-						value: 2
+						value: 'donut'
 					}
 				]
 			},
@@ -207,13 +239,13 @@
 				description: 'デフォルト色: #edebeb'
 			},
 			{
-				name: 'gauge_widthscale',
+				name: 'gauge_width',
 				display_name: 'ゲージ太さ',
 				type: 'number',
 				style: 'width:100px',
-				validate: 'required,custom[integer],min[0],max[200]',
-				default_value: 100,
-				description: '0から200まで'
+				validate: 'required,custom[integer],min[0],max[100]',
+				default_value: 25,
+				description: '0から100まで'
 			},
 			{
 				name: 'min_value',

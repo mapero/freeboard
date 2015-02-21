@@ -6,24 +6,33 @@
 // │ Licensed under the MIT license.                                                                                                        │ \\
 // └────────────────────────────────────────────────────────────────────┘ \\
 
-GaugeD3 = function(_config) {
+GaugeD3 = function(_option) {
     'use strict';
 
     var self = this;
-    var gaudeD3 = { version: "1.0.0" };
+    var version = "1.0.0";
 
     var parentNode = null;
-    var attributes = {};
+
+    var _CRITERIA_R = 112;
 
     // d3 variables
     var d3var = {
         svg: null,
         center: null,
-        value: null
+        arc: null,
+        arc_bg: null,
+        arc_level: null,
+        value: null,
+        label: null,
+        min: null,
+        max: null
     };
 
-    // default configuration
-    var default_config = {
+    var startArcAngle, endArcAngle, curArcAngle = 0;
+
+    // default optionuration
+    var default_option = {
         // type string : this is container element id
         bindto: '',
 
@@ -31,9 +40,7 @@ GaugeD3 = function(_config) {
             // type string : gauge title
             text: '',
             // type string : color of gauge title
-            color: '#999999',
-            // type int : absolute minimum font size for the title
-            minFontSize: 10
+            color: '#999999'
         },
 
         value: {
@@ -41,8 +48,6 @@ GaugeD3 = function(_config) {
             val: 0,
             // type string : color of label showing current value
             color: '#010101',
-            // type string : special symbol to show next to value
-            symbol: '',
             // type float : min value
             min: 0,
             // type float : max value
@@ -51,12 +56,6 @@ GaugeD3 = function(_config) {
             humanFriendly: false,
             // type int : number of decimal places for our human friendly number to contain
             humanFriendlyDecimal: 0,
-            // type int : absolute minimum font size for the value
-            minFontSize: 16,
-            // type int : absolute minimum font size for the minimum label
-            minMinFontSize: 10,
-            // type int : absolute minimum font size for the maximum label
-            maxMinFontSize: 10,
             // type bool : hide value text
             hide: false,
             // type bool : hide min and max values
@@ -65,7 +64,7 @@ GaugeD3 = function(_config) {
             humanFriendlyMinMax: false,
             // type int : number of digits after floating point
             decimals: 0,
-            // type bool : formats numbers with commas where appropriate
+            // type bool : formats numbers with commas where appropriate when humanFriendly is false only
             formatNumber: false,
             // type string : css class
             class: ''
@@ -78,8 +77,8 @@ GaugeD3 = function(_config) {
             color: '#edebeb',
             // type bool : whether to use gradual color change for value, or sector-based
             noGradient: false,
-            // type int : gauge shape 0:half 1:fan 2:donut
-            shape: 0,
+            // type int : gauge type (half, pie, donut)
+            type: 'half',
             // type bool : whether gauge size should follow changes in container element size
             relativeSize: false
         },
@@ -90,20 +89,7 @@ GaugeD3 = function(_config) {
             // type string : color of label showing label under value
             color: '#edebeb',
             // type string : css class
-            class: '',
-            // type int : absolute minimum font size for the label
-            minFontSize: 10
-        },
-
-        shadow: {
-            // type int : 0 - 1
-            opacity: 0.2,
-            // type int: inner shadow size
-            size: 5,
-            // type int : how much shadow is offset from top
-            verticalOffset : 3,
-            // type bool : hide inner shadow
-            hide: false
+            class: ''
         },
 
         level: {
@@ -123,153 +109,86 @@ GaugeD3 = function(_config) {
             // type int : length of refresh animation
             refreshTime: 700,
             // type string : type of refresh animation (linear, quad, cubic, sin, exp, circle, elastic, back, bounce) + -in -out -in-out -out-in
-            refreshType: 'linear'
-        },
-
-        donut: {
-            // type int : angle to start from when in donut mode
-            startAngle: 90
+            refreshType: 'cubic-in'
         }
     };
 
-    var config = default_config;
+    var option = default_option;
 
     // Initialize
-    var ret = (function(cfg) {
-        if (_.isNull(cfg) || _.isUndefined(cfg)) {
+    var ret = (function(opt) {
+        if (_.isNull(opt) || _.isUndefined(opt)) {
             console.error('GaugeD3: Make sure to pass options to the constructor!');
             return false;
         }
-        if (_.isNull(cfg.bindto) || _.isUndefined(cfg.bindto)) {
-            console.error('GaugeD3: No element with id : %s found', config.bindto);
+        if (_.isNull(opt.bindto) || _.isUndefined(opt.bindto)) {
+            console.error('GaugeD3: No element with id : %s found', option.bindto);
             return false;
         }
 
-        parentNode = document.getElementById(cfg.bindto);
+        parentNode = document.getElementById(opt.bindto);
         if (!parentNode) {
-            console.error('GaugeD3: No element with id : %s found', cfg.bindto);
+            console.error('GaugeD3: No element with id : %s found', opt.bindto);
             return false;
         }
 
-        setConfig(_.merge(default_config, cfg));
+        setOption(_.merge(default_option, opt));
 
         createD3();
 
         initialTransition();
 
-    }(_config));
+    }(_option));
 
     if (ret === false)
-        return null;
+        return undefined;
 
-    function setConfig(cfg) {
-        config.bindto = cfg.bindto;
+    function setOption(opt) {
+        option.bindto = opt.bindto;
+        option.title.text = opt.title.text;
+        option.title.color = opt.title.color;
 
-        if (!_.isUndefined(cfg.title)) {
-            if (!_.isUndefined(cfg.title.text))
-                config.title.text = cfg.title.text;
-            if (!_.isUndefined(config.title.color))
-                config.title.color = cfg.title.color;
-            if (!_.isUndefined(config.title.minFontSize))
-                config.title.minFontSize = Number(cfg.title.minFontSize);
+        if (opt.value.min > opt.value.max) {
+            var tmp = opt.value.max;
+            opt.value.max = opt.value.min;
+            opt.value.min = tmp;
         }
+        if (opt.value.min === opt.value.max)
+            opt.value.max = opt.value.min+100;
 
-        if (!_.isUndefined(cfg.value)) {
-            if (!_.isUndefined(cfg.value.val))
-                config.value.val = Number(cfg.value.val);
-            if (!_.isUndefined(cfg.value.color))
-                config.value.color = cfg.value.color;
-            if (!_.isUndefined(cfg.value.symbol))
-                config.value.symbol = cfg.value.symbol;
-            if (!_.isUndefined(cfg.value.min))
-                config.value.min = Number(cfg.value.min);
-            if (!_.isUndefined(cfg.value.max))
-                config.value.max = Number(cfg.value.max);
-            if (!_.isUndefined(cfg.value.humanFriendly))
-                config.value.humanFriendly = cfg.value.humanFriendly;
-            if (!_.isUndefined(cfg.value.humanFriendlyDecimal))
-                config.value.humanFriendlyDecimal = Number(cfg.value.humanFriendlyDecimal);
-            if (!_.isUndefined(cfg.value.minFontSize))
-                config.value.minFontSize = Number(cfg.value.minFontSize);
-            if (!_.isUndefined(cfg.value.minMinFontSize))
-                config.value.minMinFontSize = Number(cfg.value.minMinFontSize);
-            if (!_.isUndefined(cfg.value.maxMinFontSize))
-                config.value.maxMinFontSize = Number(cfg.value.maxMinFontSize);
-            if (!_.isUndefined(cfg.value.hide))
-                config.value.hide = cfg.value.hide;
-            if (!_.isUndefined(cfg.value.hideMinMax))
-                config.value.hideMinMax = cfg.value.hideMinMax;
-            if (!_.isUndefined(cfg.value.humanFriendlyMinMax))
-                config.value.humanFriendlyMinMax = cfg.value.humanFriendlyMinMax;
-            if (!_.isUndefined(cfg.value.decimals))
-                config.value.decimals = Number(cfg.value.decimals);
-            if (!_.isUndefined(cfg.value.formatNumber))
-                config.value.formatNumber = cfg.value.formatNumber;
-            if (!_.isUndefined(cfg.value.class))
-                config.value.class = cfg.value.class;
-        }
+        option.value.val = Number(opt.value.val);
+        option.value.color = opt.value.color;
+        option.value.min = Number(opt.value.min);
+        option.value.max = Number(opt.value.max);
+        option.value.humanFriendly = opt.value.humanFriendly;
+        option.value.humanFriendlyDecimal = Number(opt.value.humanFriendlyDecimal);
+        option.value.hide = opt.value.hide;
+        option.value.hideMinMax = opt.value.hideMinMax;
+        option.value.humanFriendlyMinMax = opt.value.humanFriendlyMinMax;
+        option.value.decimals = Number(opt.value.decimals);
+        option.value.formatNumber = opt.value.formatNumber;
+        option.value.class = opt.value.class;
 
-        if (!_.isUndefined(cfg.gauge)) {
-            if (!_.isUndefined(cfg.gauge.widthScale))
-                config.gauge.widthScale = Number(cfg.gauge.widthScale);
-            if (!_.isUndefined(cfg.gauge.color))
-                config.gauge.color = cfg.gauge.color;
-            if (!_.isUndefined(cfg.gauge.noGradient))
-                config.gauge.noGradient = cfg.gauge.noGradient;
-            if (!_.isUndefined(cfg.gauge.shape))
-                config.gauge.shape = Number(cfg.gauge.shape);
-            if (!_.isUndefined(cfg.gauge.relativeSize))
-                config.gauge.relativeSize = cfg.gauge.relativeSize;
-        }
+        option.gauge.widthScale = Math.max(0.0, Math.min(Number(opt.gauge.widthScale), 1.0));
+        option.gauge.color = opt.gauge.color;
+        option.gauge.noGradient = opt.gauge.noGradient;
+        option.gauge.type = opt.gauge.type;
+        option.gauge.relativeSize = opt.gauge.relativeSize;
 
-        if (!_.isUndefined(cfg.label)) {
-            if (!_.isUndefined(cfg.label.text))
-                config.label.text = Number(cfg.label.text);
-            if (!_.isUndefined(cfg.label.color))
-                config.label.color = cfg.label.color;
-            if (!_.isUndefined(cfg.label.class))
-                config.label.class = cfg.label.class;
-            if (!_.isUndefined(cfg.label.minFontSize))
-                config.label.minFontSize = Number(cfg.label.minFontSize);
-        }
+        option.label.text = opt.label.text;
+        option.label.color = opt.label.color;
+        option.label.class = opt.label.class;
 
-        if (!_.isUndefined(cfg.shadow)) {
-            if (!_.isUndefined(cfg.shadow.opacity))
-                config.shadow.opacity = Number(cfg.shadow.opacity);
-            if (!_.isUndefined(cfg.shadow.size))
-                config.shadow.size = Number(cfg.shadow.size);
-            if (!_.isUndefined(cfg.shadow.verticalOffset))
-                config.shadow.verticalOffset = Number(cfg.shadow.verticalOffset);
-            if (!_.isUndefined(cfg.shadow.hide))
-                config.shadow.hide = cfg.shadow.hide;
-        }
+        option.level.colors = opt.level.colors;
+        option.level.counter = opt.level.counter;
+        option.level.customSectors = opt.level.customSectors;
 
-         if (!_.isUndefined(cfg.level)) {
-            if (!_.isUndefined(cfg.level.colors))
-                config.level.colors = cfg.level.colors;
-            if (!_.isUndefined(cfg.level.counter))
-                config.level.counter = cfg.level.counter;
-            if (!_.isUndefined(cfg.level.customSectors))
-                config.level.customSectors = cfg.level.customSectors;
-        }
+        option.animation.startTime = Number(opt.animation.startTime);
+        option.animation.startType = opt.animation.startType;
+        option.animation.refreshTime = Number(opt.animation.refreshTime);
+        option.animation.refreshType = opt.animation.refreshType;
 
-        if (!_.isUndefined(cfg.animation)) {
-            if (!_.isUndefined(cfg.animation.startTime))
-                config.animation.startTime = Number(cfg.animation.startTime);
-            if (!_.isUndefined(cfg.animation.startType))
-                config.animation.startType = cfg.animation.startType;
-            if (!_.isUndefined(cfg.animation.refreshTime))
-                config.animation.refreshTime = Number(cfg.animation.refreshTime);
-            if (!_.isUndefined(cfg.animation.refreshType))
-                config.animation.refreshType = cfg.animation.refreshType;
-        }
-
-        if (!_.isUndefined(cfg.donut)) {
-            if (!_.isUndefined(cfg.donut.startAngle))
-                config.donut.startAngle = Number(cfg.donut.startAngle);
-        }
-
-        setValueInRange();
+        option.value.val = getValueInRange(option.value.val);
     }
 
     function getCenteringTransform(rc) {
@@ -277,36 +196,100 @@ GaugeD3 = function(_config) {
     }
 
     function getRadius(rc) {
-        return Math.min(rc.height, rc.width) / 2;
+        var r, height, width, aspect;
+        switch (option.gauge.type) {
+        case 'half':
+            if (rc.width > rc.height) {
+                height = rc.height;
+                width = height * 1.25;
+                if (width > rc.width) {
+                    aspect = width / rc.width;
+                    width = width / aspect;
+                    height = height / aspect;
+                }
+            } else if (rc.width < rc.height) {
+                width = rc.width;
+                height = width / 1.25;
+                if (height > rc.height) {
+                    aspect = width / rc.height;
+                    height = height / aspect;
+                    width = height / aspect;
+                }
+            } else {
+                width = rc.width;
+                height = width * 0.75;
+            }
+            r = Math.floor(Math.min(width, height) / 2);
+            break;
+        }
+        return r;
     }
 
-    function setValueInRange() {
-        if (config.value.val > config.value.max)
-            config.value.val = config.value.max;
-        if (config.value.val < config.value.min)
-            config.value.val = config.value.min;
+    function getValueInRange(val) {
+        return Math.max(option.value.min, Math.min(option.value.max, val));
     }
 
     function humanFriendlyNumber(n, d) {
-        var p, d2, i, s;
+        var p, d2, i, s, minus;
 
+        minus = false;
+        if (n < 0) {
+            minus = true;
+            n *= -1;
+        }
         p = Math.pow;
         d2 = p(10, d);
         i = 7;
         while (i) {
             s = p(10,i--*3);
             if (s <= n)
-                n = Math.round(n*d2/s)/d2+"KMGTPE"[i];
+                n = Math.round(n*d2/s)/d2+'KMGTPE'[i];
         }
+        if (minus === true)
+            n = '-' + n;
         return n;
     }
 
-    function calcValueFontSize(r) {
-        return (2.5*r/102.5).toFixed(2);
+    function genArc(radius) {
+        var arc;
+        switch (option.gauge.type) {
+        case 'half':
+            startArcAngle = -Math.PI/2;
+            endArcAngle = Math.PI/2;
+            arc = d3.svg.arc()
+                .innerRadius(radius-getGaugeWidth())
+                .outerRadius(radius)
+                .startAngle(startArcAngle)
+                .endAngle(endArcAngle);
+            break;
+        }
+        return arc;
     }
 
-    function calcValueDY(r) {
-        return (1.4*r/102.5).toFixed(2);
+    function genArcBg(radius, center, arc) {
+        var arcbg;
+        switch (option.gauge.type) {
+        case 'half':
+            arcbg = center.append('path')
+                .style('fill', option.gauge.color)
+                .attr('d', arc)
+                .attr('transform', 'translate(0,'+Math.floor(radius/2)+')');
+            break;
+        }
+        return arcbg;
+    }
+
+    function genArcVal(radius, center, arc) {
+        var arcval;
+        switch (option.gauge.type) {
+        case 'half':
+            arcval = center.append('path')
+                .style('fill', getGaugeValueColor(option.value.val, 0))
+                .attr('d', arc)
+                .attr('transform', 'translate(0,'+Math.floor(radius/2)+')');
+            break;
+        }
+        return arcval;
     }
 
     function calcAttributes(radius) {
@@ -314,50 +297,194 @@ GaugeD3 = function(_config) {
             value: {
                 fontsize: '',
                 dy: ''
+            },
+            label: {
+                fontsize: '',
+                dy: ''
+            },
+            minmax: {
+                fontsize: '',
+                dy: '',
+                min_x: 0,
+                max_x: 0
             }
         };
 
-        if (config.gauge.shape === 0) {
-            attr.value.fontsize = calcValueFontSize(radius) + 'em';
-            attr.value.dy = calcValueDY(radius) + 'em';
+        switch (option.gauge.type) {
+        case 'half':
+            attr.value.fontsize = (2.2*radius/_CRITERIA_R).toFixed(2) + 'em';
+            attr.value.dy = '1.8em';
+            attr.label.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
+            attr.label.dy = '5.9em';
+            attr.minmax.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
+            attr.minmax.dy = '5.9em';
+            var x = radius - getGaugeWidth()/2;
+            attr.minmax.min_x = -x;
+            attr.minmax.max_x = x;
+            break;
         }
+        return attr;
+    }
+
+    function formatNumber(x) {
+        var parts = x.toString().split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return parts.join(".");
+    }
+
+    function getGaugeWidth() {
+        return Math.floor(option.gauge.widthScale*_CRITERIA_R/2.5);
+    }
+
+    function getGaugeValueColor(val, percentage) {
+        var _cutHex = function(str) {
+            return (str.charAt(0)==='#') ? str.substring(1,7) : str;
+        };
+
+        if (option.level.customSectors.length > 0) {
+            var res = _.findIndex(option.level.customSectors, function(cs) {
+                return (val > cs.lo && val <= cs.hi);
+            });
+            if (res >= 0)
+                return option.level.customSectors[res].color;
+        }
+
+        var colorlen = option.level.colors.length;
+        if (colorlen === 1)
+            return option.level.colors[0];
+        var inc = (option.gauge.noGradient) ? (1 / colorlen) : (1 / (colorlen - 1));
+        var colors = [];
+
+        for (var i = 0; i < colorlen; i++) {
+            colors.push({
+                percentage: (option.gauge.noGradient) ? (inc * (i + 1)) : (inc * i),
+                color: {
+                    r: parseInt((_cutHex(option.level.colors[i])).substring(0,2), 16),
+                    g: parseInt((_cutHex(option.level.colors[i])).substring(2,4), 16),
+                    b: parseInt((_cutHex(option.level.colors[i])).substring(4,6), 16)
+                }
+            });
+        }
+
+        if (percentage === 0)
+            return 'rgb(' + [colors[0].color.r, colors[0].color.g, colors[0].color.b].join(',') + ')';
+
+        var range, rangePer, perLower, perUpper, color, lower, upper;
+        for (var j = 0; j < colors.length; j++) {
+            if (percentage <= colors[j].percentage) {
+                if (option.gauge.noGradient) {
+                    return 'rgb(' + [colors[j].color.r, colors[j].color.g, colors[j].color.b].join(',') + ')';
+                } else {
+                    lower = colors[j - 1];
+                    upper = colors[j];
+                    range = upper.percentage - lower.percentage;
+                    rangePer = (percentage - lower.percentage) / range;
+                    perLower = 1 - rangePer;
+                    perUpper = rangePer;
+                    color = {
+                        r: Math.floor(lower.color.r * perLower + upper.color.r * perUpper),
+                        g: Math.floor(lower.color.g * perLower + upper.color.g * perUpper),
+                        b: Math.floor(lower.color.b * perLower + upper.color.b * perUpper)
+                    };
+                    return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
+                }
+            }
+        }
+    }
+
+    function getValueText() {
+        var val;
+        if (option.value.humanFriendly)
+            val = humanFriendlyNumber(option.value.val, option.value.humanFriendlyDecimal);
+        else
+            val = (option.value.formatNumber === true) ? formatNumber(option.value.val) : option.value.val;
+        return val;
+    }
+
+    function getMinValueText() {
+        var val;
+        if (option.value.humanFriendlyMinMax)
+            val = humanFriendlyNumber(option.value.min, option.value.humanFriendlyDecimal);
+        else {
+            val = option.value.min.toFixed(option.value.decimal);
+            val = (option.value.formatNumber === true) ? formatNumber(val) : val;
+        }
+        return val;
+    }
+
+    function getMaxValueText() {
+        var val;
+        if (option.value.humanFriendlyMinMax)
+            val = humanFriendlyNumber(option.value.max, option.value.humanFriendlyDecimal);
+        else {
+            val = option.value.max.toFixed(option.value.decimal);
+            val = (option.value.formatNumber === true) ? formatNumber(val) : val;
+        }
+        return val;
     }
 
     function createD3() {
         var rc = parentNode.getBoundingClientRect();
 
-        d3var.svg = d3.select('#' + config.bindto)
+        d3var.svg = d3.select('#' + option.bindto)
             .append('svg')
             .attr('width', rc.width)
             .attr('height', rc.height);
 
         d3var.center = d3var.svg.append('g')
+            .style('opacity', 0)
             .attr('transform', getCenteringTransform(rc));
 
         var r = getRadius(rc);
 
-        attributes = calcAttributes(r);
+        d3var.arc = genArc(r);
+        d3var.arc_bg = genArcBg(r, d3var.center, d3var.arc);
+        d3var.arc_level = genArcVal(r, d3var.center, d3var.arc);
 
-        var val;
-        if (config.value.humanFriendly)
-            val = humanFriendlyNumber(config.value.val, config.value.humanFriendlyDecimal);
-        else
-            val = config.value.val;
+        var attributes = calcAttributes(r);
 
         d3var.value = d3var.center.append('text')
-            .data([{value: config.value.val}])
-            .text(val)
-            .style('fill', config.value.color)
+            .datum(option.value.val)
+            .text(getValueText())
+            .style('fill', option.value.color)
             .style('text-anchor', 'middle')
-            .attr('dy', calcValueDY(r) + 'em')
-            .attr('font-size', calcValueFontSize(r) + 'em')
-            .attr('class', config.value.class);
+            .attr('dy', attributes.value.dy)
+            .attr('font-size', attributes.value.fontsize)
+            .attr('class', option.value.class);
+
+        d3var.label = d3var.center.append('text')
+            .text(option.label.text)
+            .style('fill', option.label.color)
+            .style('text-anchor', 'middle')
+            .attr('dy', attributes.label.dy)
+            .attr('font-size', attributes.label.fontsize)
+            .attr('class', option.label.class);
+
+        d3var.min = d3var.center.append('text')
+            .datum(option.value.min)
+            .text(getMinValueText())
+            .style('fill', option.label.color)
+            .style('text-anchor', 'middle')
+            .attr('dy', attributes.minmax.dy)
+            .attr('x', attributes.minmax.min_x)
+            .attr('font-size', attributes.minmax.fontsize)
+            .attr('class', option.label.class);
+
+        d3var.max = d3var.center.append('text')
+            .datum(option.value.max)
+            .text(getMaxValueText())
+            .style('fill', option.label.color)
+            .style('text-anchor', 'middle')
+            .attr('dy', attributes.minmax.dy)
+            .attr('x', attributes.minmax.max_x)
+            .attr('font-size', attributes.minmax.fontsize)
+            .attr('class', option.label.class);
     }
 
     function initialTransition() {
-        d3var.value.transition()
-            .duration(config.animation.startTime)
-            .ease(config.animation.startType)
+        d3var.center.transition()
+            .duration(option.animation.startTime)
+            .ease(option.animation.startType)
             .style('opacity', 1);
     }
 
@@ -367,26 +494,120 @@ GaugeD3 = function(_config) {
 
         var rc = parentNode.getBoundingClientRect();
 
-        d3var.svg.attr('height', rc.height);
-        d3var.svg.attr('width', rc.width);
+        d3var.svg.attr('height', rc.height)
+            .attr('width', rc.width);
 
         d3var.center.attr('transform', getCenteringTransform(rc));
+
+        var r = getRadius(rc);
+
+        d3var.arc.innerRadius(r-getGaugeWidth())
+                .outerRadius(r);
+
+        d3var.arc_bg.remove();
+        d3var.arc_bg = genArcBg(r, d3var.center, d3var.arc);
+
+        d3var.arc_level.remove();
+        d3var.arc_level = genArcVal(r, d3var.center, d3var.arc);
+
+        var attributes = calcAttributes(r);
+
+        d3var.value.attr('font-size', attributes.value.fontsize);
+
+        d3var.label.attr('font-size', attributes.label.fontsize);
+
+        d3var.min.attr('font-size', attributes.minmax.fontsize)
+            .attr('x', attributes.minmax.min_x);
+
+        d3var.max.attr('font-size', attributes.minmax.fontsize)
+            .attr('x', attributes.minmax.max_x);
     }
 
-    function refresh(val, max) {
+    function valueTransition(val) {
         d3var.value.transition()
-            .duration(config.animation.refreshTime)
-            .ease(config.animation.refreshType)
+            .duration(option.animation.refreshTime)
+            .ease(option.animation.refreshType)
             .tween('text', function(d) {
-                var i = d3.interpolate(d.value, val);
-                d.value = val;
+                var i = d3.interpolate(d, val);
+                d = val;
                 return function(t) {
-                    if (config.value.humanFriendly)
-                        this.textContent = humanFriendlyNumber(i(t).toFixed(config.value.humanFriendlyDecimal), config.value.humanFriendlyDecimal);
-                    else
-                        this.textContent = i(t).toFixed(config.value.decimal);
+                    if (option.value.humanFriendly)
+                        this.textContent = humanFriendlyNumber(i(t).toFixed(option.value.humanFriendlyDecimal), option.value.humanFriendlyDecimal);
+                    else {
+                        if (option.value.formatNumber)
+                            this.textContent = formatNumber(i(t).toFixed(option.value.decimal));
+                        else
+                            this.textContent = i(t).toFixed(option.value.decimal);
+                    }
                 };
             });
+    }
+
+    function getValueAngle(val) {
+        var range, newval;
+        if (option.value.min < 0) {
+            if (option.value.max < 0) {
+                range = Math.abs(option.value.min) - Math.abs(option.value.max);
+            } else {
+                newval = val + Math.abs(option.value.min);
+                range = option.value.max + Math.abs(option.value.min);
+            }
+        } else {
+            range = option.value.max - option.value.min;
+        }
+
+        var per = (100/range)*(newval);
+        var rangeAngle, angle;
+
+        switch (option.gauge.type) {
+            case 'half':
+                rangeAngle = 180;
+                angle = (rangeAngle/100)*per - rangeAngle/2;
+                angle = angle * Math.PI/180;
+                break;
+        }
+        return angle;
+    }
+
+    function levelArcTransition(val) {
+        var endAngle = getValueAngle(val);
+
+        // value text transition
+        curArcAngle = startArcAngle;
+        d3var.arc_level.datum(endAngle);
+        d3var.arc_level.transition()
+            .duration(option.animation.refreshTime)
+            .ease(option.animation.refreshType)
+            .attrTween('d', function(d) {
+                var i = d3.interpolate(curArcAngle, d);
+                return function(t) {
+                    curArcAngle=i(t);
+                    return d3var.arc.endAngle(i(t))();
+                };
+            });
+    }
+
+    function refresh(val, min, max) {
+        if (_.isUndefined(d3var.svg))
+            return;
+
+        if (!_.isUndefined(min)) {
+            option.value.min = min;
+            d3var.min.datum(option.value.min)
+                .text(getMinValueText());
+        }
+
+        if (!_.isUndefined(max)) {
+            option.value.max = max;
+            d3var.max.datum(option.value.max)
+                .text(getMaxValueText());
+        }
+
+        val = getValueInRange(val);
+        option.value.val = val;
+
+        valueTransition(val);
+        levelArcTransition(val);
     }
 
     // Public API
@@ -395,8 +616,8 @@ GaugeD3 = function(_config) {
             resize();
         },
 
-        refresh: function(val, max) {
-            refresh(Number(val), max);
+        refresh: function(val, min, max) {
+            refresh(Number(val), min, max);
         }
-    }
-}
+    };
+};
