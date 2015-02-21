@@ -2383,7 +2383,8 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 	};
 
 	this.dispose = function () {
-
+		if (!_.isUndefined(self.widgetInstance) && _.isFunction(self.widgetInstance.onDispose))
+			self.widgetInstance.onDispose();
 	};
 
 	this.serialize = function () {
