@@ -44,8 +44,8 @@
 					place_name: data.name,
 					latitude: data.coord.lat,
 					longitude: data.coord.lon,
-					sunset: moment.unix(data.sys.sunrise * 1000).format('HH:mm:ss'), // Bug value the opposite
-					sunrise: moment.unix(data.sys.sunset * 1000).format('HH:mm:ss'),
+					sunset: moment.unix(data.sys.sunset * 1000).format('HH:mm:ss'), // Bug value the opposite
+					sunrise: moment.unix(data.sys.sunrise * 1000).format('HH:mm:ss'),
 					conditions: toTitleCase(data.weather[0].description),
 					current_temp: data.main.temp,
 					high_temp: data.main.temp_max,
