@@ -67,8 +67,13 @@
 				timer = setInterval(updateImage, Number(newSettings.refresh) * 1000);
 
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+
 			setBlocks(newSettings.blocks);
+			var updateCalculate = false;
+			if (currentSettings.src != newSettings.src)
+				updateCalculate = true;
 			currentSettings = newSettings;
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function(settingName, newValue) {

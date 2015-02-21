@@ -170,7 +170,6 @@
 		};
 
 		this.onSettingsChanged = function (newSettings) {
-			currentSettings = newSettings;
 
 			var shouldDisplayTitle = (!_.isUndefined(newSettings.title) && newSettings.title !== '');
 			if (shouldDisplayTitle) {
@@ -207,7 +206,15 @@
 			}
 			valueElement.css({'font-size' : valueFontSize + 'px'});
 
+			var updateCalculate = false;
+			if (currentSettings.value != newSettings.value)
+				updateCalculate = true;
+
+			currentSettings = newSettings;
+
 			recalcLayout();
+
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {

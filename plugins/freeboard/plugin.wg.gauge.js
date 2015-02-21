@@ -63,9 +63,11 @@
 				currentSettings = newSettings;
 				return;
 			}
+
 			currentSettings = newSettings;
 			createGauge();
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+			return true;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
