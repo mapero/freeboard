@@ -51,6 +51,7 @@
 					humanFriendlyDecimal: currentSettings.decimal,
 					humanFriendlyMinMax: currentSettings.human_friendly,
 					transition: currentSettings.animate,
+					hideMinMax: currentSettings.show_minmax ? false : true,
 					class: 'ultralight-text'
 				},
 				gauge: {
@@ -101,6 +102,7 @@
 				currentSettings.gauge_lower_color != newSettings.gauge_lower_color ||
 				currentSettings.gauge_color != newSettings.gauge_color ||
 				currentSettings.gauge_width != newSettings.gauge_width ||
+				currentSettings.show_minmax != newSettings.show_minmax ||
 				currentSettings.min_value != newSettings.min_value ||
 				currentSettings.max_value != newSettings.max_value) {
 				updateCalculate = true;
@@ -177,6 +179,22 @@
 					{
 						name: 'クオーター 右下',
 						value: 'quarter-right-bottom'
+					},
+					{
+						name: 'スリークオーター 左上',
+						value: 'threequarter-left-top'
+					},
+					{
+						name: 'スリークオーター 右上',
+						value: 'threequarter-right-top'
+					},
+					{
+						name: 'スリークオーター 左下',
+						value: 'threequarter-left-bottom'
+					},
+					{
+						name: 'スリークオーター 右下',
+						value: 'threequarter-right-bottom'
 					},
 					{
 						name: 'ドーナッツ',
@@ -270,11 +288,17 @@
 				description: '0から100まで'
 			},
 			{
+				name: 'show_minmax',
+				display_name: '最小最大値表示',
+				type: 'boolean',
+				default_value: true
+			},
+			{
 				name: 'min_value',
 				display_name: '最小値',
 				type: 'number',
 				style: 'width:100px',
-				validate: 'required,custom[number],min[-100000000],max[100000000]',
+				validate: 'required,custom[number],min[-100000000000],max[100000000000]',
 				default_value: 0,
 				description: '数値のみ'
 			},
@@ -283,7 +307,7 @@
 				display_name: '最大値',
 				type: 'number',
 				style: 'width:100px',
-				validate: 'required,custom[number],min[-100000000],max[100000000]',
+				validate: 'required,custom[number],min[-100000000000],max[100000000000]',
 				default_value: 100,
 				description: '最小値以上'
 			}
