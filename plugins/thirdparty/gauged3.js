@@ -124,7 +124,7 @@ GaugeD3 = function(_option) {
             //            lo: -5000,
             //            color: 'rgb(10, 10, 10)'
             //     } ]
-            customSectors : [],
+            customSectors : []
         },
 
         transition: {
