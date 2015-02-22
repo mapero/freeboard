@@ -1,8 +1,6 @@
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ F R E E B O A R D                                                                                                                      │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
-// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
-// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
 // │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
 // │ Licensed under the MIT license.                                                                                                        │ \\
@@ -49,6 +47,7 @@
 					humanFriendly: currentSettings.human_friendly,
 					humanFriendlyDecimal: currentSettings.decimal,
 					humanFriendlyMinMax: currentSettings.human_friendly,
+					transition: currentSettings.animate,
 					class: 'ultralight-text'
 				},
 				gauge: {
@@ -87,10 +86,11 @@
 
 			var updateCalculate = false;
 
-			if (currentSettings.value != newSettings.value ||
+			if (currentSettings.type != newSettings.type ||
+				currentSettings.value != newSettings.value ||
 				currentSettings.decimal != newSettings.decimal ||
 				currentSettings.human_friendly != newSettings.human_friendly ||
-				currentSettings.type != newSettings.type ||
+				currentSettings.animate != newSettings.animate ||
 				currentSettings.units != newSettings.units ||
 				currentSettings.value_fontcolor != newSettings.value_fontcolor ||
 				currentSettings.gauge_upper_color != newSettings.gauge_upper_color ||
@@ -151,6 +151,25 @@
 				description: '1ブロック60ピクセル。10ブロックまで'
 			},
 			{
+				name: 'type',
+				display_name: '型',
+				type: 'option',
+				options: [
+					{
+						name: 'ハーフ',
+						value: 'half'
+					},
+					{
+						name: 'パイ',
+						value: 'pie'
+					},
+					{
+						name: 'ドーナッツ',
+						value: 'donut'
+					}
+				]
+			},
+			{
 				name: 'value',
 				display_name: '値',
 				validate: 'optional,maxSize[2000]',
@@ -172,23 +191,10 @@
 				description: '1000なら1Kのように値を見やすくします。'
 			},
 			{
-				name: 'type',
-				display_name: '型',
-				type: 'option',
-				options: [
-					{
-						name: 'ハーフ',
-						value: 'half'
-					},
-					{
-						name: 'パイ',
-						value: 'pie'
-					},
-					{
-						name: 'ドーナッツ',
-						value: 'donut'
-					}
-				]
+				name: 'animate',
+				display_name: '値変化アニメーション',
+				type: 'boolean',
+				default_value: true
 			},
 			{
 				name: 'units',

@@ -10,7 +10,7 @@ GaugeD3 = function(_option) {
     'use strict';
 
     var self = this;
-    var version = "1.0.0";
+    var version = '1.0.0';
 
     var parentNode = null;
 
@@ -66,6 +66,8 @@ GaugeD3 = function(_option) {
             decimals: 0,
             // type bool : formats numbers with commas where appropriate when humanFriendly is false only
             formatNumber: false,
+            // type bool : enable value transition
+            transition: true,
             // type string : css class
             class: ''
         },
@@ -98,18 +100,23 @@ GaugeD3 = function(_option) {
             // type bool : animate level number change
             counter: false,
             // type [] of objects : number of digits after floating point
+            // ex: customSectors: [ {
+            //            hi: -1000,
+            //            lo: -5000,
+            //            color: 'rgb(10, 10, 10)'
+            //     } ]
             customSectors : [],
         },
 
-        animation: {
-            // type int : length of initial animation
+        transition: {
+            // type int : length of initial transition
             startTime: 700,
-            // type string : type of initial animation (linear, quad, cubic, sin, exp, circle, elastic, back, bounce) + -in -out -in-out -out-in
+            // type string : type of initial transition (linear, quad, cubic, sin, exp, circle, elastic, back, bounce) + -in -out -in-out -out-in
             startType: 'linear',
-            // type int : length of refresh animation
+            // type int : length of refresh transition
             refreshTime: 700,
-            // type string : type of refresh animation (linear, quad, cubic, sin, exp, circle, elastic, back, bounce) + -in -out -in-out -out-in
-            refreshType: 'cubic-in'
+            // type string : type of refresh transition (linear, quad, cubic, sin, exp, circle, elastic, back, bounce) + -in -out -in-out -out-in
+            refreshType: 'circle-out'
         }
     };
 
@@ -183,10 +190,10 @@ GaugeD3 = function(_option) {
         option.level.counter = opt.level.counter;
         option.level.customSectors = opt.level.customSectors;
 
-        option.animation.startTime = Number(opt.animation.startTime);
-        option.animation.startType = opt.animation.startType;
-        option.animation.refreshTime = Number(opt.animation.refreshTime);
-        option.animation.refreshType = opt.animation.refreshType;
+        option.transition.startTime = Number(opt.transition.startTime);
+        option.transition.startType = opt.transition.startType;
+        option.transition.refreshTime = Number(opt.transition.refreshTime);
+        option.transition.refreshType = opt.transition.refreshType;
 
         option.value.val = getValueInRange(option.value.val);
     }
@@ -257,7 +264,7 @@ GaugeD3 = function(_option) {
             startArcAngle = -Math.PI/2;
             endArcAngle = Math.PI/2;
             arc = d3.svg.arc()
-                .innerRadius(radius-getGaugeWidth())
+                .innerRadius(radius-getGaugeWidth(radius))
                 .outerRadius(radius)
                 .startAngle(startArcAngle)
                 .endAngle(endArcAngle);
@@ -313,12 +320,12 @@ GaugeD3 = function(_option) {
         switch (option.gauge.type) {
         case 'half':
             attr.value.fontsize = (2.2*radius/_CRITERIA_R).toFixed(2) + 'em';
-            attr.value.dy = '1.8em';
+            attr.value.dy = '1.7em';
             attr.label.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
             attr.label.dy = '5.9em';
             attr.minmax.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
             attr.minmax.dy = '5.9em';
-            var x = radius - getGaugeWidth()/2;
+            var x = radius - getGaugeWidth(radius)/2;
             attr.minmax.min_x = -x;
             attr.minmax.max_x = x;
             break;
@@ -327,13 +334,13 @@ GaugeD3 = function(_option) {
     }
 
     function formatNumber(x) {
-        var parts = x.toString().split(".");
-        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return parts.join(".");
+        var parts = x.toString().split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return parts.join('.');
     }
 
-    function getGaugeWidth() {
-        return Math.floor(option.gauge.widthScale*_CRITERIA_R/2.5);
+    function getGaugeWidth(radius) {
+        return Math.floor(option.gauge.widthScale*(radius/2.5));
     }
 
     function getGaugeValueColor(val, percentage) {
@@ -405,10 +412,8 @@ GaugeD3 = function(_option) {
         var val;
         if (option.value.humanFriendlyMinMax)
             val = humanFriendlyNumber(option.value.min, option.value.humanFriendlyDecimal);
-        else {
-            val = option.value.min.toFixed(option.value.decimal);
-            val = (option.value.formatNumber === true) ? formatNumber(val) : val;
-        }
+        else
+            val = (option.value.formatNumber === true) ? formatNumber(option.value.min) : option.value.min;
         return val;
     }
 
@@ -416,10 +421,8 @@ GaugeD3 = function(_option) {
         var val;
         if (option.value.humanFriendlyMinMax)
             val = humanFriendlyNumber(option.value.max, option.value.humanFriendlyDecimal);
-        else {
-            val = option.value.max.toFixed(option.value.decimal);
-            val = (option.value.formatNumber === true) ? formatNumber(val) : val;
-        }
+        else
+            val = (option.value.formatNumber === true) ? formatNumber(option.value.max) : option.value.max;
         return val;
     }
 
@@ -440,11 +443,12 @@ GaugeD3 = function(_option) {
         d3var.arc = genArc(r);
         d3var.arc_bg = genArcBg(r, d3var.center, d3var.arc);
         d3var.arc_level = genArcVal(r, d3var.center, d3var.arc);
+        curArcAngle = startArcAngle;
 
         var attributes = calcAttributes(r);
 
         d3var.value = d3var.center.append('text')
-            .datum(option.value.val)
+            .data([{ value: option.value.val }])
             .text(getValueText())
             .style('fill', option.value.color)
             .style('text-anchor', 'middle')
@@ -481,15 +485,8 @@ GaugeD3 = function(_option) {
             .attr('class', option.label.class);
     }
 
-    function initialTransition() {
-        d3var.center.transition()
-            .duration(option.animation.startTime)
-            .ease(option.animation.startType)
-            .style('opacity', 1);
-    }
-
     function resize() {
-        if (_.isUndefined(d3var.svg))
+        if (_.isNull(d3var.svg))
             return;
 
         var rc = parentNode.getBoundingClientRect();
@@ -501,11 +498,14 @@ GaugeD3 = function(_option) {
 
         var r = getRadius(rc);
 
-        d3var.arc.innerRadius(r-getGaugeWidth())
-                .outerRadius(r);
+        d3var.arc.innerRadius(r-getGaugeWidth(r))
+                .outerRadius(r)
+                .endAngle(endArcAngle);
 
         d3var.arc_bg.remove();
         d3var.arc_bg = genArcBg(r, d3var.center, d3var.arc);
+
+        d3var.arc.endAngle(curArcAngle);
 
         d3var.arc_level.remove();
         d3var.arc_level = genArcVal(r, d3var.center, d3var.arc);
@@ -523,13 +523,37 @@ GaugeD3 = function(_option) {
             .attr('x', attributes.minmax.max_x);
     }
 
+    function calcPercentage(val) {
+       var range, newval;
+        if (option.value.min < 0) {
+            if (option.value.max < 0) {
+                newval = Math.abs(val + Math.abs(option.value.min));
+                range = Math.abs(option.value.min) - Math.abs(option.value.max);
+            } else {
+                newval = val + Math.abs(option.value.min);
+                range = option.value.max + Math.abs(option.value.min);
+            }
+        } else {
+            newval = val + option.value.min;
+            range = option.value.max - option.value.min;
+        }
+        return ((100/range)*newval)/100;
+    }
+
+    function initialTransition() {
+        d3var.center.transition()
+            .duration(option.transition.startTime)
+            .ease(option.transition.startType)
+            .style('opacity', 1);
+    }
+
     function valueTransition(val) {
         d3var.value.transition()
-            .duration(option.animation.refreshTime)
-            .ease(option.animation.refreshType)
+            .duration(option.transition.refreshTime)
+            .ease(option.transition.refreshType)
             .tween('text', function(d) {
-                var i = d3.interpolate(d, val);
-                d = val;
+                var i = d3.interpolate(d.value, val);
+                d.value = val;
                 return function(t) {
                     if (option.value.humanFriendly)
                         this.textContent = humanFriendlyNumber(i(t).toFixed(option.value.humanFriendlyDecimal), option.value.humanFriendlyDecimal);
@@ -543,52 +567,39 @@ GaugeD3 = function(_option) {
             });
     }
 
-    function getValueAngle(val) {
-        var range, newval;
-        if (option.value.min < 0) {
-            if (option.value.max < 0) {
-                range = Math.abs(option.value.min) - Math.abs(option.value.max);
-            } else {
-                newval = val + Math.abs(option.value.min);
-                range = option.value.max + Math.abs(option.value.min);
-            }
-        } else {
-            range = option.value.max - option.value.min;
-        }
-
-        var per = (100/range)*(newval);
-        var rangeAngle, angle;
-
-        switch (option.gauge.type) {
-            case 'half':
-                rangeAngle = 180;
-                angle = (rangeAngle/100)*per - rangeAngle/2;
-                angle = angle * Math.PI/180;
-                break;
-        }
-        return angle;
-    }
-
     function levelArcTransition(val) {
-        var endAngle = getValueAngle(val);
+        var per = calcPercentage(val);
+
+        var endAngle = (function(val, per) {
+            var rangeAngle, angle;
+
+            switch (option.gauge.type) {
+                case 'half':
+                    rangeAngle = 180;
+                    angle = rangeAngle*per - rangeAngle/2;
+                    angle = angle * Math.PI/180;
+                    break;
+            }
+            return angle;
+        })(val, per);
 
         // value text transition
-        curArcAngle = startArcAngle;
         d3var.arc_level.datum(endAngle);
         d3var.arc_level.transition()
-            .duration(option.animation.refreshTime)
-            .ease(option.animation.refreshType)
+            .duration(option.transition.refreshTime)
+            .ease(option.transition.refreshType)
+            .style('fill', getGaugeValueColor(val, per))
             .attrTween('d', function(d) {
                 var i = d3.interpolate(curArcAngle, d);
                 return function(t) {
-                    curArcAngle=i(t);
+                    curArcAngle = i(t);
                     return d3var.arc.endAngle(i(t))();
                 };
             });
     }
 
     function refresh(val, min, max) {
-        if (_.isUndefined(d3var.svg))
+        if (_.isNull(d3var.svg))
             return;
 
         if (!_.isUndefined(min)) {
@@ -606,7 +617,11 @@ GaugeD3 = function(_option) {
         val = getValueInRange(val);
         option.value.val = val;
 
-        valueTransition(val);
+        if (option.value.transition === true)
+            valueTransition(val);
+        else
+            d3var.value.text(getValueText());
+
         levelArcTransition(val);
     }
 
