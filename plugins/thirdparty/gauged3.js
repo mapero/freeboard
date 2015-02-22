@@ -15,9 +15,14 @@ GaugeD3 = function(_option) {
     var parentNode = null;
 
     var _CRITERIA_R = 112;
+    var _CRITERIA_QUARTER_R = Math.floor(_CRITERIA_R*1.66);
+    var _TO_RADIANS = Math.PI/180;
+    var _QUARTER_DIV = 1.3;
 
     var gaugeTypes = [
-        'half','pie','donut'
+        'half', 'quarter-left-top', 'quarter-right-top',
+        'quarter-left-bottom', 'quarter-right-bottom',
+        'donut'
     ];
 
     // d3 variables
@@ -36,7 +41,7 @@ GaugeD3 = function(_option) {
 
     var startArcAngle, endArcAngle, curArcAngle = 0;
 
-    // default optionuration
+    // default option
     var default_option = {
         // type string : this is container element id
         bindto: '',
@@ -86,10 +91,8 @@ GaugeD3 = function(_option) {
             color: '#edebeb',
             // type bool : whether to use gradual color change for value, or sector-based
             noGradient: false,
-            // type int : gauge type (half, pie, donut)
+            // type int : gauge type (half, quarter-left-top, quarter-right-top, quarter-left-bottom, quarter-right-bottom, donut)
             type: 'half',
-            // type bool : whether gauge size should follow changes in container element size
-            relativeSize: false,
             // donut options
             donut: {
                 // type int : start angle (0-359)
@@ -192,10 +195,10 @@ GaugeD3 = function(_option) {
         option.gauge.color = opt.gauge.color;
         option.gauge.noGradient = opt.gauge.noGradient;
 
-        if (_.indexOf(gaugeTypes, opt.gauge.type) === -1)
-            opt.gauge.type = gaugeTypes[0];
         option.gauge.type = opt.gauge.type;
-        option.gauge.relativeSize = opt.gauge.relativeSize;
+        if (_.indexOf(gaugeTypes, option.gauge.type) === -1)
+            option.gauge.type = gaugeTypes[0];
+
         option.gauge.donut.startAngle = Math.max(0, Math.min(Number(opt.gauge.donut.startAngle), 359));
 
         option.label.text = opt.label.text;
@@ -220,30 +223,40 @@ GaugeD3 = function(_option) {
 
     function getRadius(rc) {
         var r, height, width, aspect;
+
+        if (rc.width > rc.height) {
+            height = rc.height;
+            width = height * 1.25;
+            if (width > rc.width) {
+                aspect = width / rc.width;
+                width = width / aspect;
+                height = height / aspect;
+            }
+        } else if (rc.width < rc.height) {
+            width = rc.width;
+            height = width / 1.25;
+            if (height > rc.height) {
+                aspect = width / rc.height;
+                height = height / aspect;
+                width = height / aspect;
+            }
+        } else {
+            width = rc.width;
+            height = width * 0.75;
+        }
+
         switch (option.gauge.type) {
         case 'half':
+
         case 'donut':
-            if (rc.width > rc.height) {
-                height = rc.height;
-                width = height * 1.25;
-                if (width > rc.width) {
-                    aspect = width / rc.width;
-                    width = width / aspect;
-                    height = height / aspect;
-                }
-            } else if (rc.width < rc.height) {
-                width = rc.width;
-                height = width / 1.25;
-                if (height > rc.height) {
-                    aspect = width / rc.height;
-                    height = height / aspect;
-                    width = height / aspect;
-                }
-            } else {
-                width = rc.width;
-                height = width * 0.75;
-            }
             r = Math.floor(Math.min(width, height) / 2);
+            break;
+
+        case 'quarter-left-top':
+        case 'quarter-right-top':
+        case 'quarter-left-bottom':
+        case 'quarter-right-bottom':
+            r = Math.floor(Math.min(width, height) / _QUARTER_DIV);
             break;
         }
         return r;
@@ -280,56 +293,94 @@ GaugeD3 = function(_option) {
         case 'half':
             startArcAngle = -Math.PI/2;
             endArcAngle = Math.PI/2;
-            arc = d3.svg.arc()
-                .innerRadius(radius-getGaugeWidth(radius))
-                .outerRadius(radius)
-                .startAngle(startArcAngle)
-                .endAngle(endArcAngle);
             break;
+
         case 'donut':
-            startArcAngle = option.gauge.donut.startAngle * (Math.PI/180);
-            endArcAngle = 360 * (Math.PI/180) + startArcAngle;
-            arc = d3.svg.arc()
-                .innerRadius(radius-getGaugeWidth(radius))
-                .outerRadius(radius)
-                .startAngle(startArcAngle)
-                .endAngle(endArcAngle);
+            startArcAngle = option.gauge.donut.startAngle * (_TO_RADIANS);
+            endArcAngle = 360 * (_TO_RADIANS) + startArcAngle;
+            break;
+
+        case 'quarter-left-top':
+            startArcAngle = -Math.PI/2;
+            endArcAngle = 0;
+            break;
+
+        case 'quarter-right-top':
+            startArcAngle = 0;
+            endArcAngle = Math.PI/2;
+            break;
+
+        case 'quarter-left-bottom':
+            startArcAngle = Math.PI;
+            endArcAngle = Math.PI/2*3;
+            break;
+
+        case 'quarter-right-bottom':
+            startArcAngle = Math.PI/2;
+            endArcAngle = Math.PI;
             break;
         }
+        arc = d3.svg.arc()
+            .innerRadius(radius-getGaugeWidth(radius))
+            .outerRadius(radius)
+            .startAngle(startArcAngle)
+            .endAngle(endArcAngle);
         return arc;
     }
 
     function genArcBg(radius, center, arc) {
-        var arcbg;
+        var arcbg = center.insert('path', 'text')
+            .style('fill', option.gauge.color)
+            .attr('d', arc);
+
         switch (option.gauge.type) {
         case 'half':
-            arcbg = center.insert('path', 'text')
-                .style('fill', option.gauge.color)
-                .attr('d', arc)
-                .attr('transform', 'translate(0,'+Math.floor(radius/2)+')');
+            arcbg.attr('transform', 'translate(0,'+Math.floor(radius/2)+')');
             break;
-        case 'donut':
-            arcbg = center.insert('path', 'text')
-                .style('fill', option.gauge.color)
-                .attr('d', arc);
+
+        case 'quarter-left-top':
+            arcbg.attr('transform', 'translate('+Math.floor(radius/2)+','+Math.floor(radius/2)+')');
+            break;
+
+        case 'quarter-right-top':
+            arcbg.attr('transform', 'translate(-'+Math.floor(radius/2)+','+Math.floor(radius/2)+')');
+            break;
+
+        case 'quarter-left-bottom':
+            arcbg.attr('transform', 'translate('+Math.floor(radius/2)+',-'+Math.floor(radius/2)+')');
+            break;
+
+        case 'quarter-right-bottom':
+            arcbg.attr('transform', 'translate(-'+Math.floor(radius/2)+',-'+Math.floor(radius/2)+')');
             break;
         }
         return arcbg;
     }
 
     function genArcVal(radius, center, arc) {
-        var arcval;
-        switch (option.gauge.type) {
-        case 'half':
-            arcval = center.insert('path', 'text')
-                .style('fill', getGaugeValueColor(option.value.val, 0))
-                .attr('d', arc)
-                .attr('transform', 'translate(0,'+Math.floor(radius/2)+')');
-            break;
-        case 'donut':
-            arcval = center.insert('path', 'text')
+        var arcval = center.insert('path', 'text')
                 .style('fill', getGaugeValueColor(option.value.val, 0))
                 .attr('d', arc);
+
+        switch (option.gauge.type) {
+        case 'half':
+            arcval.attr('transform', 'translate(0,'+Math.floor(radius/2)+')');
+            break;
+
+        case 'quarter-left-top':
+            arcval.attr('transform', 'translate('+Math.floor(radius/2)+','+Math.floor(radius/2)+')');
+            break;
+
+        case 'quarter-right-top':
+            arcval.attr('transform', 'translate(-'+Math.floor(radius/2)+','+Math.floor(radius/2)+')');
+            break;
+
+        case 'quarter-left-bottom':
+            arcval.attr('transform', 'translate('+Math.floor(radius/2)+',-'+Math.floor(radius/2)+')');
+            break;
+
+        case 'quarter-right-bottom':
+            arcval.attr('transform', 'translate(-'+Math.floor(radius/2)+',-'+Math.floor(radius/2)+')');
             break;
         }
         return arcval;
@@ -339,49 +390,120 @@ GaugeD3 = function(_option) {
         var attr = {
             title: {
                 fontsize: '',
-                dy: ''
+                dy: '',
+                x: 0
             },
             value: {
                 fontsize: '',
-                dy: ''
+                dy: '',
+                x: 0
             },
             label: {
                 fontsize: '',
-                dy: ''
+                dy: '',
+                x: 0
             },
             minmax: {
                 fontsize: '',
-                dy: '',
+                min_dy: '',
+                max_dy: '',
                 min_x: 0,
                 max_x: 0
             }
         };
-
-        attr.title.fontsize = (1.3*radius/_CRITERIA_R).toFixed(2) + 'em';
-        attr.value.fontsize = (2.2*radius/_CRITERIA_R).toFixed(2) + 'em';
-        attr.label.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
-        attr.minmax.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
-
-        var x;
+        var x, xt, x2;
 
         switch (option.gauge.type) {
         case 'half':
-            attr.title.dy = '-4.5em';
-            attr.value.dy = '1.7em';
-            attr.label.dy = '5.9em';
-            attr.minmax.dy = '5.9em';
-            x = radius - getGaugeWidth(radius)/2;
+        case 'donut':
+            attr.title.fontsize = (1.3*radius/_CRITERIA_R).toFixed(2) + 'em';
+            attr.value.fontsize = (2.2*radius/_CRITERIA_R).toFixed(2) + 'em';
+            attr.label.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
+            attr.minmax.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
+
+            if (option.gauge.type === 'half') {
+                attr.title.dy = '-4.5em';
+                attr.value.dy = '1.7em';
+                attr.label.dy = '5.9em';
+                attr.minmax.min_dy = attr.minmax.max_dy = '5.9em';
+                x = radius - getGaugeWidth(radius)/2;
+            } else {
+                attr.title.dy = '-1.3em';
+                attr.value.dy = '.3em';
+                attr.label.dy = '2.3em';
+                attr.minmax.min_dy = attr.minmax.max_dy = '7.5em';
+                x = radius;
+            }
             attr.minmax.min_x = -x;
             attr.minmax.max_x = x;
             break;
-        case 'donut':
-            attr.title.dy = '-1.3em';
-            attr.value.dy = '.3em';
-            attr.label.dy = '2.3em';
-            attr.minmax.dy = '7.5em';
-            x = radius;
-            attr.minmax.min_x = -x;
-            attr.minmax.max_x = x;
+
+        case 'quarter-left-top':
+        case 'quarter-right-top':
+        case 'quarter-left-bottom':
+        case 'quarter-right-bottom':
+            attr.title.fontsize = (1.3*radius/_CRITERIA_QUARTER_R).toFixed(2) + 'em';
+            attr.value.fontsize = (2.2*radius/_CRITERIA_QUARTER_R).toFixed(2) + 'em';
+            attr.label.fontsize = (0.9*radius/_CRITERIA_QUARTER_R).toFixed(2) + 'em';
+            attr.minmax.fontsize = (0.9*radius/_CRITERIA_QUARTER_R).toFixed(2) + 'em';
+
+            xt = radius / 2.3;
+            x = radius / 3;
+            x2 = radius / 2 - getGaugeWidth(radius) / 2;
+
+            switch (option.gauge.type) {
+            case 'quarter-left-top':
+                attr.title.dy = '-5em';
+                attr.value.dy = '2.2em';
+                attr.label.dy = '7em';
+                attr.minmax.min_dy = '8.7em';
+                attr.minmax.max_dy = '8.7em';
+                attr.title.x = -xt;
+                attr.value.x = x;
+                attr.label.x = x;
+                attr.minmax.min_x = -x2;
+                attr.minmax.max_x = x2;
+                break;
+
+            case 'quarter-right-top':
+                attr.title.dy = '-5em';
+                attr.value.dy = '2.2em';
+                attr.label.dy = '7em';
+                attr.minmax.min_dy = '8.7em';
+                attr.minmax.max_dy = '8.7em';
+                attr.title.x = xt;
+                attr.value.x = -x;
+                attr.label.x = -x;
+                attr.minmax.min_x = -x2;
+                attr.minmax.max_x = x2;
+                break;
+
+            case 'quarter-left-bottom':
+                attr.title.dy = '5em';
+                attr.value.dy = '-2em';
+                attr.label.dy = '-3.2em';
+                attr.minmax.min_dy = '-8em';
+                attr.minmax.max_dy = '-8em';
+                attr.title.x = -xt;
+                attr.value.x = x;
+                attr.label.x = x;
+                attr.minmax.min_x = x2;
+                attr.minmax.max_x = -x2;
+                break;
+
+            case 'quarter-right-bottom':
+                attr.title.dy = '5em';
+                attr.value.dy = '-2em';
+                attr.label.dy = '-3.2em';
+                attr.minmax.min_dy = '-8em';
+                attr.minmax.max_dy = '-8em';
+                attr.title.x = xt;
+                attr.value.x = -x;
+                attr.label.x = -x;
+                attr.minmax.min_x = x2;
+                attr.minmax.max_x = -x2;
+                break;
+            }
             break;
         }
         return attr;
@@ -506,6 +628,7 @@ GaugeD3 = function(_option) {
             .style('fill', option.title.color)
             .style('text-anchor', 'middle')
             .attr('dy', attributes.title.dy)
+            .attr('x', attributes.title.x)
             .attr('font-size', attributes.title.fontsize)
             .attr('class', option.title.class);
 
@@ -515,6 +638,7 @@ GaugeD3 = function(_option) {
             .style('fill', option.value.color)
             .style('text-anchor', 'middle')
             .attr('dy', attributes.value.dy)
+            .attr('x', attributes.value.x)
             .attr('font-size', attributes.value.fontsize)
             .attr('class', option.value.class);
 
@@ -523,14 +647,20 @@ GaugeD3 = function(_option) {
             .style('fill', option.label.color)
             .style('text-anchor', 'middle')
             .attr('dy', attributes.label.dy)
+            .attr('x', attributes.label.x)
             .attr('font-size', attributes.label.fontsize)
             .attr('class', option.label.class);
+
+        if (option.value.hide === true) {
+            d3var.value.style('display', 'none');
+            d3var.label.style('display', 'none');
+        }
 
         d3var.min = d3var.center.append('text')
             .text(getMinValueText())
             .style('fill', option.label.color)
             .style('text-anchor', 'middle')
-            .attr('dy', attributes.minmax.dy)
+            .attr('dy', attributes.minmax.min_dy)
             .attr('x', attributes.minmax.min_x)
             .attr('font-size', attributes.minmax.fontsize)
             .attr('class', option.label.class);
@@ -539,10 +669,33 @@ GaugeD3 = function(_option) {
             .text(getMaxValueText())
             .style('fill', option.label.color)
             .style('text-anchor', 'middle')
-            .attr('dy', attributes.minmax.dy)
+            .attr('dy', attributes.minmax.max_dy)
             .attr('x', attributes.minmax.max_x)
             .attr('font-size', attributes.minmax.fontsize)
             .attr('class', option.label.class);
+
+        if (option.value.hideMinMax === true) {
+            d3var.min.style('display', 'none');
+            d3var.max.style('display', 'none');
+        }
+
+        switch (option.gauge.type) {
+        case 'quarter-left-top':
+            d3var.max.attr('transform', 'rotate(-90)');
+            break;
+
+        case 'quarter-right-top':
+            d3var.min.attr('transform', 'rotate(90)');
+            break;
+
+        case 'quarter-left-bottom':
+            d3var.min.attr('transform', 'rotate(90)');
+            break;
+
+        case 'quarter-right-bottom':
+            d3var.max.attr('transform', 'rotate(-90)');
+            break;
+        }
     }
 
     function resize() {
@@ -572,13 +725,14 @@ GaugeD3 = function(_option) {
 
         var attributes = calcAttributes(r);
 
-        d3var.title.attr('font-size', attributes.title.fontsize);
-        d3var.value.attr('font-size', attributes.value.fontsize);
-        d3var.label.attr('font-size', attributes.label.fontsize);
-
+        d3var.title.attr('font-size', attributes.title.fontsize)
+            .attr('x', attributes.title.x);
+        d3var.value.attr('font-size', attributes.value.fontsize)
+            .attr('x', attributes.value.x);
+        d3var.label.attr('font-size', attributes.label.fontsize)
+            .attr('x', attributes.label.x);
         d3var.min.attr('font-size', attributes.minmax.fontsize)
             .attr('x', attributes.minmax.min_x);
-
         d3var.max.attr('font-size', attributes.minmax.fontsize)
             .attr('x', attributes.minmax.max_x);
     }
@@ -594,7 +748,7 @@ GaugeD3 = function(_option) {
                 range = option.value.max + Math.abs(option.value.min);
             }
         } else {
-            newval = val + option.value.min;
+            newval = val - option.value.min;
             range = option.value.max - option.value.min;
         }
         return ((100/range)*newval)/100;
@@ -630,23 +784,40 @@ GaugeD3 = function(_option) {
     function levelArcTransition(val) {
         var per = calcPercentage(val);
 
-        var endAngle = (function(val, per) {
-            var rangeAngle, angle;
+        var endAngle = (function(per) {
+            var angle;
+
+            var _calcAngle = function(perc, range, stangle) {
+                return (range * perc + stangle) * _TO_RADIANS;
+            };
 
             switch (option.gauge.type) {
             case 'half':
-                rangeAngle = 180;
-                angle = rangeAngle * per - rangeAngle/2;
-                angle = angle * Math.PI/180;
+                angle = _calcAngle(per, 180, -90);
                 break;
+
             case 'donut':
-                rangeAngle = 360;
-                angle = rangeAngle * per;
-                angle = angle * Math.PI/180 + option.gauge.donut.startAngle * Math.PI/180;
+                angle = _calcAngle(per, 360, option.gauge.donut.startAngle);
+                break;
+
+            case 'quarter-left-top':
+                angle = _calcAngle(per, 90, -90);
+                break;
+
+            case 'quarter-right-top':
+                angle = _calcAngle(per, 90, 0);
+                break;
+
+            case 'quarter-left-bottom':
+                angle = _calcAngle(per, 90, 180);
+                break;
+
+            case 'quarter-right-bottom':
+                angle = _calcAngle(per, 90, 90);
                 break;
             }
             return angle;
-        })(val, per);
+        })(per);
 
         d3var.arc_level.datum(endAngle);
         d3var.arc_level.transition()

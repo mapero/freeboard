@@ -11,10 +11,8 @@
 	var gaugeWidget = function (settings) {
 		var self = this;
 		var BLOCK_HEIGHT = 60;
-		var TITLE_MARGIN = 7;
 
 		var currentID = _.uniqueId('gauge-');
-		var titleElement = $('<h2 class="section-title"></h2>');
 		var gaugeElement = $('<div class="gauge-widget" id="' + currentID + '"></div>');
 		var gauge = null;
 
@@ -23,7 +21,7 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
-			var height = BLOCK_HEIGHT * blocks - titleElement.outerHeight() - TITLE_MARGIN;
+			var height = BLOCK_HEIGHT * blocks;
 			gaugeElement.css({
 				'height': height + 'px',
 				'width': '100%'
@@ -39,7 +37,7 @@
 			gauge = new GaugeD3({
 				bindto: currentID,
 				title: {
-					text: 'Test Title',
+					text: currentSettings.title,
 					color: currentSettings.value_fontcolor,
 					class: 'ultralight-text'
 				},
@@ -76,13 +74,12 @@
 		}
 
 		this.render = function (element) {
-			$(element).append(titleElement).append(gaugeElement);
+			$(element).append(gaugeElement);
 			setBlocks(currentSettings.blocks);
 			createGauge();
 		};
 
 		this.onSettingsChanged = function (newSettings) {
-			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
 			if (_.isNull(gauge)) {
 				currentSettings = newSettings;
 				return;
@@ -91,7 +88,8 @@
 
 			var updateCalculate = false;
 
-			if (currentSettings.type != newSettings.type ||
+			if (currentSettings.title != newSettings.title ||
+				currentSettings.type != newSettings.type ||
 				currentSettings.value != newSettings.value ||
 				currentSettings.decimal != newSettings.decimal ||
 				currentSettings.human_friendly != newSettings.human_friendly ||
@@ -132,7 +130,7 @@
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'gauge',
-		display_name: 'ゲージD3',
+		display_name: 'ゲージ',
 		description: 'ゲージを表示するウィジェットです。',
 		external_scripts : [
 			'plugins/thirdparty/d3.v3.min.js',
@@ -165,8 +163,20 @@
 						value: 'half'
 					},
 					{
-						name: 'パイ',
-						value: 'pie'
+						name: 'クオーター 左上',
+						value: 'quarter-left-top'
+					},
+					{
+						name: 'クオーター 右上',
+						value: 'quarter-right-top'
+					},
+					{
+						name: 'クオーター 左下',
+						value: 'quarter-left-bottom'
+					},
+					{
+						name: 'クオーター 右下',
+						value: 'quarter-right-bottom'
 					},
 					{
 						name: 'ドーナッツ',
@@ -185,6 +195,7 @@
 				name: 'decimal',
 				display_name: '表示小数点以下桁数',
 				type: 'number',
+				validate: 'required,custom[integer],min[0],max[4]',
 				style: 'width:100px',
 				default_value: 0
 			},
@@ -255,7 +266,7 @@
 				type: 'number',
 				style: 'width:100px',
 				validate: 'required,custom[integer],min[0],max[100]',
-				default_value: 25,
+				default_value: 50,
 				description: '0から100まで'
 			},
 			{
