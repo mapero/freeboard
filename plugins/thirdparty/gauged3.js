@@ -1,5 +1,5 @@
 // ┌────────────────────────────────────────────────────────────────────┐ \\
-// │ Gauge D3.js                                                                                                                            │ \\
+// │ GaugeD3.js                                                                                                                            │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
 // │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
@@ -23,6 +23,7 @@ GaugeD3 = function(_option) {
         arc: null,
         arc_bg: null,
         arc_level: null,
+        title: null,
         value: null,
         label: null,
         min: null,
@@ -40,7 +41,9 @@ GaugeD3 = function(_option) {
             // type string : gauge title
             text: '',
             // type string : color of gauge title
-            color: '#999999'
+            color: '#999999',
+            // type string : css class
+            class: ''
         },
 
         value: {
@@ -301,6 +304,10 @@ GaugeD3 = function(_option) {
 
     function calcAttributes(radius) {
         var attr = {
+            title: {
+                fontsize: '',
+                dy: ''
+            },
             value: {
                 fontsize: '',
                 dy: ''
@@ -316,6 +323,9 @@ GaugeD3 = function(_option) {
                 max_x: 0
             }
         };
+
+        attr.title.fontsize = (1.3*radius/_CRITERIA_R).toFixed(2) + 'em';
+        attr.title.dy = '-4.5em';
 
         switch (option.gauge.type) {
         case 'half':
@@ -447,6 +457,14 @@ GaugeD3 = function(_option) {
 
         var attributes = calcAttributes(r);
 
+        d3var.title = d3var.center.append('text')
+            .text(option.title.text)
+            .style('fill', option.title.color)
+            .style('text-anchor', 'middle')
+            .attr('dy', attributes.title.dy)
+            .attr('font-size', attributes.title.fontsize)
+            .attr('class', option.title.class);
+
         d3var.value = d3var.center.append('text')
             .data([{ value: option.value.val }])
             .text(getValueText())
@@ -512,8 +530,8 @@ GaugeD3 = function(_option) {
 
         var attributes = calcAttributes(r);
 
+        d3var.title.attr('font-size', attributes.title.fontsize);
         d3var.value.attr('font-size', attributes.value.fontsize);
-
         d3var.label.attr('font-size', attributes.label.fontsize);
 
         d3var.min.attr('font-size', attributes.minmax.fontsize)
@@ -583,7 +601,6 @@ GaugeD3 = function(_option) {
             return angle;
         })(val, per);
 
-        // value text transition
         d3var.arc_level.datum(endAngle);
         d3var.arc_level.transition()
             .duration(option.transition.refreshTime)

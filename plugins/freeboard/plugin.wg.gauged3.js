@@ -38,6 +38,11 @@
 
 			gauge = new GaugeD3({
 				bindto: currentID,
+				title: {
+					text: 'Test Title',
+					color: currentSettings.value_fontcolor,
+					class: 'ultralight-text'
+				},
 				value: {
 					val: 0,
 					min: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
