@@ -16,6 +16,10 @@ GaugeD3 = function(_option) {
 
     var _CRITERIA_R = 112;
 
+    var gaugeTypes = [
+        'half','pie','donut'
+    ];
+
     // d3 variables
     var d3var = {
         svg: null,
@@ -85,7 +89,12 @@ GaugeD3 = function(_option) {
             // type int : gauge type (half, pie, donut)
             type: 'half',
             // type bool : whether gauge size should follow changes in container element size
-            relativeSize: false
+            relativeSize: false,
+            // donut options
+            donut: {
+                // type int : start angle (0-359)
+                startAngle: 0
+            }
         },
 
         label: {
@@ -182,8 +191,12 @@ GaugeD3 = function(_option) {
         option.gauge.widthScale = Math.max(0.0, Math.min(Number(opt.gauge.widthScale), 1.0));
         option.gauge.color = opt.gauge.color;
         option.gauge.noGradient = opt.gauge.noGradient;
+
+        if (_.indexOf(gaugeTypes, opt.gauge.type) === -1)
+            opt.gauge.type = gaugeTypes[0];
         option.gauge.type = opt.gauge.type;
         option.gauge.relativeSize = opt.gauge.relativeSize;
+        option.gauge.donut.startAngle = Math.max(0, Math.min(Number(opt.gauge.donut.startAngle), 359));
 
         option.label.text = opt.label.text;
         option.label.color = opt.label.color;
@@ -209,6 +222,7 @@ GaugeD3 = function(_option) {
         var r, height, width, aspect;
         switch (option.gauge.type) {
         case 'half':
+        case 'donut':
             if (rc.width > rc.height) {
                 height = rc.height;
                 width = height * 1.25;
@@ -272,6 +286,15 @@ GaugeD3 = function(_option) {
                 .startAngle(startArcAngle)
                 .endAngle(endArcAngle);
             break;
+        case 'donut':
+            startArcAngle = option.gauge.donut.startAngle * (Math.PI/180);
+            endArcAngle = 360 * (Math.PI/180) + startArcAngle;
+            arc = d3.svg.arc()
+                .innerRadius(radius-getGaugeWidth(radius))
+                .outerRadius(radius)
+                .startAngle(startArcAngle)
+                .endAngle(endArcAngle);
+            break;
         }
         return arc;
     }
@@ -280,10 +303,15 @@ GaugeD3 = function(_option) {
         var arcbg;
         switch (option.gauge.type) {
         case 'half':
-            arcbg = center.append('path')
+            arcbg = center.insert('path', 'text')
                 .style('fill', option.gauge.color)
                 .attr('d', arc)
                 .attr('transform', 'translate(0,'+Math.floor(radius/2)+')');
+            break;
+        case 'donut':
+            arcbg = center.insert('path', 'text')
+                .style('fill', option.gauge.color)
+                .attr('d', arc);
             break;
         }
         return arcbg;
@@ -293,10 +321,15 @@ GaugeD3 = function(_option) {
         var arcval;
         switch (option.gauge.type) {
         case 'half':
-            arcval = center.append('path')
+            arcval = center.insert('path', 'text')
                 .style('fill', getGaugeValueColor(option.value.val, 0))
                 .attr('d', arc)
                 .attr('transform', 'translate(0,'+Math.floor(radius/2)+')');
+            break;
+        case 'donut':
+            arcval = center.insert('path', 'text')
+                .style('fill', getGaugeValueColor(option.value.val, 0))
+                .attr('d', arc);
             break;
         }
         return arcval;
@@ -325,17 +358,28 @@ GaugeD3 = function(_option) {
         };
 
         attr.title.fontsize = (1.3*radius/_CRITERIA_R).toFixed(2) + 'em';
-        attr.title.dy = '-4.5em';
+        attr.value.fontsize = (2.2*radius/_CRITERIA_R).toFixed(2) + 'em';
+        attr.label.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
+        attr.minmax.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
+
+        var x;
 
         switch (option.gauge.type) {
         case 'half':
-            attr.value.fontsize = (2.2*radius/_CRITERIA_R).toFixed(2) + 'em';
+            attr.title.dy = '-4.5em';
             attr.value.dy = '1.7em';
-            attr.label.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
             attr.label.dy = '5.9em';
-            attr.minmax.fontsize = (0.9*radius/_CRITERIA_R).toFixed(2) + 'em';
             attr.minmax.dy = '5.9em';
-            var x = radius - getGaugeWidth(radius)/2;
+            x = radius - getGaugeWidth(radius)/2;
+            attr.minmax.min_x = -x;
+            attr.minmax.max_x = x;
+            break;
+        case 'donut':
+            attr.title.dy = '-1.3em';
+            attr.value.dy = '.3em';
+            attr.label.dy = '2.3em';
+            attr.minmax.dy = '7.5em';
+            x = radius;
             attr.minmax.min_x = -x;
             attr.minmax.max_x = x;
             break;
@@ -483,7 +527,6 @@ GaugeD3 = function(_option) {
             .attr('class', option.label.class);
 
         d3var.min = d3var.center.append('text')
-            .datum(option.value.min)
             .text(getMinValueText())
             .style('fill', option.label.color)
             .style('text-anchor', 'middle')
@@ -493,7 +536,6 @@ GaugeD3 = function(_option) {
             .attr('class', option.label.class);
 
         d3var.max = d3var.center.append('text')
-            .datum(option.value.max)
             .text(getMaxValueText())
             .style('fill', option.label.color)
             .style('text-anchor', 'middle')
@@ -592,11 +634,16 @@ GaugeD3 = function(_option) {
             var rangeAngle, angle;
 
             switch (option.gauge.type) {
-                case 'half':
-                    rangeAngle = 180;
-                    angle = rangeAngle*per - rangeAngle/2;
-                    angle = angle * Math.PI/180;
-                    break;
+            case 'half':
+                rangeAngle = 180;
+                angle = rangeAngle * per - rangeAngle/2;
+                angle = angle * Math.PI/180;
+                break;
+            case 'donut':
+                rangeAngle = 360;
+                angle = rangeAngle * per;
+                angle = angle * Math.PI/180 + option.gauge.donut.startAngle * Math.PI/180;
+                break;
             }
             return angle;
         })(val, per);
