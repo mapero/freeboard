@@ -19,6 +19,10 @@ Graph sample 2
 
 [http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fc3showcase(laggy).json](http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fc3showcase(laggy).json)
 
+Gauge sample
+
+[http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fgauge_sample.json](http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fgauge_sample.json)
+
 ### スクリーンショット
 ![weather](https://raw.githubusercontent.com/wiki/infocorpus/freeboard/images/screenshot01.png)
 

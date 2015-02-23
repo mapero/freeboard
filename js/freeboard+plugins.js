@@ -4764,8 +4764,6 @@ $.extend(freeboard, jQuery.eventEmitter);
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ F R E E B O A R D                                                                                                                      │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
-// │ Copyright © 2013 Jim Heising (https://github.com/jheising)                                                                             │ \\
-// │ Copyright © 2013 Bug Labs, Inc. (http://buglabs.net)                                                                                   │ \\
 // │ Copyright © 2015 Daisuke Tanaka (https://github.com/tanaka0323)                                                                        │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
 // │ Licensed under the MIT license.                                                                                                        │ \\
@@ -4773,79 +4771,123 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 (function() {
 
-	freeboard.addStyle('.gauge-widget-wrapper', "width:100%; height:214px; text-align:center;");
-	freeboard.addStyle('.gauge-widget', "width:280px; height:100%; display:inline-block;");
-
 	var gaugeWidget = function (settings) {
 		var self = this;
+		var BLOCK_HEIGHT = 60;
 
 		var currentID = _.uniqueId('gauge-');
-		var titleElement = $('<h2 class="section-title"></h2>');
-		var wrapperElement = $('<div class="gauge-widget-wrapper"></div>');
 		var gaugeElement = $('<div class="gauge-widget" id="' + currentID + '"></div>');
-		var gaugeObject;
+		var gauge = null;
 
 		var currentSettings = settings;
 
-		function createGauge() {
-			currentSettings.shape = Number(currentSettings.shape);
-
-			if (!_.isUndefined(gaugeObject))
-				gaugeObject = null;
-
-			gaugeElement.empty();
-
-			gaugeObject = new JustGage({
-				id: currentID,
-				value: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
-				min: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
-				max: (_.isUndefined(currentSettings.max_value) ? 0 : currentSettings.max_value),
-				label: currentSettings.units,
-				showInnerShadow: false,
-				shape: currentSettings.shape,
-				levelColors: [ currentSettings.gauge_lower_color, currentSettings.gauge_mid_color, currentSettings.gauge_upper_color ],
-				gaugeWidthScale: currentSettings.gauge_widthscale/100.0,
-				gaugeColor: currentSettings.gauge_color,
-				labelClass: 'ultralight-text',
-				labelFontColor: currentSettings.value_fontcolor,
-				valueFontColor: currentSettings.value_fontcolor
+		function setBlocks(blocks) {
+			if (_.isUndefined(blocks))
+				return;
+			var height = BLOCK_HEIGHT * blocks;
+			gaugeElement.css({
+				'height': height + 'px',
+				'width': '100%'
 			});
 		}
 
+		function createGauge() {
+			if (!_.isNull(gauge))
+				gauge = null;
+
+			gaugeElement.empty();
+
+			gauge = new GaugeD3({
+				bindto: currentID,
+				title: {
+					text: currentSettings.title,
+					color: currentSettings.value_fontcolor,
+					class: 'ultralight-text'
+				},
+				value: {
+					val: 0,
+					min: (_.isUndefined(currentSettings.min_value) ? 0 : currentSettings.min_value),
+					max: (_.isUndefined(currentSettings.max_value) ? 0 : currentSettings.max_value),
+					color: currentSettings.value_fontcolor,
+					decimal: currentSettings.decimal,
+					humanFriendly: currentSettings.human_friendly,
+					humanFriendlyDecimal: currentSettings.decimal,
+					humanFriendlyMinMax: currentSettings.human_friendly,
+					transition: currentSettings.animate,
+					hideMinMax: currentSettings.show_minmax ? false : true,
+					class: 'ultralight-text'
+				},
+				gauge: {
+					widthScale: currentSettings.gauge_width/100,
+					color: currentSettings.gauge_color,
+					type: currentSettings.type
+				},
+				label: {
+					text: currentSettings.units,
+					color: currentSettings.value_fontcolor,
+					class: 'ultralight-text'
+				},
+				level: {
+					colors: [ currentSettings.gauge_lower_color, currentSettings.gauge_mid_color, currentSettings.gauge_upper_color ]
+				}
+			});
+
+			gaugeElement.resize(_.debounce(function() {
+				gauge.resize();
+			}, 500));
+		}
+
 		this.render = function (element) {
-			$(element).append(titleElement).append(wrapperElement.append(gaugeElement));
-			// for justgauge redraw bug.
-			_.delay(function() {
-				createGauge();
-			}, 500);
+			$(element).append(gaugeElement);
+			setBlocks(currentSettings.blocks);
+			createGauge();
 		};
 
 		this.onSettingsChanged = function (newSettings) {
-			if (_.isUndefined(gaugeObject)) {
-				titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+			if (_.isNull(gauge)) {
 				currentSettings = newSettings;
 				return;
 			}
+			setBlocks(newSettings.blocks);
 
-			currentSettings = newSettings;
-			createGauge();
-			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
-			return true;
+			var updateCalculate = false;
+
+			if (currentSettings.title != newSettings.title ||
+				currentSettings.type != newSettings.type ||
+				currentSettings.value != newSettings.value ||
+				currentSettings.decimal != newSettings.decimal ||
+				currentSettings.human_friendly != newSettings.human_friendly ||
+				currentSettings.animate != newSettings.animate ||
+				currentSettings.units != newSettings.units ||
+				currentSettings.value_fontcolor != newSettings.value_fontcolor ||
+				currentSettings.gauge_upper_color != newSettings.gauge_upper_color ||
+				currentSettings.gauge_mid_color != newSettings.gauge_mid_color ||
+				currentSettings.gauge_lower_color != newSettings.gauge_lower_color ||
+				currentSettings.gauge_color != newSettings.gauge_color ||
+				currentSettings.gauge_width != newSettings.gauge_width ||
+				currentSettings.show_minmax != newSettings.show_minmax ||
+				currentSettings.min_value != newSettings.min_value ||
+				currentSettings.max_value != newSettings.max_value) {
+				updateCalculate = true;
+				currentSettings = newSettings;
+				createGauge();
+			} else {
+				currentSettings = newSettings;
+			}
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (!_.isUndefined(gaugeObject)) {
-				gaugeObject.refresh(Number(newValue));
-			}
+			if (!_.isNull(gauge))
+				gauge.refresh(Number(newValue));
 		};
 
 		this.onDispose = function () {
-			if (!_.isUndefined(gaugeObject))
-				gaugeObject = null;
+			gauge = null;
 		};
 
 		this.getHeight = function () {
-			return 4;
+			return currentSettings.blocks;
 		};
 
 		this.onSettingsChanged(settings);
@@ -4856,8 +4898,8 @@ $.extend(freeboard, jQuery.eventEmitter);
 		display_name: 'ゲージ',
 		description: 'ゲージを表示するウィジェットです。',
 		external_scripts : [
-			'plugins/thirdparty/raphael.2.1.0.min.js',
-			'plugins/thirdparty/justgage.min.js'
+			'plugins/thirdparty/d3.v3.min.js',
+			'plugins/thirdparty/gauged3.min.js'
 		],
 		settings: [
 			{
@@ -4868,6 +4910,66 @@ $.extend(freeboard, jQuery.eventEmitter);
 				description: '最大100文字'
 			},
 			{
+				name: 'blocks',
+				display_name: '高さ (ブロック数)',
+				validate: 'required,custom[integer],min[4],max[10]',
+				type: 'number',
+				style: 'width:100px',
+				default_value: 4,
+				description: '1ブロック60ピクセル。10ブロックまで'
+			},
+			{
+				name: 'type',
+				display_name: '型',
+				type: 'option',
+				options: [
+					{
+						name: 'ハーフ',
+						value: 'half'
+					},
+					{
+						name: 'クオーター 左上',
+						value: 'quarter-left-top'
+					},
+					{
+						name: 'クオーター 右上',
+						value: 'quarter-right-top'
+					},
+					{
+						name: 'クオーター 左下',
+						value: 'quarter-left-bottom'
+					},
+					{
+						name: 'クオーター 右下',
+						value: 'quarter-right-bottom'
+					},
+					{
+						name: 'スリークオーター 左上',
+						value: 'threequarter-left-top'
+					},
+					{
+						name: 'スリークオーター 右上',
+						value: 'threequarter-right-top'
+					},
+					{
+						name: 'スリークオーター 左下',
+						value: 'threequarter-left-bottom'
+					},
+					{
+						name: 'スリークオーター 右下',
+						value: 'threequarter-right-bottom'
+					},
+					{
+						name: 'スリークオーター 下',
+						value: 'threequarter-bottom'
+					},
+					{
+						name: 'ドーナッツ',
+						value: 'donut'
+					}
+				]
+			},
+			{
 				name: 'value',
 				display_name: '値',
 				validate: 'optional,maxSize[2000]',
@@ -4875,23 +4977,25 @@ $.extend(freeboard, jQuery.eventEmitter);
 				description: '最大2000文字'
 			},
 			{
-				name: 'shape',
-				display_name: '型',
-				type: 'option',
-				options: [
-					{
-						name: 'ハーフ',
-						value: 0
-					},
-					{
-						name: 'ファン',
-						value: 1
-					},
-					{
-						name: 'ドーナッツ',
-						value: 2
-					}
-				]
+				name: 'decimal',
+				display_name: '表示小数点以下桁数',
+				type: 'number',
+				validate: 'required,custom[integer],min[0],max[4]',
+				style: 'width:100px',
+				default_value: 0
+			},
+			{
+				name: 'human_friendly',
+				display_name: '補助単位',
+				type: 'boolean',
+				default_value: false,
+				description: '1000なら1Kのように値を見やすくします。'
+			},
+			{
+				name: 'animate',
+				display_name: '値変化アニメーション',
+				type: 'boolean',
+				default_value: true
 			},
 			{
 				name: 'units',
@@ -4942,20 +5046,26 @@ $.extend(freeboard, jQuery.eventEmitter);
 				description: 'デフォルト色: #edebeb'
 			},
 			{
-				name: 'gauge_widthscale',
+				name: 'gauge_width',
 				display_name: 'ゲージ太さ',
 				type: 'number',
 				style: 'width:100px',
-				validate: 'required,custom[integer],min[0],max[200]',
-				default_value: 100,
-				description: '0から200まで'
+				validate: 'required,custom[integer],min[0],max[100]',
+				default_value: 50,
+				description: '0から100まで'
+			},
+			{
+				name: 'show_minmax',
+				display_name: '最小最大値表示',
+				type: 'boolean',
+				default_value: true
 			},
 			{
 				name: 'min_value',
 				display_name: '最小値',
 				type: 'number',
 				style: 'width:100px',
-				validate: 'required,custom[number],min[-100000000],max[100000000]',
+				validate: 'required,custom[number],min[-100000000000],max[100000000000]',
 				default_value: 0,
 				description: '数値のみ'
 			},
@@ -4964,7 +5074,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 				display_name: '最大値',
 				type: 'number',
 				style: 'width:100px',
-				validate: 'required,custom[number],min[-100000000],max[100000000]',
+				validate: 'required,custom[number],min[-100000000000],max[100000000000]',
 				default_value: 100,
 				description: '最小値以上'
 			}
