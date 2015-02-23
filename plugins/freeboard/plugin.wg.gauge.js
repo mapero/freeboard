@@ -197,6 +197,10 @@
 						value: 'threequarter-right-bottom'
 					},
 					{
+						name: 'スリークオーター 下',
+						value: 'threequarter-bottom'
+					},
+					{
 						name: 'ドーナッツ',
 						value: 'donut'
 					}
