@@ -462,25 +462,25 @@ GaugeD3 = function(_option) {
             case 'threequarter-left-top':
                 attr.title.dy = '-2.8em';
                 attr.minmax.max_dy = '-0.6em';
-                attr.title.x = -x;
+                attr.title.x = -radius/1.5;
                 attr.minmax.max_x = -x;
                 break;
             case 'threequarter-right-top':
                 attr.title.dy = '-2.8em';
                 attr.minmax.min_dy = '-0.6em';
-                attr.title.x = x;
+                attr.title.x = radius/1.5;
                 attr.minmax.min_x = x;
                 break;
             case 'threequarter-left-bottom':
                 attr.title.dy = '3.5em';
                 attr.minmax.min_dy = '1.3em';
-                attr.title.x = -x;
+                attr.title.x = -radius/1.5;
                 attr.minmax.min_x = -x;
                 break;
             case 'threequarter-right-bottom':
                 attr.title.dy = '3.5em';
                 attr.minmax.max_dy = '1.3em';
-                attr.title.x = x;
+                attr.title.x = radius/1.5;
                 attr.minmax.max_x = x;
                 break;
             case 'threequarter-bottom':
