@@ -838,8 +838,12 @@ GaugeD3 = function(_option) {
             });
     }
 
-    function levelArcTransition(val) {
-        var per = calcPercentage(val);
+    function levelArcTransition(newval, oldval) {
+        var per = calcPercentage(newval);
+
+        var newColor = getGaugeValueColor(newval, per);
+        var oldColor = getGaugeValueColor(oldval, calcPercentage(oldval));
+        var curColor = oldColor;
 
         var endAngle = (function(per) {
             var angle;
@@ -886,16 +890,19 @@ GaugeD3 = function(_option) {
             return angle;
         })(per);
 
+        var color = d3.interpolateRgb(oldColor, newColor);
+
         d3var.arc_level.datum(endAngle);
         d3var.arc_level.transition()
             .duration(option.transition.refreshTime)
             .ease(option.transition.refreshType)
-            .style('fill', getGaugeValueColor(val, per))
+            .style('fill', curColor)
             .attrTween('d', function(d) {
-                var i = d3.interpolate(curArcAngle, d);
+                var angle = d3.interpolate(curArcAngle, d);
                 return function(t) {
-                    curArcAngle = i(t);
-                    return d3var.arc.endAngle(i(t))();
+                    curArcAngle = angle(t);
+                    curColor = color(t);
+                    return d3var.arc.endAngle(angle(t))();
                 };
             });
     }
@@ -917,14 +924,15 @@ GaugeD3 = function(_option) {
         }
 
         val = getValueInRange(val);
-        option.value.val = val;
 
         if (option.value.transition === true)
             valueTransition(val);
         else
             d3var.value.text(getValueText());
 
-        levelArcTransition(val);
+        levelArcTransition(val, option.value.val);
+
+        option.value.val = val;
     }
 
     // Public API
