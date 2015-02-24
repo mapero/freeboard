@@ -843,7 +843,6 @@ GaugeD3 = function(_option) {
 
         var newColor = getGaugeValueColor(newval, per);
         var oldColor = getGaugeValueColor(oldval, calcPercentage(oldval));
-        var curColor = oldColor;
 
         var endAngle = (function(per) {
             var angle;
@@ -890,18 +889,17 @@ GaugeD3 = function(_option) {
             return angle;
         })(per);
 
-        var color = d3.interpolateRgb(oldColor, newColor);
-
         d3var.arc_level.datum(endAngle);
         d3var.arc_level.transition()
             .duration(option.transition.refreshTime)
             .ease(option.transition.refreshType)
-            .style('fill', curColor)
+            .styleTween('fill', function() {
+                return d3.interpolateRgb(oldColor, newColor);
+            })
             .attrTween('d', function(d) {
                 var angle = d3.interpolate(curArcAngle, d);
                 return function(t) {
                     curArcAngle = angle(t);
-                    curColor = color(t);
                     return d3var.arc.endAngle(angle(t))();
                 };
             });
