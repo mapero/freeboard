@@ -838,11 +838,10 @@ GaugeD3 = function(_option) {
             });
     }
 
-    function levelArcTransition(newval, oldval) {
-        var per = calcPercentage(newval);
+    function levelArcTransition(val) {
+        var per = calcPercentage(val);
 
-        var newColor = getGaugeValueColor(newval, per);
-        var oldColor = getGaugeValueColor(oldval, calcPercentage(oldval));
+        var newColor = getGaugeValueColor(val, per);
 
         var endAngle = (function(per) {
             var angle;
@@ -893,9 +892,7 @@ GaugeD3 = function(_option) {
         d3var.arc_level.transition()
             .duration(option.transition.refreshTime)
             .ease(option.transition.refreshType)
-            .styleTween('fill', function() {
-                return d3.interpolateRgb(oldColor, newColor);
-            })
+            .style('fill', newColor)
             .attrTween('d', function(d) {
                 var angle = d3.interpolate(curArcAngle, d);
                 return function(t) {
@@ -928,7 +925,7 @@ GaugeD3 = function(_option) {
         else
             d3var.value.text(getValueText());
 
-        levelArcTransition(val, option.value.val);
+        levelArcTransition(val);
 
         option.value.val = val;
     }
