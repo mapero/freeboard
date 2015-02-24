@@ -4834,7 +4834,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 			gaugeElement.resize(_.debounce(function() {
 				gauge.resize();
-			}, 500));
+			}, 100));
 		}
 
 		this.render = function (element) {
@@ -5531,6 +5531,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	freeboard.addStyle('.pointer-widget', 'width:100%;');
 
@@ -5546,6 +5547,10 @@ $.extend(freeboard, jQuery.eventEmitter);
 		var widgetElement = $('<div class="pointer-widget" id="' + currentID + '"></div>');
 		var currentSettings = settings;
 		var fontcolor = '#d3d4d4';
+		var widgetSize = {
+			height: 0,
+			width: 0
+		};
 
 		// d3 variables
 		var svg, center, pointer, textValue, textUnits, circle;
@@ -5558,6 +5563,31 @@ $.extend(freeboard, jQuery.eventEmitter);
 				height: height + 'px',
 				width: '100%'
 			});
+		}
+
+		function getWidgetSize(rc) {
+			var h, w, aspect;
+			if (rc.width > rc.height) {
+				h = rc.height;
+				w = h * 1.25;
+				if (w > rc.width) {
+					aspect = w / rc.width;
+					w = w / aspect;
+					h = h / aspect;
+				}
+			} else if (rc.width < rc.height) {
+				w = rc.width;
+				h = w / 1.25;
+				if (h > rc.height) {
+					aspect = w / rc.height;
+					h = h / aspect;
+					width = h / aspect;
+				}
+			} else {
+				w = rc.width;
+				h = w * 0.75;
+			}
+			return { height: h, width: w };
 		}
 
 		function polygonPath(points) {
@@ -5597,19 +5627,15 @@ $.extend(freeboard, jQuery.eventEmitter);
 				return;
 
 			var rc = widgetElement[0].getBoundingClientRect();
+			var newSize = getWidgetSize(rc);
 
 			svg.attr('height', rc.height);
 			svg.attr('width', rc.width);
 
-			center.attr('transform', getCenteringTransform(rc));
+			var x = newSize.width / widgetSize.width;
+			var y = newSize.height / widgetSize.height;
 
-			var r = getRadius(rc);
-			circle.attr('r', r);
-
-			pointer.attr('d', getPointerPath(r));
-
-			textValue.attr('font-size', calcValueFontSize(r) + 'em');
-			textUnits.attr('font-size', calcUnitsFontSize(r) + 'em');
+			center.attr('transform', getCenteringTransform(rc)+',scale('+x+', '+y+')');
 		}
 
 		function createWidget() {
@@ -5624,7 +5650,8 @@ $.extend(freeboard, jQuery.eventEmitter);
 			center = svg.append('g')
 				.attr('transform', getCenteringTransform(rc));
 
-			var r = getRadius(rc);
+			widgetSize = getWidgetSize(rc);
+			var r = getRadius(widgetSize);
 			circle = center.append('circle')
 				.attr('r', r)
 				.style('fill', 'rgba(0, 0, 0, 0)')
@@ -5654,7 +5681,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			// svg chart fit to container
 			widgetElement.resize(_.debounce(function() {
 				resize();
-			}, 500));
+			}, 100));
 		}
 
 		this.render = function (element) {
@@ -5690,7 +5717,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 			if (settingName === 'direction') {
 				pointer.transition()
 					.duration(250)
-					.ease('bounce')
+					.ease('bounce-out')
 					.attrTween('transform', function(d, i, a) {
 						return d3.interpolateString(a, 'rotate(' + parseInt(newValue) + ', 0, 0)');
 					});
@@ -5699,6 +5726,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 					return;
 				textValue.transition()
 					.duration(500)
+					.ease('circle-out')
 					.tween('text', function() {
 						var i = d3.interpolate(this.textContent, Number(newValue));
 						return function(t) {
