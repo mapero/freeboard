@@ -46,6 +46,10 @@ GaugeD3 = function(_option) {
     };
 
     var startArcAngle, endArcAngle, curArcAngle = 0;
+    var widgetSize = {
+        height: 0,
+        width: 0
+    };
 
     // default option
     var default_option = {
@@ -228,49 +232,52 @@ GaugeD3 = function(_option) {
         return 'translate(' + (rc.width/2) + ',' + (rc.height/2) + ')';
     }
 
-    function getRadius(rc) {
-        var r, height, width, aspect;
-
+    function getWidgetSize(rc) {
+        var h, w, aspect;
         if (rc.width > rc.height) {
-            height = rc.height;
-            width = height * 1.25;
-            if (width > rc.width) {
-                aspect = width / rc.width;
-                width = width / aspect;
-                height = height / aspect;
+            h = rc.height;
+            w = h * 1.25;
+            if (w > rc.width) {
+                aspect = w / rc.width;
+                w = w / aspect;
+                h = h / aspect;
             }
         } else if (rc.width < rc.height) {
-            width = rc.width;
-            height = width / 1.25;
-            if (height > rc.height) {
-                aspect = width / rc.height;
-                height = height / aspect;
-                width = height / aspect;
+            w = rc.width;
+            h = w / 1.25;
+            if (h > rc.height) {
+                aspect = w / rc.height;
+                h = h / aspect;
+                width = h / aspect;
             }
         } else {
-            width = rc.width;
-            height = width * 0.75;
+            w = rc.width;
+            h = w * 0.75;
         }
+        return { height: h, width: w };
+    }
 
+    function getRadius(size) {
+        var r;
         switch (option.gauge.type) {
         case 'threequarter-left-top':
         case 'threequarter-right-top':
         case 'threequarter-left-bottom':
         case 'threequarter-right-bottom':
         case 'threequarter-bottom':
-            r = Math.floor(Math.min(width, height) / _THREEQUARTER_DIV);
+            r = Math.floor(Math.min(size.width, size.height) / _THREEQUARTER_DIV);
             break;
         case 'donut':
-            r = Math.floor(Math.min(width, height) / _DONUT_DIV);
+            r = Math.floor(Math.min(size.width, size.height) / _DONUT_DIV);
             break;
         case 'half':
-            r = Math.floor(Math.min(width, height) / _HALF_DIV);
+            r = Math.floor(Math.min(size.width, size.height) / _HALF_DIV);
             break;
         case 'quarter-left-top':
         case 'quarter-right-top':
         case 'quarter-left-bottom':
         case 'quarter-right-bottom':
-            r = Math.floor(Math.min(width, height) / _QUARTER_DIV);
+            r = Math.floor(Math.min(size.width, size.height) / _QUARTER_DIV);
             break;
         }
         return r;
@@ -700,7 +707,8 @@ GaugeD3 = function(_option) {
             .style('opacity', 0)
             .attr('transform', getCenteringTransform(rc));
 
-        var r = getRadius(rc);
+        widgetSize = getWidgetSize(rc);
+        var r = getRadius(widgetSize);
 
         d3var.arc = genArc(r);
         d3var.arc_bg = genArcPath(r, d3var.center, d3var.arc, option.gauge.color);
@@ -775,39 +783,15 @@ GaugeD3 = function(_option) {
 
         var rc = parentNode.getBoundingClientRect();
 
+        var newSize = getWidgetSize(rc);
+
         d3var.svg.attr('height', rc.height)
             .attr('width', rc.width);
 
-        d3var.center.attr('transform', getCenteringTransform(rc));
+        var x = newSize.width / widgetSize.width;
+        var y = newSize.height / widgetSize.height;
 
-        var r = getRadius(rc);
-
-        d3var.arc.innerRadius(r-getGaugeWidth(r))
-                .outerRadius(r)
-                .endAngle(endArcAngle);
-
-        d3var.arc_bg.remove();
-        d3var.arc_bg = genArcPath(r, d3var.center, d3var.arc, option.gauge.color);
-
-        d3var.arc.endAngle(curArcAngle);
-
-        d3var.arc_level.remove();
-        d3var.arc_level = genArcPath(r, d3var.center, d3var.arc, getGaugeValueColor(option.value.val, 0));
-
-        var attributes = calcAttributes(r);
-
-        d3var.title.attr('font-size', attributes.title.fontsize)
-            .attr('x', attributes.title.x);
-        d3var.value.attr('font-size', attributes.value.fontsize)
-            .attr('x', attributes.value.x);
-        d3var.label.attr('font-size', attributes.label.fontsize)
-            .attr('x', attributes.label.x);
-        d3var.min.attr('font-size', attributes.minmax.fontsize)
-            .attr('x', attributes.minmax.min_x);
-        d3var.max.attr('font-size', attributes.minmax.fontsize)
-            .attr('x', attributes.minmax.max_x);
-
-        transformAttributes(r);
+        d3var.center.attr('transform', getCenteringTransform(rc)+',scale('+x+', '+y+')');
     }
 
     function calcPercentage(val) {
