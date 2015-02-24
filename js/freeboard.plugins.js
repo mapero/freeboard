@@ -9,6 +9,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var clockDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -479,6 +480,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var jsonDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -669,6 +671,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var mqttDatasource = function(settings, updateCallback) {
 
@@ -836,6 +839,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var nodeJSDatasource = function(settings, updateCallback) {
 
@@ -1001,6 +1005,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function () {
+	'use strict';
 
 	var openWeatherMapDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -1121,6 +1126,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function () {
+	'use strict';
 
 	var playbackDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -1237,6 +1243,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var wsDatasource = function(settings, updateCallback) {
 		var self = this;
@@ -1344,6 +1351,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function () {
+	'use strict';
 
 	var yahooWeatherDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -1522,6 +1530,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var c3jsWidget = function (settings) {
 		var self = this;
@@ -1784,6 +1793,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var gaugeWidget = function (settings) {
 		var self = this;
@@ -2110,6 +2120,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	freeboard.addStyle('.gm-style-cc a', 'text-shadow:none;');
 
@@ -2301,6 +2312,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	freeboard.addStyle('.indicator-light', 'border-radius:50%;width:22px;height:22px;border:2px solid #3d3d3d;margin-top:5px;float:left;background-color:#222;margin-right:10px;');
 	freeboard.addStyle('.indicator-light.on', 'background-color:#FFC773;box-shadow: 0px 0px 15px #FF9900;border-color:#FDF1DF;');
@@ -2405,6 +2417,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	freeboard.addStyle('.picture-widget', 'background-size:contain; background-position:center; background-repeat: no-repeat;');
 
@@ -2841,6 +2854,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var SPARKLINE_HISTORY_LENGTH = 100;
 	var SPARKLINE_COLORS = ['#FF9900', '#FFFFFF', '#B3B4B4', '#6B6B6B', '#28DE28', '#13F7F9', '#E6EE18', '#C41204', '#CA3CB8', '#0B1CFB'];

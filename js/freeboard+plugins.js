@@ -9,6 +9,8 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 DatasourceModel = function(theFreeboardModel, datasourcePlugins) {
+	'use strict';
+
 	var self = this;
 
 	function disposeDatasourceInstance()
@@ -52,8 +54,7 @@ DatasourceModel = function(theFreeboardModel, datasourcePlugins) {
 		{
 			var datasourceType = datasourcePlugins[newValue];
 
-			function finishLoad()
-			{
+			var finishLoad = function() {
 				datasourceType.newInstance(self.settings(), function(datasourceInstance)
 				{
 
@@ -61,17 +62,13 @@ DatasourceModel = function(theFreeboardModel, datasourcePlugins) {
 					datasourceInstance.updateNow();
 
 				}, self.updateCallback);
-			}
+			};
 
 			// Do we need to load any external scripts?
 			if(datasourceType.external_scripts)
-			{
 				head.js(datasourceType.external_scripts.slice(0), finishLoad); // Need to clone the array because head.js adds some weird functions to it
-			}
 			else
-			{
 				finishLoad();
-			}
 		}
 	});
 
@@ -124,8 +121,9 @@ DatasourceModel = function(theFreeboardModel, datasourcePlugins) {
 // │ Licensed under the MIT license.                                    │ \\
 // └────────────────────────────────────────────────────────────────────┘ \\
 
-DeveloperConsole = function(theFreeboardModel)
-{
+DeveloperConsole = function(theFreeboardModel) {
+	'use strict';
+
 	function showDeveloperConsole()
 	{
 		var pluginScriptsInputs = [];
@@ -230,8 +228,9 @@ DeveloperConsole = function(theFreeboardModel)
 // │ Licensed under the MIT license.                                    │ \\
 // └────────────────────────────────────────────────────────────────────┘ \\
 
-function DialogBox(contentElement, title, okTitle, cancelTitle, closeCallback)
-{
+function DialogBox(contentElement, title, okTitle, cancelTitle, closeCallback) {
+	'use strict';
+
 	var modal_width = 900;
 
 	// Initialize our modal overlay
@@ -787,8 +786,9 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 // │ Licensed under the MIT license.                                    │ \\
 // └────────────────────────────────────────────────────────────────────┘ \\
 
-function FreeboardUI()
-{
+function FreeboardUI() {
+	'use strict';
+
 	var PANE_MARGIN = 10;
 	var PANE_WIDTH = 300;
 	var MIN_COLUMNS = 3;
@@ -1177,6 +1177,8 @@ function FreeboardUI()
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 JSEditor = function() {
+	'use strict';
+
 	var assetRoot = '';
 
 	function setAssetRoot(_assetRoot) {
@@ -1284,6 +1286,8 @@ JSEditor = function() {
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 function PaneModel(theFreeboardModel, widgetPlugins) {
+	'use strict';
+
 	var self = this;
 
 	this.title = ko.observable();
@@ -1402,8 +1406,9 @@ function PaneModel(theFreeboardModel, widgetPlugins) {
 // │ Licensed under the MIT license.                                    │ \\
 // └────────────────────────────────────────────────────────────────────┘ \\
 
-PluginEditor = function(jsEditor, valueEditor)
-{
+PluginEditor = function(jsEditor, valueEditor) {
+	'use strict';
+
 	function _removeSettingsRows() {
 		if ($('#setting-row-instance-name').length)
 			$('#setting-row-instance-name').nextAll().remove();
@@ -1485,18 +1490,267 @@ PluginEditor = function(jsEditor, valueEditor)
 		$(valueCell).append(wrapperDiv);
 	}
 
+	function createSettingRow(form, name, displayName) {
+		var tr = $('<div id="setting-row-' + name + '" class="form-row"></div>').appendTo(form);
+
+		tr.append('<div class="form-label"><label class="control-label">' + displayName + '</label></div>');
+		return $('<div id="setting-value-container-' + name + '" class="form-value"></div>').appendTo(tr);
+	}
+
+	function appendArrayCell(form, valueCell, settingDef, currentSettingsValues, newSettings) {
+		var subTableDiv = $('<div class="form-table-value-subtable"></div>').appendTo(valueCell);
+
+		var subTable = $('<table class="table table-condensed sub-table"></table>').appendTo(subTableDiv);
+		var subTableHead = $('<thead></thead>').hide().appendTo(subTable);
+		var subTableHeadRow = $('<tr></tr>').appendTo(subTableHead);
+		var subTableBody = $('<tbody></tbody>').appendTo(subTable);
+
+		var currentSubSettingValues = [];
+
+		// Create our headers
+		_.each(settingDef.settings, function(subSettingDef) {
+			var subsettingDisplayName = subSettingDef.name;
+
+			if(!_.isUndefined(subSettingDef.display_name))
+				subsettingDisplayName = subSettingDef.display_name;
+
+			$('<th>' + subsettingDisplayName + '</th>').appendTo(subTableHeadRow);
+		});
+
+		if(settingDef.name in currentSettingsValues)
+			currentSubSettingValues = currentSettingsValues[settingDef.name];
+
+		var processHeaderVisibility = function() {
+			(newSettings.settings[settingDef.name].length > 0) ? subTableHead.show() : subTableHead.hide();
+		};
+
+		var createSubsettingRow = function(subsettingValue) {
+			var subsettingRow = $('<tr></tr>').appendTo(subTableBody);
+
+			var newSetting = {};
+
+			if(!_.isArray(newSettings.settings[settingDef.name]))
+				newSettings.settings[settingDef.name] = [];
+
+			newSettings.settings[settingDef.name].push(newSetting);
+
+			_.each(settingDef.settings, function(subSettingDef) {
+				var subsettingCol = $('<td></td>').appendTo(subsettingRow);
+				var subsettingValueString = '';
+
+				if(!_.isUndefined(subsettingValue[subSettingDef.name]))
+					subsettingValueString = subsettingValue[subSettingDef.name];
+
+				newSetting[subSettingDef.name] = subsettingValueString;
+
+				$('<input class="table-row-value" type="text">')
+						.addClass(_toValidateClassString(subSettingDef.validate, 'text-input'))
+						.attr('style', settingDef.style)
+						.appendTo(subsettingCol).val(subsettingValueString).change(function() {
+					newSetting[subSettingDef.name] = $(this).val();
+				});
+			});
+
+			subsettingRow.append($('<td class="table-row-operation"></td>').append($('<ul class="board-toolbar"></ul>').append($('<li></li>').append($('<i class="fa-w fa-trash"></i>').click(function() {
+									var subSettingIndex = newSettings.settings[settingDef.name].indexOf(newSetting);
+
+									if(subSettingIndex !== -1) {
+										newSettings.settings[settingDef.name].splice(subSettingIndex, 1);
+										subsettingRow.remove();
+										processHeaderVisibility();
+									}
+								})))));
+
+			subTableDiv.scrollTop(subTableDiv[0].scrollHeight);
+
+			processHeaderVisibility();
+		};
+
+		$('<div class="table-operation text-button">追加</div>').appendTo(valueCell).click(function() {
+			var newSubsettingValue = {};
+
+			_.each(settingDef.settings, function(subSettingDef) {
+				newSubsettingValue[subSettingDef.name] = '';
+			});
+
+			createSubsettingRow(newSubsettingValue);
+		});
+
+		// Create our rows
+		_.each(currentSubSettingValues, function(currentSubSettingValue, subSettingIndex) {
+			createSubsettingRow(currentSubSettingValue);
+		});
+	}
+
+	function appendBooleanCell(form, valueCell, settingDef, currentSettingsValues, newSettings) {
+		newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
+
+		var onOffSwitch = $('<div class="onoffswitch"><label class="onoffswitch-label" for="' + settingDef.name + '-onoff"><div class="onoffswitch-inner"><span class="on">はい</span><span class="off">いいえ</span></div><div class="onoffswitch-switch"></div></label></div>').appendTo(valueCell);
+
+		var input = $('<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="' + settingDef.name + '-onoff">').prependTo(onOffSwitch).change(function() {
+			newSettings.settings[settingDef.name] = this.checked;
+		});
+
+		if(settingDef.name in currentSettingsValues)
+			input.prop('checked', currentSettingsValues[settingDef.name]);
+	}
+
+	function appendOptionCell(form, valueCell, settingDef, currentSettingsValues, newSettings) {
+		var defaultValue = currentSettingsValues[settingDef.name];
+
+		var input = $('<select></select>')
+							.addClass(_toValidateClassString(settingDef.validate))
+							.attr('style', settingDef.style)
+							.appendTo($('<div class="styled-select"></div>')
+							.appendTo(valueCell)).change(function() {
+			newSettings.settings[settingDef.name] = $(this).val();
+		});
+
+		_.each(settingDef.options, function(option) {
+			var optionName;
+			var optionValue;
+
+			if (_.isObject(option)) {
+				optionName = option.name;
+				optionValue = option.value;
+			} else {
+				optionName = option;
+			}
+
+			if (_.isUndefined(optionValue))
+				optionValue = optionName;
+
+			if (_.isUndefined(defaultValue))
+				defaultValue = optionValue;
+
+			$('<option></option>').text(optionName).attr('value', optionValue).appendTo(input);
+		});
+
+		newSettings.settings[settingDef.name] = defaultValue;
+
+		if(settingDef.name in currentSettingsValues)
+			input.val(currentSettingsValues[settingDef.name]);
+	}
+
+	function appendColorCell(form, valueCell, settingDef, currentSettingsValues, newSettings) {
+		var curColorPickerID = _.uniqueId('picker-');
+		var thisColorPickerID = '#' + curColorPickerID;
+		var defaultValue = currentSettingsValues[settingDef.name];
+		var input = $('<input id="' + curColorPickerID + '" type="text">').addClass(_toValidateClassString(settingDef.validate, 'text-input')).appendTo(valueCell);
+
+		newSettings.settings[settingDef.name] = defaultValue;
+
+		$(thisColorPickerID).css({
+			'border-right':'30px solid green',
+			'width':'80px',
+			'position': 'absolute'
+		});
+
+		$(thisColorPickerID).css('border-color', defaultValue);
+
+		var defhex = defaultValue;
+		defhex.replace('#', '');
+
+		$(thisColorPickerID).colpick({
+			layout:'hex',
+			colorScheme:'dark',
+			color: defhex,
+			submit:0,
+			onChange:function(hsb,hex,rgb,el,bySetColor) {
+				$(el).css('border-color','#'+hex);
+				newSettings.settings[settingDef.name] = '#'+hex;
+				if(!bySetColor) {
+					$(el).val('#'+hex);
+				}
+			}
+		}).keyup(function(){
+			$(this).colpickSetColor(this.value);
+		});
+
+		if(settingDef.name in currentSettingsValues) {
+			input.val(currentSettingsValues[settingDef.name]);
+		}
+	}
+
+	function appendJsonCell(form, valueCell, settingDef, currentSettingsValues, newSettings) {
+		newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
+
+		var input = $('<textarea class="calculated-value-input" style="z-index: 3000"></textarea>')
+				.addClass(_toValidateClassString(settingDef.validate, 'text-input'))
+				.attr('style', settingDef.style)
+				.appendTo(valueCell).change(function() {
+			newSettings.settings[settingDef.name] = $(this).val();
+		});
+
+		if(settingDef.name in currentSettingsValues)
+			input.val(currentSettingsValues[settingDef.name]);
+
+		valueEditor.createValueEditor(input);
+
+		var datasourceToolbox = $('<ul class="board-toolbar datasource-input-suffix"></ul>');
+
+		var jsEditorTool = $('<li><i class="fa-w fa-edit"></i><label>.JSON EDITOR</label></li>').mousedown(function(e) {
+			e.preventDefault();
+
+			jsEditor.displayJSEditor(input.val(), 'json', function(result){
+				input.val(result);
+				input.change();
+			});
+		});
+
+		$(valueCell).append(datasourceToolbox.append(jsEditorTool));
+	}
+
+	function appendTextCell(form, valueCell, settingDef, currentSettingsValues, newSettings) {
+		newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
+
+		var input = $('<input type="text">')
+							.addClass(_toValidateClassString(settingDef.validate, 'text-input'))
+							.attr('style', settingDef.style)
+							.appendTo(valueCell).change(function() {
+			if (settingDef.type == 'number')
+				newSettings.settings[settingDef.name] = Number($(this).val());
+			else
+				newSettings.settings[settingDef.name] = $(this).val();
+		});
+
+		if (settingDef.name in currentSettingsValues)
+			input.val(currentSettingsValues[settingDef.name]);
+	}
+
+	function appendCalculatedCell(form, valueCell, settingDef, currentSettingsValues, newSettings) {
+		newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
+
+		if (settingDef.name in currentSettingsValues) {
+			var currentValue = currentSettingsValues[settingDef.name];
+			if(settingDef.multi_input && _.isArray(currentValue)) {
+				var includeRemove = false;
+				for(var i = 0; i < currentValue.length; i++) {
+					_appendCalculatedSettingRow(valueCell, newSettings, settingDef, currentValue[i], includeRemove);
+					includeRemove = true;
+				}
+			} else {
+				_appendCalculatedSettingRow(valueCell, newSettings, settingDef, currentValue, false);
+			}
+		} else {
+			_appendCalculatedSettingRow(valueCell, newSettings, settingDef, null, false);
+		}
+
+		if (settingDef.multi_input) {
+			var inputAdder = $('<ul class="board-toolbar"><li class="add-setting-row"><i class="fa-w fa-plus"></i><label>追加</label></li></ul>')
+				.mousedown(function(e) {
+					e.preventDefault();
+					_appendCalculatedSettingRow(valueCell, newSettings, settingDef, null, true);
+				});
+			$(valueCell).siblings('.form-label').append(inputAdder);
+		}
+	}
+
 	function createPluginEditor(title, pluginTypes, currentTypeName, currentSettingsValues, settingsSavedCallback, cancelCallback) {
 		var newSettings = {
 			type    : currentTypeName,
 			settings: {}
 		};
-
-		function createSettingRow(name, displayName) {
-			var tr = $('<div id="setting-row-' + name + '" class="form-row"></div>').appendTo(form);
-
-			tr.append('<div class="form-label"><label class="control-label">' + displayName + '</label></div>');
-			return $('<div id="setting-value-container-' + name + '" class="form-value"></div>').appendTo(tr);
-		}
 
 		var selectedType;
 		var form = $('<form id="plugin-editor"></form>');
@@ -1529,255 +1783,33 @@ PluginEditor = function(jsEditor, valueEditor)
 				if (settingDef.type === 'text')
 					currentSettingsValues[settingDef.name] = _.unescape(currentSettingsValues[settingDef.name]);
 
-				var valueCell = createSettingRow(settingDef.name, displayName);
+				var valueCell = createSettingRow(form, settingDef.name, displayName);
 				var input, defaultValue;
 
 				switch (settingDef.type) {
 					case 'array':
-						var subTableDiv = $('<div class="form-table-value-subtable"></div>').appendTo(valueCell);
-
-						var subTable = $('<table class="table table-condensed sub-table"></table>').appendTo(subTableDiv);
-						var subTableHead = $('<thead></thead>').hide().appendTo(subTable);
-						var subTableHeadRow = $('<tr></tr>').appendTo(subTableHead);
-						var subTableBody = $('<tbody></tbody>').appendTo(subTable);
-
-						var currentSubSettingValues = [];
-
-						// Create our headers
-						_.each(settingDef.settings, function(subSettingDef) {
-							var subsettingDisplayName = subSettingDef.name;
-
-							if(!_.isUndefined(subSettingDef.display_name))
-								subsettingDisplayName = subSettingDef.display_name;
-
-							$('<th>' + subsettingDisplayName + '</th>').appendTo(subTableHeadRow);
-						});
-
-						if(settingDef.name in currentSettingsValues)
-							currentSubSettingValues = currentSettingsValues[settingDef.name];
-
-						function processHeaderVisibility() {
-							(newSettings.settings[settingDef.name].length > 0) ? subTableHead.show() : subTableHead.hide();
-						}
-
-						function createSubsettingRow(subsettingValue) {
-							var subsettingRow = $('<tr></tr>').appendTo(subTableBody);
-
-							var newSetting = {};
-
-							if(!_.isArray(newSettings.settings[settingDef.name]))
-								newSettings.settings[settingDef.name] = [];
-
-							newSettings.settings[settingDef.name].push(newSetting);
-
-							_.each(settingDef.settings, function(subSettingDef) {
-								var subsettingCol = $('<td></td>').appendTo(subsettingRow);
-								var subsettingValueString = '';
-
-								if(!_.isUndefined(subsettingValue[subSettingDef.name]))
-									subsettingValueString = subsettingValue[subSettingDef.name];
-
-								newSetting[subSettingDef.name] = subsettingValueString;
-
-								$('<input class="table-row-value" type="text">')
-										.addClass(_toValidateClassString(subSettingDef.validate, 'text-input'))
-										.attr('style', settingDef.style)
-										.appendTo(subsettingCol).val(subsettingValueString).change(function() {
-									newSetting[subSettingDef.name] = $(this).val();
-								});
-							});
-
-							subsettingRow.append($('<td class="table-row-operation"></td>').append($('<ul class="board-toolbar"></ul>').append($('<li></li>').append($('<i class="fa-w fa-trash"></i>').click(function() {
-													var subSettingIndex = newSettings.settings[settingDef.name].indexOf(newSetting);
-
-													if(subSettingIndex !== -1) {
-														newSettings.settings[settingDef.name].splice(subSettingIndex, 1);
-														subsettingRow.remove();
-														processHeaderVisibility();
-													}
-												})))));
-
-							subTableDiv.scrollTop(subTableDiv[0].scrollHeight);
-
-							processHeaderVisibility();
-						}
-
-						$('<div class="table-operation text-button">追加</div>').appendTo(valueCell).click(function() {
-							var newSubsettingValue = {};
-
-							_.each(settingDef.settings, function(subSettingDef) {
-								newSubsettingValue[subSettingDef.name] = '';
-							});
-
-							createSubsettingRow(newSubsettingValue);
-						});
-
-						// Create our rows
-						_.each(currentSubSettingValues, function(currentSubSettingValue, subSettingIndex) {
-							createSubsettingRow(currentSubSettingValue);
-						});
+						appendArrayCell(form, valueCell, settingDef, currentSettingsValues, newSettings);
 						break;
-
 					case 'boolean':
-						newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
-
-						var onOffSwitch = $('<div class="onoffswitch"><label class="onoffswitch-label" for="' + settingDef.name + '-onoff"><div class="onoffswitch-inner"><span class="on">はい</span><span class="off">いいえ</span></div><div class="onoffswitch-switch"></div></label></div>').appendTo(valueCell);
-
-						input = $('<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="' + settingDef.name + '-onoff">').prependTo(onOffSwitch).change(function() {
-							newSettings.settings[settingDef.name] = this.checked;
-						});
-
-						if(settingDef.name in currentSettingsValues)
-							input.prop('checked', currentSettingsValues[settingDef.name]);
+						appendBooleanCell(form, valueCell, settingDef, currentSettingsValues, newSettings);
 						break;
-
 					case 'option':
-						defaultValue = currentSettingsValues[settingDef.name];
-
-						input = $('<select></select>')
-											.addClass(_toValidateClassString(settingDef.validate))
-											.attr('style', settingDef.style)
-											.appendTo($('<div class="styled-select"></div>')
-											.appendTo(valueCell)).change(function() {
-							newSettings.settings[settingDef.name] = $(this).val();
-						});
-
-						_.each(settingDef.options, function(option) {
-							var optionName;
-							var optionValue;
-
-							if (_.isObject(option)) {
-								optionName = option.name;
-								optionValue = option.value;
-							} else {
-								optionName = option;
-							}
-
-							if (_.isUndefined(optionValue))
-								optionValue = optionName;
-
-							if (_.isUndefined(defaultValue))
-								defaultValue = optionValue;
-
-							$('<option></option>').text(optionName).attr('value', optionValue).appendTo(input);
-						});
-
-						newSettings.settings[settingDef.name] = defaultValue;
-
-						if(settingDef.name in currentSettingsValues)
-							input.val(currentSettingsValues[settingDef.name]);
+						appendOptionCell(form, valueCell, settingDef, currentSettingsValues, newSettings);
 						break;
-
 					case 'color':
-						var curColorPickerID = _.uniqueId('picker-');
-						var thisColorPickerID = '#' + curColorPickerID;
-						defaultValue = currentSettingsValues[settingDef.name];
-						input = $('<input id="' + curColorPickerID + '" type="text">').addClass(_toValidateClassString(settingDef.validate, 'text-input')).appendTo(valueCell);
-
-						newSettings.settings[settingDef.name] = defaultValue;
-
-						$(thisColorPickerID).css({
-							'border-right':'30px solid green',
-							'width':'80px',
-							'position': 'absolute'
-						});
-
-						$(thisColorPickerID).css('border-color', defaultValue);
-
-						var defhex = defaultValue;
-						defhex.replace('#', '');
-
-						$(thisColorPickerID).colpick({
-							layout:'hex',
-							colorScheme:'dark',
-							color: defhex,
-							submit:0,
-							onChange:function(hsb,hex,rgb,el,bySetColor) {
-								$(el).css('border-color','#'+hex);
-								newSettings.settings[settingDef.name] = '#'+hex;
-								if(!bySetColor) {
-									$(el).val('#'+hex);
-								}
-							}
-						}).keyup(function(){
-							$(this).colpickSetColor(this.value);
-						});
-
-						if(settingDef.name in currentSettingsValues) {
-							input.val(currentSettingsValues[settingDef.name]);
-						}
+						appendColorCell(form, valueCell, settingDef, currentSettingsValues, newSettings);
 						break;
-
 					case 'json':
-						newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
-
-						input = $('<textarea class="calculated-value-input" style="z-index: 3000"></textarea>')
-								.addClass(_toValidateClassString(settingDef.validate, 'text-input'))
-								.attr('style', settingDef.style)
-								.appendTo(valueCell).change(function() {
-							newSettings.settings[settingDef.name] = $(this).val();
-						});
-
-						if(settingDef.name in currentSettingsValues)
-							input.val(currentSettingsValues[settingDef.name]);
-
-						valueEditor.createValueEditor(input);
-
-						var datasourceToolbox = $('<ul class="board-toolbar datasource-input-suffix"></ul>');
-
-						var jsEditorTool = $('<li><i class="fa-w fa-edit"></i><label>.JSON EDITOR</label></li>').mousedown(function(e) {
-							e.preventDefault();
-
-							jsEditor.displayJSEditor(input.val(), 'json', function(result){
-								input.val(result);
-								input.change();
-							});
-						});
-
-						$(valueCell).append(datasourceToolbox.append(jsEditorTool));
+						appendJsonCell(form, valueCell, settingDef, currentSettingsValues, newSettings);
 						break;
-
+					case 'text':
+						appendTextCell(form, valueCell, settingDef, currentSettingsValues, newSettings);
+						break;
+					case 'calculated':
+						appendCalculatedCell(form, valueCell, settingDef, currentSettingsValues, newSettings);
+						break;
 					default:
-						newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
-
-						if (settingDef.type === 'calculated') {
-							if(settingDef.name in currentSettingsValues) {
-								var currentValue = currentSettingsValues[settingDef.name];
-								if(settingDef.multi_input && _.isArray(currentValue)) {
-									var includeRemove = false;
-									for(var i = 0; i < currentValue.length; i++) {
-										_appendCalculatedSettingRow(valueCell, newSettings, settingDef, currentValue[i], includeRemove);
-										includeRemove = true;
-									}
-								} else {
-									_appendCalculatedSettingRow(valueCell, newSettings, settingDef, currentValue, false);
-								}
-							} else {
-								_appendCalculatedSettingRow(valueCell, newSettings, settingDef, null, false);
-							}
-
-							if (settingDef.multi_input) {
-								var inputAdder = $('<ul class="board-toolbar"><li class="add-setting-row"><i class="fa-w fa-plus"></i><label>追加</label></li></ul>')
-									.mousedown(function(e) {
-										e.preventDefault();
-										_appendCalculatedSettingRow(valueCell, newSettings, settingDef, null, true);
-									});
-								$(valueCell).siblings('.form-label').append(inputAdder);
-							}
-						} else {
-							input = $('<input type="text">')
-												.addClass(_toValidateClassString(settingDef.validate, 'text-input'))
-												.attr('style', settingDef.style)
-												.appendTo(valueCell).change(function() {
-								if (settingDef.type == 'number')
-									newSettings.settings[settingDef.name] = Number($(this).val());
-								else
-									newSettings.settings[settingDef.name] = $(this).val();
-							});
-
-							if (settingDef.name in currentSettingsValues)
-								input.val(currentSettingsValues[settingDef.name]);
-						}
+						appendTextCell(form, valueCell, settingDef, currentSettingsValues, newSettings);
 						break;
 				}
 
@@ -1804,7 +1836,6 @@ PluginEditor = function(jsEditor, valueEditor)
 					cancelCallback();
 			}
 			// Remove colorpick dom objects
-			colorPickerID = 0;
 			$('[id^=collorpicker]').remove();
 		});
 
@@ -1813,7 +1844,7 @@ PluginEditor = function(jsEditor, valueEditor)
 		var typeSelect;
 
 		if (pluginTypeNames.length > 1) {
-			var typeRow = createSettingRow('plugin-types', 'タイプ');
+			var typeRow = createSettingRow(form, 'plugin-types', 'タイプ');
 			typeSelect = $('<select></select>').appendTo($('<div class="styled-select"></div>').appendTo(typeRow));
 
 			typeSelect.append($('<option>追加するタイプを選択してください。</option>').attr('value', 'undefined'));
@@ -1888,8 +1919,9 @@ PluginEditor = function(jsEditor, valueEditor)
 // │ Licensed under the MIT license.                                    │ \\
 // └────────────────────────────────────────────────────────────────────┘ \\
 
-ValueEditor = function(theFreeboardModel)
-{
+ValueEditor = function(theFreeboardModel) {
+	'use strict';
+
 	var _veDatasourceRegex = new RegExp('.*datasources\\[\"([^\"]*)(\"\\])?(.*)$');
 
 	var dropdown = null;
@@ -2177,6 +2209,8 @@ ValueEditor = function(theFreeboardModel)
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 function WidgetModel(theFreeboardModel, widgetPlugins) {
+	'use strict';
+
 	function disposeWidgetInstance() {
 		if (!_.isUndefined(self.widgetInstance)) {
 			if (_.isFunction(self.widgetInstance.onDispose)) {
@@ -2575,6 +2609,8 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 }(jQuery));
 
 var freeboard = (function() {
+	'use strict';
+
 	var datasourcePlugins = {};
 	var widgetPlugins = {};
 
@@ -2995,6 +3031,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var clockDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -3465,6 +3502,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var jsonDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -3655,6 +3693,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var mqttDatasource = function(settings, updateCallback) {
 
@@ -3822,6 +3861,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var nodeJSDatasource = function(settings, updateCallback) {
 
@@ -3987,6 +4027,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function () {
+	'use strict';
 
 	var openWeatherMapDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -4107,6 +4148,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function () {
+	'use strict';
 
 	var playbackDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -4223,6 +4265,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var wsDatasource = function(settings, updateCallback) {
 		var self = this;
@@ -4330,6 +4373,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function () {
+	'use strict';
 
 	var yahooWeatherDatasource = function (settings, updateCallback) {
 		var self = this;
@@ -4508,6 +4552,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var c3jsWidget = function (settings) {
 		var self = this;
@@ -4770,6 +4815,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var gaugeWidget = function (settings) {
 		var self = this;
@@ -5096,6 +5142,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	freeboard.addStyle('.gm-style-cc a', 'text-shadow:none;');
 
@@ -5287,6 +5334,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	freeboard.addStyle('.indicator-light', 'border-radius:50%;width:22px;height:22px;border:2px solid #3d3d3d;margin-top:5px;float:left;background-color:#222;margin-right:10px;');
 	freeboard.addStyle('.indicator-light.on', 'background-color:#FFC773;box-shadow: 0px 0px 15px #FF9900;border-color:#FDF1DF;');
@@ -5391,6 +5439,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	freeboard.addStyle('.picture-widget', 'background-size:contain; background-position:center; background-repeat: no-repeat;');
 
@@ -5827,6 +5876,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var SPARKLINE_HISTORY_LENGTH = 100;
 	var SPARKLINE_COLORS = ['#FF9900', '#FFFFFF', '#B3B4B4', '#6B6B6B', '#28DE28', '#13F7F9', '#E6EE18', '#C41204', '#CA3CB8', '#0B1CFB'];
