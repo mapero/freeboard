@@ -9,6 +9,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	freeboard.addStyle('.picture-widget', 'background-size:contain; background-position:center; background-repeat: no-repeat;');
 

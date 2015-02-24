@@ -9,6 +9,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function () {
+	'use strict';
 
 	var openWeatherMapDatasource = function (settings, updateCallback) {
 		var self = this;

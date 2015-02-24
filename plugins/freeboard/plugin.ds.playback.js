@@ -9,6 +9,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function () {
+	'use strict';
 
 	var playbackDatasource = function (settings, updateCallback) {
 		var self = this;

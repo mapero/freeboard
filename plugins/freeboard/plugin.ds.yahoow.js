@@ -9,6 +9,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function () {
+	'use strict';
 
 	var yahooWeatherDatasource = function (settings, updateCallback) {
 		var self = this;

@@ -7,6 +7,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var wsDatasource = function(settings, updateCallback) {
 		var self = this;

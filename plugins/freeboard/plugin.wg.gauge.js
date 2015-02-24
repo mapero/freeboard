@@ -7,6 +7,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var gaugeWidget = function (settings) {
 		var self = this;

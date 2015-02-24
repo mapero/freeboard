@@ -9,6 +9,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	freeboard.addStyle('.gm-style-cc a', 'text-shadow:none;');
 

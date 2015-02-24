@@ -9,6 +9,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var clockDatasource = function (settings, updateCallback) {
 		var self = this;

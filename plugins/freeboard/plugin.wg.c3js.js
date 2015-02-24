@@ -7,6 +7,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var c3jsWidget = function (settings) {
 		var self = this;

@@ -9,6 +9,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var jsonDatasource = function (settings, updateCallback) {
 		var self = this;

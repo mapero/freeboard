@@ -7,6 +7,7 @@
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 (function() {
+	'use strict';
 
 	var mqttDatasource = function(settings, updateCallback) {
 
