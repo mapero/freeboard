@@ -71,7 +71,7 @@
 
 			gaugeElement.resize(_.debounce(function() {
 				gauge.resize();
-			}, 500));
+			}, 100));
 		}
 
 		this.render = function (element) {
