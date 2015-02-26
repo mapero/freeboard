@@ -989,6 +989,7 @@ function FreeboardUI() {
 			grid.resize_widget($(element), viewModel.col_width(), calculatedHeight, function(){
 				grid.set_dom_grid_height();
 			});
+			viewModel.processSizeChange();
 		}
 	}
 
@@ -1334,13 +1335,12 @@ function PaneModel(theFreeboardModel, widgetPlugins) {
 	this.processSizeChange = function() {
 		// Give the animation a moment to complete. Really hacky.
 		// TODO: Make less hacky. Also, doesn't work when screen resizes.
-		var resize = (function() {
-			_.debounce(function() {
+		var resize = _.debounce(function() {
 				_.each(self.widgets(), function (widget) {
 					widget.processSizeChange();
 				});
 			}, 1000);
-		})();
+		resize();
 	};
 
 	this.getCalculatedHeight = function () {
