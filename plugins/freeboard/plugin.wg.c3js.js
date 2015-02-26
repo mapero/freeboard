@@ -73,10 +73,7 @@
 
 			try {
 				chart = c3.generate(options);
-				// svg chart fit to container
-				chartElement.resize(_.debounce(function() {
-					chart.resize();
-				}, 500));
+				chart.resize();
 			} catch (e) {
 				console.error(e);
 				return;
@@ -85,7 +82,6 @@
 
 		function destroyChart() {
 			if (!_.isNull(chart)) {
-				chartElement.resize(null);
 				chart.destroy();
 				chart = null;
 			}
@@ -200,6 +196,11 @@
 
 		this.onDispose = function () {
 			destroyChart();
+		};
+
+		this.onSizeChanged = function () {
+			if (!_.isNull(chart))
+				chart.resize();
 		};
 
 		this.getHeight = function () {

@@ -69,10 +69,6 @@
 					colors: [ currentSettings.gauge_lower_color, currentSettings.gauge_mid_color, currentSettings.gauge_upper_color ]
 				}
 			});
-
-			gaugeElement.resize(_.debounce(function() {
-				gauge.resize();
-			}, 100));
 		}
 
 		this.render = function (element) {
@@ -122,6 +118,11 @@
 
 		this.onDispose = function () {
 			gauge = null;
+		};
+
+		this.onSizeChanged = function () {
+			if (!_.isNull(gauge))
+				gauge.resize();
 		};
 
 		this.getHeight = function () {

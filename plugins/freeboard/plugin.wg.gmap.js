@@ -18,14 +18,14 @@
 		var BLOCK_HEIGHT = 60;
 
 		var currentSettings = settings;
-		var map;
-		var marker;
-		var poly;
+		var map = null,
+			marker = null,
+			poly = null;
 		var mapElement = $('<div></div>');
 		var currentPosition = {};
 
 		function updatePosition() {
-			if (map && marker && currentPosition.lat && currentPosition.lon) {
+			if (!_.isNull(map) && !_.isNull(marker) && currentPosition.lat && currentPosition.lon) {
 				var newLatLon = new google.maps.LatLng(currentPosition.lat, currentPosition.lon);
 				marker.setPosition(newLatLon);
 				if (currentSettings.drawpath)
@@ -84,12 +84,6 @@
 
 				marker = new google.maps.Marker({map: map});
 
-				// map fitting to container
-				mapElement.resize(_.debounce(function() {
-					google.maps.event.trigger(mapElement[0], 'resize');
-					updatePosition();
-				}, 500));
-
 				updatePosition();
 			}
 
@@ -108,7 +102,7 @@
 		};
 
 		this.onSettingsChanged = function (newSettings) {
-			if (_.isUndefined(map)) {
+			if (_.isNull(map)) {
 				currentSettings = newSettings;
 				return;
 			}
@@ -136,9 +130,14 @@
 
 		this.onDispose = function () {
 			// for memoryleak
-			map = null;
-			marker = null;
-			poly = null;
+			map = marker = poly = null;
+		};
+
+		this.onSizeChanged = function () {
+			if (!_.isNull(map)) {
+				google.maps.event.trigger(mapElement[0], 'resize');
+				updatePosition();
+			}
 		};
 
 		this.getHeight = function () {

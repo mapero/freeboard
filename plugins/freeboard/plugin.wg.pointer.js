@@ -31,7 +31,7 @@
 		};
 
 		// d3 variables
-		var svg, center, pointer, textValue, textUnits, circle;
+		var svg = null, center = null, pointer = null, textValue = null, textUnits = null, circle = null;
 
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
@@ -101,7 +101,7 @@
 		}
 
 		function resize() {
-			if (_.isUndefined(svg))
+			if (_.isNull(svg))
 				return;
 
 			var rc = widgetElement[0].getBoundingClientRect();
@@ -155,11 +155,6 @@
 			pointer = center.append('path')
 				.style('fill', currentSettings.pointer_color)
 				.attr('d', getPointerPath(r));
-
-			// svg chart fit to container
-			widgetElement.resize(_.debounce(function() {
-				resize();
-			}, 100));
 		}
 
 		this.render = function (element) {
@@ -170,7 +165,7 @@
 		};
 
 		this.onSettingsChanged = function (newSettings) {
-			if (_.isUndefined(svg)) {
+			if (_.isNull(svg)) {
 				currentSettings = newSettings;
 				return;
 			}
@@ -190,7 +185,7 @@
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
-			if (_.isUndefined(svg))
+			if (_.isNull(svg))
 				return;
 			if (settingName === 'direction') {
 				pointer.transition()
@@ -216,6 +211,10 @@
 
 		this.onDispose = function () {
 			svg = circle = center = pointer = textValue = textUnits = null;
+		};
+
+		this.onSizeChanged = function () {
+			resize();
 		};
 
 		this.getHeight = function () {
