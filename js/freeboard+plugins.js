@@ -787,7 +787,6 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 function FreeboardUI() {
-	'use strict';
 
 	var PANE_MARGIN = 10;
 	var PANE_WIDTH = 300;
@@ -6186,6 +6185,16 @@ $.extend(freeboard, jQuery.eventEmitter);
 (function() {
 	'use strict';
 
+	freeboard.addStyle('.tw-tooltip',
+			'fill: black;'
+			);
+	freeboard.addStyle('.tw-tooltip-text',
+			'fill: #d3d4d4;' +
+			'font-size: 0.8em;' +
+			'dy: .3em;' +
+			'text-anchor: middle;'
+			);
+
 	var textWidgetD3 = function (settings) {
 		var self = this;
 		var BLOCK_HEIGHT = 60;
@@ -6201,16 +6210,32 @@ $.extend(freeboard, jQuery.eventEmitter);
 		var d3var = {
 			svg: null,
 			g_text: null,
-			g_sparkline: null,
+			g_spl: null,
 			textValue: null,
 			textUnits: null,
-			sparkline: {
-				tickcount: 40,
-				x: null,
-				y: null,
+			transition: {
+				type: 'circle-out',
+				duration: 500
+			},
+			spl: {
+				margin: { bottom: 5 },
+				highlight_index: -1,
+				transition: {
+					type: 'circle-out',
+					duration: 500
+				},
+				spotcolor: {
+					max: '#0496ff',
+					min: '#0496ff'
+				},
+				height: 0,
+				x_tickcount: 60,
+				x_scale: null,
+				x_rev_scale: null,
+				y_scale: null,
 				line: null,
-				path: null,
-				data: null
+				data: null,
+				g_tooltip: null,
 			}
 		};
 
@@ -6248,40 +6273,152 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 			d3var.g_text.attr('transform', 'translate(0,' + height + ')');
 
-			if (newSettings.sparkline) {
-				d3var.sparkline.x.range([0, rc.width]);
-				d3var.sparkline.y.range([height/2, 0]);
-				d3var.g_sparkline.attr('transform', 'translate(0,' + height + ')');
-				d3var.sparkline.path.attr('d', d3var.sparkline.line);
+			if (currentSettings.sparkline) {
+				d3var.spl.x_scale.range([0, rc.width]);
+				d3var.spl.height = rc.height/4;
+				d3var.spl.y_scale.range([d3var.spl.height, 0]);
+
+				d3var.spl.x_rev_scale.domain(d3var.spl.x_scale.range());
+
+				var transY = rc.height - d3var.spl.height - d3var.spl.margin.bottom;
+				d3var.g_spl.attr('transform', 'translate(0,' + transY + ')');
+
+				d3var.g_spl.select('path')
+						.attr('d', d3var.spl.line)
+						.attr('transform', null);
+
+				d3var.g_spl.select('rect')
+						.attr('width', rc.width)
+						.attr('height', d3var.spl.height);
 			}
 		}
 
 		function createSparkline(rc) {
-			var height = rc.height/2;
-			d3var.g_sparkline = d3var.svg.insert('g', 'g')
-				.attr('transform', 'translate(0, ' + height + ')');
+			d3var.spl.height = rc.height/4;
 
-			d3var.sparkline.x = d3.scale.linear()
-				.domain([0, d3var.sparkline.tickcount - 1])
+			var _highlightSpot = function(x, flg) {
+				var _hide = function(idx) {
+					if (idx > -1)
+						$(d3.selectAll('circle')[0][idx]).css('display', 'none');
+				};
+
+				if (flg) {
+					_hide(d3var.spl.highlight_index);
+					d3var.spl.highlight_index = Math.round(d3var.spl.x_rev_scale(x));
+					$(d3.selectAll('circle')[0][d3var.spl.highlight_index]).css('display', 'block');
+				} else {
+					_hide(d3var.spl.highlight_index);
+					d3var.spl.highlight_index = -1;
+				}
+			};
+
+			var _showTooltip = function(x, y) {
+				d3var.g_spl.g_tooltip.attr('transform', 'translate(' + x + ',' + y + ')');
+				d3var.g_spl.g_tooltip.style('display', 'block');
+/*
+				d3var.g_spl.append('text')
+						.attr('fill', FONT_COLOR)
+						.attr('x', x)
+						.attr('y', y)
+						.attr('dy', '.3em')
+						.attr('font-size', '0.8em')
+						.attr('text-anchor', 'middle')
+						.attr('class', 'tw-tooltip');*/
+			};
+
+			var _hideTooltip = function() {
+				d3var.g_spl.g_tooltip.style('display', 'none');
+			};
+
+			var _updateTooltip = function(x, y, val) {
+				d3var.g_spl.g_tooltip.attr('transform', 'translate(' + x + ',' + y + ')');
+				d3var.g_spl.g_tooltip.select('text')
+						.text(function() {
+							var f = d3.format('0,000');
+							return f(val) + ' ' + currentSettings.units;
+						});
+			};
+
+			d3var.spl.data = [];
+
+			d3var.spl.x_scale = d3.scale.linear()
+				.domain([0, 1])
 				.range([0, rc.width]);
 
-			d3var.sparkline.y = d3.scale.linear()
-				.domain([-1, 1])
-				.range([height/2, 0]);
+			d3var.spl.x_rev_scale = d3.scale.linear()
+				.domain(d3var.spl.x_scale.range())
+				.range(d3var.spl.x_scale.domain());
 
-			d3var.sparkline.line = d3.svg.line()
-				.x(function(d, i) { return d3var.sparkline.x(i); })
-				.y(function(d, i) { return d3var.sparkline.y(d); });
+			d3var.spl.y_scale = d3.scale.linear()
+				.domain([0, 1])
+				.range([d3var.spl.height, 0]);
 
-			var random = d3.random.normal(-1, 1);
-			d3var.sparkline.data = d3.range(d3var.sparkline.tickcount).map(random);
+			var transY = rc.height - d3var.spl.height - d3var.spl.margin.bottom;
+			d3var.g_spl = d3var.svg.insert('g', 'g')
+					.attr('transform', 'translate(0, ' + transY + ')');
 
-			d3var.sparkline.path = d3var.g_sparkline.append('path')
-				.datum(d3var.sparkline.data)
-				.attr('fill', 'none')
-				.attr('stroke', '#FF9900')
-				.attr('stroke-width', '1.5px')
-				.attr('d', d3var.sparkline.line);
+			d3var.spl.line = d3.svg.line()
+				.interpolate('linear')
+				.x(function(d, i) { return d3var.spl.x_scale(i); })
+				.y(function(d, i) { return d3var.spl.y_scale(d); });
+
+			d3var.g_spl.append('path')
+					.datum(d3var.spl.data)
+					.attr('d', d3var.spl.line)
+					.attr('fill', 'none')
+					.attr('stroke', currentSettings.sparkline_color)
+					.attr('stroke-width', '2px');
+
+			d3var.g_spl.append('rect')
+					.attr('fill', 'none')
+					.attr('pointer-events', 'all')
+					.attr('width', rc.width)
+					.attr('height', d3var.spl.height)
+					.on('mousemove', function(d, i) {
+						var m = d3.mouse(this);
+						_highlightSpot(m[0], true);
+						_updateTooltip(m[0], m[1], d);
+					})
+					.on('mouseover', function(d, i) {
+						var m = d3.mouse(this);
+
+						d3var.g_spl.g_tooltip.attr('x', m[0]);
+						d3var.g_spl.g_tooltip.attr('y', m[1]);
+						d3var.g_spl.g_tooltip.style('display', null);
+					})
+					.on('mouseout', function(d, i) {
+						var m = d3.mouse(this);
+						_highlightSpot(m[0], false);
+						d3var.g_spl.g_tooltip.style('display', 'none');
+					});
+
+			d3var.g_spl.g_tooltip = d3var.svg.append('g')
+						.style('opacity', '0.8');
+							//.style('display', 'none');
+
+			d3var.g_spl.g_tooltip.append('rect')
+					.attr('x', 0)
+					.attr('y', 0)
+					.attr('width', 0)
+					.attr('height', 0)
+					.attr('class', 'tw-tooltip');
+			var text = d3var.g_spl.g_tooltip.append('text')
+					.attr('x', 0)
+					.attr('y', 0)
+					.attr('class', 'tw-tooltip-text')
+					.text('testing');
+			var rc = text.node().getBBox();
+			d3var.g_spl.g_tooltip
+					.attr('width', rc.width+10)
+					.attr('height', rc.height+5);
+		}
+
+		function destroySparkline() {
+			if (_.isNull(d3var.g_spl))
+				return;
+			d3var.spl.data = null;
+			d3var.g_spl.remove();
+			d3var.g_spl = null;
 		}
 
 		function createWidget() {
@@ -6296,36 +6433,133 @@ $.extend(freeboard, jQuery.eventEmitter);
 				.attr('transform', 'translate(0,' + (rc.height/2) + ')');
 
 			d3var.textValue = d3var.g_text.append('text')
-				.style('fill', FONT_COLOR)
-				.style('text-anchor', 'center')
+				.attr('fill', FONT_COLOR)
+				.attr('text-anchor', 'center')
 				.attr('dy', '.3em')
 				.attr('font-size', getFontSize())
 				.attr('class', 'ultralight-text');
 
 			d3var.textUnits = d3var.g_text.append('text')
 				.text(currentSettings.units)
-				.style('fill', FONT_COLOR)
-				.style('text-anchor', 'central')
+				.attr('fill', FONT_COLOR)
+				.attr('text-anchor', 'central')
 				.attr('dy', getUnitDy())
 				.attr('font-size', '1em')
 				.attr('class', 'ultralight-text');
 
-			if (currentSettings.sparkline) {
+			if (currentSettings.sparkline)
 				createSparkline(rc);
-			}
+		}
+
+		function moveTextUnits() {
+			if (_.isNull(d3var.textUnits))
+				return;
+			d3var.textUnits.attr('x', d3var.textValue.node().getBBox().width + 10);
 		}
 
 		function valueTransition(val) {
 			d3var.textValue.transition()
-				.duration(500)
-				.ease('circle-out')
+				.duration(d3var.transition.duration)
+				.ease(d3var.transition.type)
 				.tween('text', function(d) {
 					var i = d3.interpolate(this.textContent, Number(val));
 					return function(t) {
-						d3var.textUnits.attr('x', d3var.textValue.node().getBBox().width + 10);
+						moveTextUnits();
 						this.textContent = i(t).toFixed(currentSettings.decimal);
 					};
 				});
+		}
+
+		function sparklineTransition(val) {
+			d3var.spl.data.push(val);
+
+			var minval = d3.min(d3var.spl.data);
+			var maxval = d3.max(d3var.spl.data);
+
+			d3var.spl.x_scale
+				.domain([0, d3var.spl.data.length-1]);
+			d3var.spl.y_scale
+				.domain([minval, maxval])
+				.range([d3var.spl.height, 0]);
+
+			d3var.spl.x_rev_scale
+				.range(d3var.spl.x_scale.domain());
+
+			var _getSpotColor = function(d) {
+				if (minval === d)
+					return d3var.spl.spotcolor.min;
+				else if (maxval === d)
+					return d3var.spl.spotcolor.max;
+				return currentSettings.sparkline_color;
+			};
+
+			var _getSpotDisplay = function(d, i) {
+				if (minval === d || maxval === d)
+					return 'block';
+				if (d3var.spl.highlight_index === i)
+					return 'block';
+				return 'none';
+			};
+
+			var circles = d3var.g_spl.selectAll('circle')
+					.data(d3var.spl.data)
+				.enter().insert('circle', 'rect')
+					.style('display', 'none')
+					.attr({
+						cx: function(d, i) { return d3var.spl.x_scale(i); },
+						cy: function(d, i) { return d3var.spl.y_scale(d); },
+						r: 3,
+						fill: currentSettings.sparkline_color
+					});
+
+			if (d3var.spl.data.length > d3var.spl.x_tickcount) {
+				d3.transition()
+					.duration(d3var.spl.transition.duration)
+					.ease(d3var.spl.transition.type)
+					.each(function () {
+						d3var.g_spl.select('path')
+								.attr('d', d3var.spl.line)
+								.attr('transform', null)
+							.transition()
+								.attr('transform', 'translate(' + d3var.spl.x_scale(-1) + ')');
+
+						// remove first circle
+						d3var.g_spl.select('circle').remove();
+
+						d3var.g_spl.selectAll('circle')
+								.style('display', function(d, i) {
+									return _getSpotDisplay(d, i);
+								})
+								.attr('fill', function(d, i) {
+									return _getSpotColor(d);
+								})
+								.attr('cy', function(d, i) { return d3var.spl.y_scale(d); })
+							.transition()
+								.attr('cx', function(d, i) { return d3var.spl.x_scale(i); });
+					});
+			} else {
+				d3.transition()
+					.duration(d3var.spl.transition.duration)
+					.ease(d3var.spl.transition.type)
+					.each(function () {
+						d3var.g_spl.selectAll('circle')
+							.style('display', function(d, i) {
+								return _getSpotDisplay(d, i);
+							})
+							.attr('fill', function(d, i) {
+								return _getSpotColor(d);
+							})
+							.transition()
+								.attr('cx', function(d, i) { return d3var.spl.x_scale(i); })
+								.attr('cy', function(d, i) { return d3var.spl.y_scale(d); });
+
+						d3var.g_spl.select('path').transition()
+								.attr('d', d3var.spl.line);
+					});
+			}
+
+			if (d3var.spl.data.length > d3var.spl.x_tickcount)
+				d3var.spl.data.shift();
 		}
 
 		this.render = function (element) {
@@ -6350,10 +6584,8 @@ $.extend(freeboard, jQuery.eventEmitter);
 			if (currentSettings.sparkline != newSettings.sparkline) {
 				if (newSettings.sparkline)
 					createSparkline(widgetElement[0].getBoundingClientRect());
-				else {
-					d3var.g_sparkline.remove();
-					d3var.g_sparkline = null;
-				}
+				else
+					destroySparkline();
 			}
 
 			var updateCalculate = false;
@@ -6367,6 +6599,11 @@ $.extend(freeboard, jQuery.eventEmitter);
 			d3var.textUnits.text(currentSettings.units);
 			d3var.textUnits.attr('dy', getUnitDy());
 			d3var.textValue.attr('font-size', getFontSize());
+			moveTextUnits();
+
+			if (currentSettings.sparkline) {
+				d3var.g_spl.select('path').attr('stroke', currentSettings.sparkline_color);
+			}
 
 			return updateCalculate;
 		};
@@ -6377,19 +6614,25 @@ $.extend(freeboard, jQuery.eventEmitter);
 					valueTransition(newValue);
 				else
 					d3var.textValue.text(newValue);
+
+				if (currentSettings.sparkline && _.isNumber(newValue))
+					sparklineTransition(newValue);
 			}
 		};
 
 		this.onSizeChanged = function() {
 			resize();
-		}
+		};
 
 		this.onDispose = function () {
-
+			if (!_.isNull(d3var.svg)) {
+				d3var.svg.remove();
+				d3var.svg = null;
+			}
 		};
 
 		this.getHeight = function () {
-			return (currentSettings.size === 'big' || currentSettings.sparkline) ? 2 : 1;
+			return (currentSettings.size === 'big') ? 2 : 1;
 		};
 
 		this.onSettingsChanged(settings);
@@ -6442,8 +6685,16 @@ $.extend(freeboard, jQuery.eventEmitter);
 			},
 			{
 				name: 'sparkline',
-				display_name: '簡易チャートを含む',
+				display_name: 'スパークラインチャートを含む',
 				type: 'boolean'
+			},
+			{
+				name: 'sparkline_color',
+				display_name: 'スパークラインチャート色',
+				validate: 'required,custom[hexcolor]',
+				type: 'color',
+				default_value: '#ff9900',
+				description: 'デフォルト色: #ff9900'
 			},
 			{
 				name: 'animate',

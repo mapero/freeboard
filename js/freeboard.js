@@ -787,7 +787,6 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 // └────────────────────────────────────────────────────────────────────┘ \\
 
 function FreeboardUI() {
-	'use strict';
 
 	var PANE_MARGIN = 10;
 	var PANE_WIDTH = 300;
