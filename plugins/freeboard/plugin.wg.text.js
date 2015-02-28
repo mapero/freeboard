@@ -90,7 +90,7 @@
 		};
 
 		function getFontSize() {
-			return (currentSettings.size === 'big') ? '4.3em' : '2em';
+			return (currentSettings.size === 'big') ? '4.3em' : '1.95em';
 		}
 
 		function getUnitDy() {
@@ -111,7 +111,7 @@
 					var prefix = d3.formatPrefix(value);
 					text = prefix.scale(value).toFixed(option.decimal) + prefix.symbol;
 				} else {
-					var f
+					var f;
 					if (option.comma === true)
 						f = d3.format(',.' + option.decimal + 'f');
 					else
@@ -320,6 +320,7 @@
 			if (_.isNull(d3var.gChart))
 				return;
 			d3var.chart.data = null;
+			d3var.gChart.gTooltip.remove();
 			d3var.gChart.remove();
 			d3var.gChart = null;
 		}
@@ -356,7 +357,7 @@
 		}
 
 		function moveTextUnits() {
-			if (_.isNull(d3var.textUnits))
+			if (_.isNull(d3var.svg))
 				return;
 			d3var.textUnits.attr('x', d3var.textValue.node().getBBox().width + 10);
 		}
@@ -501,7 +502,6 @@
 		};
 
 		this.onSettingsChanged = function (newSettings) {
-
 			option.decimal = newSettings.decimal;
 			option.comma = newSettings.comma;
 			option.metricPrefix = newSettings.metric_prefix;
@@ -576,6 +576,9 @@
 
 		this.onDispose = function () {
 			if (!_.isNull(d3var.svg)) {
+				destroyChart();
+				d3var.gText.remove();
+				d3var.gText = null;
 				d3var.svg.remove();
 				d3var.svg = null;
 			}
