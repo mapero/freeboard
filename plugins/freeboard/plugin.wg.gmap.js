@@ -42,6 +42,10 @@
 				'height': height + 'px',
 				'width': '100%'
 			});
+			if (!_.isNull(map)) {
+				google.maps.event.trigger(mapElement[0], 'resize');
+				updatePosition();
+			}
 		}
 
 		function createWidget() {

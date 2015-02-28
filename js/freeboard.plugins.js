@@ -1552,6 +1552,8 @@
 				'height': height + 'px',
 				'width': '100%'
 			});
+			if (!_.isNull(chart))
+				chart.resize();
 		}
 
 		function createWidget(data, chartsettings) {
@@ -1814,6 +1816,8 @@
 				'height': height + 'px',
 				'width': '100%'
 			});
+			if (!_.isNull(gauge))
+				gauge.resize();
 		}
 
 		function createGauge() {
@@ -2155,6 +2159,10 @@
 				'height': height + 'px',
 				'width': '100%'
 			});
+			if (!_.isNull(map)) {
+				google.maps.event.trigger(mapElement[0], 'resize');
+				updatePosition();
+			}
 		}
 
 		function createWidget() {
@@ -2591,6 +2599,7 @@
 				height: height + 'px',
 				width: '100%'
 			});
+			resize();
 		}
 
 		function getWidgetSize(rc) {
