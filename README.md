@@ -7,21 +7,25 @@ IoT(センサー等)向けレイアウト編集可能なダッシュボード
 ### デモ
 [http://infocorpus.github.io/freeboard/](http://infocorpus.github.io/freeboard/)
 
-Open Weather Map
+Open Weather Map Sample
 
 [http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fopen-weathermap-sample.json](http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fopen-weathermap-sample.json)
 
-Graph sample 1
+ChartWidget Sample 1
 
 [http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fc3transform_sample01.json](http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fc3transform_sample01.json)
 
-Graph sample 2
+ChartWidget Sample 2
 
 [http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fc3showcase(laggy).json](http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fc3showcase(laggy).json)
 
-Gauge sample
+GaugeWidget Sample
 
 [http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fgauge_sample.json](http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fgauge_sample.json)
+
+TextWidget Sample
+
+[http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Fgauge_sample.json](http://infocorpus.github.io/freeboard/?load=http%3A%2F%2Finfocorpus.github.io%2Ffreeboard%2Fexamples%2Ftextwidget_sample.json)
 
 ### スクリーンショット
 ![weather](https://raw.githubusercontent.com/wiki/infocorpus/freeboard/images/screenshot01.png)
