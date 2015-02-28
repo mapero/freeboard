@@ -217,7 +217,6 @@
 		display_name: 'C3チャート',
 		description: '様々な形式のチャートを表示するウィジェットです。詳細は <a href="http://c3js.org/" target="_blank">http://c3js.org/</a>',
 		external_scripts : [
-			'plugins/thirdparty/d3.v3.min.js',
 			'plugins/thirdparty/c3.min.js'
 		],
 		settings: [

@@ -229,9 +229,6 @@
 		type_name: 'pointer',
 		display_name: 'ポインタ',
 		description: '方角と値を表示するウィジェットです。',
-		external_scripts : [
-			'plugins/thirdparty/d3.v3.min.js',
-		],
 		settings: [
 			{
 				name: 'title',

@@ -1642,8 +1642,7 @@ PluginEditor = function(jsEditor, valueEditor) {
 
 		$(thisColorPickerID).css({
 			'border-right':'30px solid green',
-			'width':'80px',
-			'position': 'absolute'
+			'width':'80px'
 		});
 
 		$(thisColorPickerID).css('border-color', defaultValue);

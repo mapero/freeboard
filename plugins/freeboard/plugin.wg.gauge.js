@@ -139,7 +139,6 @@
 		display_name: 'ゲージ',
 		description: 'ゲージを表示するウィジェットです。',
 		external_scripts : [
-			'plugins/thirdparty/d3.v3.min.js',
 			'plugins/thirdparty/gauged3.min.js'
 		],
 		settings: [

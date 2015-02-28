@@ -338,6 +338,7 @@
 
 			d3var.textValue = d3var.gText.append('text')
 				.data([{ value: 0 }])
+				.text('0')
 				.attr('fill', option.fontColor)
 				.attr('text-anchor', 'center')
 				.attr('dy', '.3em')
@@ -351,6 +352,8 @@
 				.attr('dy', getUnitDy())
 				.attr('font-size', '1em')
 				.attr('class', 'ultralight-text');
+
+			moveTextUnits();
 
 			if (currentSettings.chart)
 				createChart(rc);
@@ -370,8 +373,8 @@
 					var i = d3.interpolate(d.value, val);
 					d.value = val;
 					return function(t) {
-						moveTextUnits();
 						this.textContent = getText(i(t));
+						moveTextUnits();
 					};
 				});
 		}
@@ -391,23 +394,31 @@
 				.range(d3var.chart.xScale.domain());
 
 			var _getSpotColor = function(d, i) {
-				if (minval === d) {
-					d3var.chart.minValIndex = i;
+				if (d3var.chart.highlightIndex === i)
+					return option.chart.spotcolor.def;
+
+				if (minval === d && d3var.chart.minValIndex === i)
 					return option.chart.spotcolor.min;
-				} else if (maxval === d) {
-					d3var.chart.maxValIndex = i;
+				else if (maxval === d && d3var.chart.maxValIndex === i)
 					return option.chart.spotcolor.max;
-				}
-				return option.chart.spotcolor.def;
+				return 'none';
 			};
 
 			var _getSpotDisplay = function(d, i) {
 				if (d3var.chart.highlightIndex === i)
 					return 'block';
+
 				if (minval === maxval)
 					return 'none';
-				if (minval === d || maxval === d)
+
+				if (minval === d) {
+					d3var.chart.minValIndex = i;
 					return 'block';
+				}
+				if (maxval === d) {
+ 					d3var.chart.maxValIndex = i;
+ 					return 'block';
+				}
 				return 'none';
 			};
 
@@ -419,7 +430,7 @@
 						cx: function(d, i) { return d3var.chart.xScale(i); },
 						cy: function(d, i) { return d3var.chart.yScale(d); },
 						r: option.chart.spotsize,
-						fill: option.chart.spotcolor.def
+						fill: 'none'
 					});
 
 			if (d3var.chart.data.length > d3var.chart.xTickcount) {
@@ -475,8 +486,10 @@
 		function refresh(value) {
 			if (option.transition.enable && _.isNumber(value))
 				valueTransition(value);
-			else
+			else {
 				d3var.textValue.text(getText(value));
+				moveTextUnits();
+			}
 
 			if (!_.isNull(d3var.gChart) && _.isNumber(value))
 				chartTransition(value);
@@ -595,9 +608,6 @@
 		type_name: 'text_widget',
 		display_name: 'テキスト',
 		description: 'テキストと簡易チャートが表示できるウィジェットです。',
-		external_scripts : [
-			'plugins/thirdparty/d3.v3.min.js'
-		],
 		settings: [
 			{
 				name: 'title',
@@ -665,7 +675,7 @@
 			},
 			{
 				name: 'chart',
-				display_name: 'チャートを含む',
+				display_name: '簡易チャートを含む',
 				type: 'boolean'
 			},
 			{
