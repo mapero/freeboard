@@ -988,7 +988,6 @@ function FreeboardUI() {
 			grid.resize_widget($(element), viewModel.col_width(), calculatedHeight, function(){
 				grid.set_dom_grid_height();
 			});
-			viewModel.processSizeChange();
 		}
 	}
 

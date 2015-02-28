@@ -27,6 +27,8 @@
 				'height': height + 'px',
 				'width': '100%'
 			});
+			if (!_.isNull(gauge))
+				gauge.resize();
 		}
 
 		function createGauge() {

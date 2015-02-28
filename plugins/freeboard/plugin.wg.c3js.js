@@ -29,6 +29,8 @@
 				'height': height + 'px',
 				'width': '100%'
 			});
+			if (!_.isNull(chart))
+				chart.resize();
 		}
 
 		function createWidget(data, chartsettings) {

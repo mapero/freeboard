@@ -988,7 +988,6 @@ function FreeboardUI() {
 			grid.resize_widget($(element), viewModel.col_width(), calculatedHeight, function(){
 				grid.set_dom_grid_height();
 			});
-			viewModel.processSizeChange();
 		}
 	}
 
@@ -4575,6 +4574,8 @@ $.extend(freeboard, jQuery.eventEmitter);
 				'height': height + 'px',
 				'width': '100%'
 			});
+			if (!_.isNull(chart))
+				chart.resize();
 		}
 
 		function createWidget(data, chartsettings) {
@@ -4837,6 +4838,8 @@ $.extend(freeboard, jQuery.eventEmitter);
 				'height': height + 'px',
 				'width': '100%'
 			});
+			if (!_.isNull(gauge))
+				gauge.resize();
 		}
 
 		function createGauge() {
@@ -5178,6 +5181,10 @@ $.extend(freeboard, jQuery.eventEmitter);
 				'height': height + 'px',
 				'width': '100%'
 			});
+			if (!_.isNull(map)) {
+				google.maps.event.trigger(mapElement[0], 'resize');
+				updatePosition();
+			}
 		}
 
 		function createWidget() {
@@ -5614,6 +5621,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 				height: height + 'px',
 				width: '100%'
 			});
+			resize();
 		}
 
 		function getWidgetSize(rc) {

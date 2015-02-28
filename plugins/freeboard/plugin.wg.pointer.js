@@ -41,6 +41,7 @@
 				height: height + 'px',
 				width: '100%'
 			});
+			resize();
 		}
 
 		function getWidgetSize(rc) {
