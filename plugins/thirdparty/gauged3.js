@@ -10,12 +10,13 @@ GaugeD3 = function(_option) {
     'use strict';
 
     var self = this;
-    var version = '1.0.0';
+    var version = '1.0.1';
 
     var parentNode = null;
 
     var _CRITERIA_R = 112;
     var _CRITERIA_QUARTER_R = Math.floor(_CRITERIA_R*1.66);
+
     var _TO_RADIANS = Math.PI/180;
     var _HALF_DIV = 2;
     var _QUARTER_DIV = 1.3;
@@ -34,18 +35,17 @@ GaugeD3 = function(_option) {
     // d3 variables
     var d3var = {
         svg: null,
-        center: null,
+        gCenter: null,
         arc: null,
-        arc_bg: null,
         arc_level: null,
-        title: null,
+        scale_per: null,
         value: null,
-        label: null,
         min: null,
-        max: null
+        max: null,
+        startArcAngle: 0,
+        curArcAngle: 0
     };
 
-    var startArcAngle, endArcAngle, curArcAngle = 0;
     var widgetSize = {
         height: 0,
         width: 0
@@ -75,19 +75,19 @@ GaugeD3 = function(_option) {
             // type float : max value
             max: 100,
             // type bool : convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)
-            humanFriendly: false,
+            metricPrefix: false,
             // type int : number of decimal places for our human friendly number to contain
-            humanFriendlyDecimal: 0,
+            metricPrefixDecimal: 0,
             // type bool : hide value text
             hide: false,
             // type bool : hide min and max values
             hideMinMax: false,
             // type bool : convert large numbers for min, max, value to human friendly (e.g. 1234567 -> 1.23M)
-            humanFriendlyMinMax: false,
+            metricPrefixMinMax: false,
             // type int : number of digits after floating point
             decimals: 0,
-            // type bool : formats numbers with commas where appropriate when humanFriendly is false only
-            formatNumber: false,
+            // type bool : formats numbers with commas where appropriate
+            comma: false,
             // type bool : enable value transition
             transition: true,
             // type string : css class
@@ -193,13 +193,13 @@ GaugeD3 = function(_option) {
         option.value.color = opt.value.color;
         option.value.min = Number(opt.value.min);
         option.value.max = Number(opt.value.max);
-        option.value.humanFriendly = opt.value.humanFriendly;
-        option.value.humanFriendlyDecimal = Number(opt.value.humanFriendlyDecimal);
+        option.value.metricPrefix = opt.value.metricPrefix;
+        option.value.metricPrefixDecimal = Number(opt.value.metricPrefixDecimal);
         option.value.hide = opt.value.hide;
         option.value.hideMinMax = opt.value.hideMinMax;
-        option.value.humanFriendlyMinMax = opt.value.humanFriendlyMinMax;
+        option.value.metricPrefixMinMax = opt.value.metricPrefixMinMax;
         option.value.decimals = Number(opt.value.decimals);
-        option.value.formatNumber = opt.value.formatNumber;
+        option.value.commma = opt.value.commma;
         option.value.class = opt.value.class;
 
         option.gauge.widthScale = Math.max(0.0, Math.min(Number(opt.gauge.widthScale), 1.0));
@@ -287,81 +287,61 @@ GaugeD3 = function(_option) {
         return Math.max(option.value.min, Math.min(option.value.max, val));
     }
 
-    function humanFriendlyNumber(n, d) {
-        var p, d2, i, s, minus;
-
-        minus = false;
-        if (n < 0) {
-            minus = true;
-            n *= -1;
-        }
-        p = Math.pow;
-        d2 = p(10, d);
-        i = 7;
-        while (i) {
-            s = p(10,i--*3);
-            if (s <= n)
-                n = Math.round(n*d2/s)/d2+'KMGTPE'[i];
-        }
-        if (minus === true)
-            n = '-' + n;
-        return n;
-    }
-
     function genArc(radius) {
-        var arc;
+        var arc, engAngle;
+
         var ninety = Math.PI/2;
         switch (option.gauge.type) {
         case 'half':
-            startArcAngle = -ninety;
-            endArcAngle = ninety;
+            d3var.startArcAngle = -ninety;
+            engAngle = ninety;
             break;
         case 'donut':
-            startArcAngle = option.gauge.donut.startAngle * _TO_RADIANS;
-            endArcAngle = 360 * _TO_RADIANS + startArcAngle;
+            d3var.startArcAngle = option.gauge.donut.startAngle * _TO_RADIANS;
+            engAngle = 360 * _TO_RADIANS + d3var.startArcAngle;
             break;
         case 'quarter-left-top':
-            startArcAngle = -ninety;
-            endArcAngle = 0;
+            d3var.startArcAngle = -ninety;
+            engAngle = 0;
             break;
         case 'quarter-right-top':
-            startArcAngle = 0;
-            endArcAngle = ninety;
+            d3var.startArcAngle = 0;
+            engAngle = ninety;
             break;
         case 'quarter-left-bottom':
-            startArcAngle = ninety*2;
-            endArcAngle = ninety*3;
+            d3var.startArcAngle = Math.PI;
+            engAngle = ninety*3;
             break;
         case 'quarter-right-bottom':
-            startArcAngle = ninety;
-            endArcAngle = Math.PI;
+            d3var.startArcAngle = ninety;
+            engAngle = Math.PI;
             break;
         case 'threequarter-left-top':
-            startArcAngle = 0;
-            endArcAngle = ninety*3;
+            d3var.startArcAngle = 0;
+            engAngle = ninety*3;
             break;
         case 'threequarter-right-top':
-            startArcAngle = ninety;
-            endArcAngle = 360 * _TO_RADIANS;
+            d3var.startArcAngle = ninety;
+            engAngle = 360 * _TO_RADIANS;
             break;
         case 'threequarter-left-bottom':
-            startArcAngle = -ninety;
-            endArcAngle = Math.PI;
+            d3var.startArcAngle = -ninety;
+            engAngle = Math.PI;
             break;
         case 'threequarter-right-bottom':
-            startArcAngle = -Math.PI;
-            endArcAngle = ninety;
+            d3var.startArcAngle = -Math.PI;
+            engAngle = ninety;
             break;
         case 'threequarter-bottom':
-            startArcAngle = -Math.PI+ninety/2;
-            endArcAngle = ninety+ninety/2;
+            d3var.startArcAngle = -Math.PI+ninety/2;
+            engAngle = ninety+ninety/2;
             break;
         }
         arc = d3.svg.arc()
             .innerRadius(radius-getGaugeWidth(radius))
             .outerRadius(radius)
-            .startAngle(startArcAngle)
-            .endAngle(endArcAngle);
+            .startAngle(d3var.startArcAngle)
+            .endAngle(engAngle);
         return arc;
     }
 
@@ -570,6 +550,9 @@ GaugeD3 = function(_option) {
     }
 
     function transformAttributes(radius) {
+        if (option.value.hideMinMax === true)
+            return;
+
         var rc, x, y, z;
 
         z = radius*6/_CRITERIA_R;
@@ -600,12 +583,6 @@ GaugeD3 = function(_option) {
             d3var.min.attr('transform', getTranslateString(x, y));
             break;
         }
-    }
-
-    function formatNumber(x) {
-        var parts = x.toString().split('.');
-        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        return parts.join('.');
     }
 
     function getGaugeWidth(radius) {
@@ -668,30 +645,53 @@ GaugeD3 = function(_option) {
         }
     }
 
-    function getValueText() {
+    function getValueText(value) {
+        if (!_.isNumber(value))
+            return 0;
         var val;
-        if (option.value.humanFriendly)
-            val = humanFriendlyNumber(option.value.val, option.value.humanFriendlyDecimal);
-        else
-            val = (option.value.formatNumber === true) ? formatNumber(option.value.val) : option.value.val;
+        if (option.value.metricPrefix) {
+            var prefix = d3.formatPrefix(value);
+            val = prefix.scale(value).toFixed(option.value.metricPrefixDecimal) + prefix.symbol;
+        } else {
+            var f;
+            if (option.value.comma === true)
+                f = d3.format(',.' + option.value.decimal + 'f');
+            else
+                f = d3.format('.' + option.value.decimal + 'f');
+            val = f(value);
+        }
         return val;
     }
 
     function getMinValueText() {
         var val;
-        if (option.value.humanFriendlyMinMax)
-            val = humanFriendlyNumber(option.value.min, option.value.humanFriendlyDecimal);
-        else
-            val = (option.value.formatNumber === true) ? formatNumber(option.value.min) : option.value.min;
+        if (option.value.metricPrefix) {
+            var prefix = d3.formatPrefix(option.value.min);
+            val = prefix.scale(option.value.min).toFixed(option.value.metricPrefixDecimal) + prefix.symbol;
+        } else {
+            var f;
+            if (option.value.comma === true)
+                f = d3.format(',.' + option.value.decimal + 'f');
+            else
+                f = d3.format('.' + option.value.decimal + 'f');
+            val = f(option.value.min);
+        }
         return val;
     }
 
     function getMaxValueText() {
         var val;
-        if (option.value.humanFriendlyMinMax)
-            val = humanFriendlyNumber(option.value.max, option.value.humanFriendlyDecimal);
-        else
-            val = (option.value.formatNumber === true) ? formatNumber(option.value.max) : option.value.max;
+        if (option.value.metricPrefix) {
+            var prefix = d3.formatPrefix(option.value.max);
+            val = prefix.scale(option.value.max).toFixed(option.value.metricPrefixDecimal) + prefix.symbol;
+        } else {
+            var f;
+            if (option.value.comma === true)
+                f = d3.format(',.' + option.value.decimal + 'f');
+            else
+                f = d3.format('.' + option.value.decimal + 'f');
+            val = f(option.value.max);
+        }
         return val;
     }
 
@@ -703,7 +703,7 @@ GaugeD3 = function(_option) {
             .attr('width', rc.width)
             .attr('height', rc.height);
 
-        d3var.center = d3var.svg.append('g')
+        d3var.gCenter = d3var.svg.append('g')
             .style('opacity', 0)
             .attr('transform', getCenteringTransform(rc));
 
@@ -711,66 +711,66 @@ GaugeD3 = function(_option) {
         var r = getRadius(widgetSize);
 
         d3var.arc = genArc(r);
-        d3var.arc_bg = genArcPath(r, d3var.center, d3var.arc, option.gauge.color);
-        d3var.arc_level = genArcPath(r, d3var.center, d3var.arc, getGaugeValueColor(option.value.val, 0));
-        curArcAngle = startArcAngle;
+        genArcPath(r, d3var.gCenter, d3var.arc, option.gauge.color);
+        d3var.arc_level = genArcPath(r, d3var.gCenter, d3var.arc, getGaugeValueColor(option.value.val, 0));
+        d3var.curArcAngle = d3var.startArcAngle;
+
+        d3var.scale_per = d3.scale.linear()
+            .domain([option.value.min, option.value.max])
+            .range([0, 1]);
 
         var attributes = calcAttributes(r);
 
-        d3var.title = d3var.center.append('text')
-            .text(option.title.text)
-            .style('fill', option.title.color)
-            .style('text-anchor', 'middle')
-            .attr('dy', attributes.title.dy)
-            .attr('x', attributes.title.x)
-            .attr('font-size', attributes.title.fontsize)
-            .attr('class', option.title.class);
-
-        d3var.value = d3var.center.append('text')
-            .data([{ value: option.value.val }])
-            .text(getValueText())
-            .style('fill', option.value.color)
-            .style('text-anchor', 'middle')
-            .attr('dy', attributes.value.dy)
-            .attr('x', attributes.value.x)
-            .attr('font-size', attributes.value.fontsize)
-            .attr('class', option.value.class);
-
-        d3var.label = d3var.center.append('text')
-            .text(option.label.text)
-            .style('fill', option.label.color)
-            .style('text-anchor', 'middle')
-            .attr('dy', attributes.label.dy)
-            .attr('x', attributes.label.x)
-            .attr('font-size', attributes.label.fontsize)
-            .attr('class', option.label.class);
-
-        if (option.value.hide === true) {
-            d3var.value.style('display', 'none');
-            d3var.label.style('display', 'none');
+        if (option.title.text !== '') {
+            d3var.gCenter.append('text')
+                .text(option.title.text)
+                .style('fill', option.title.color)
+                .style('text-anchor', 'middle')
+                .attr('dy', attributes.title.dy)
+                .attr('x', attributes.title.x)
+                .attr('font-size', attributes.title.fontsize)
+                .attr('class', option.title.class);
         }
 
-        d3var.min = d3var.center.append('text')
-            .text(getMinValueText())
-            .style('fill', option.label.color)
-            .style('text-anchor', 'middle')
-            .attr('dy', attributes.minmax.min_dy)
-            .attr('x', attributes.minmax.min_x)
-            .attr('font-size', attributes.minmax.fontsize)
-            .attr('class', option.label.class);
+        if (option.value.hide === false) {
+            d3var.value = d3var.gCenter.append('text')
+                .data([{ value: option.value.val }])
+                .text(getValueText())
+                .style('fill', option.value.color)
+                .style('text-anchor', 'middle')
+                .attr('dy', attributes.value.dy)
+                .attr('x', attributes.value.x)
+                .attr('font-size', attributes.value.fontsize)
+                .attr('class', option.value.class);
 
-        d3var.max = d3var.center.append('text')
-            .text(getMaxValueText())
-            .style('fill', option.label.color)
-            .style('text-anchor', 'middle')
-            .attr('dy', attributes.minmax.max_dy)
-            .attr('x', attributes.minmax.max_x)
-            .attr('font-size', attributes.minmax.fontsize)
-            .attr('class', option.label.class);
+            d3var.label = d3var.gCenter.append('text')
+                .text(option.label.text)
+                .style('fill', option.label.color)
+                .style('text-anchor', 'middle')
+                .attr('dy', attributes.label.dy)
+                .attr('x', attributes.label.x)
+                .attr('font-size', attributes.label.fontsize)
+                .attr('class', option.label.class);
+        }
 
-        if (option.value.hideMinMax === true) {
-            d3var.min.style('display', 'none');
-            d3var.max.style('display', 'none');
+        if (option.value.hideMinMax === false) {
+            d3var.min = d3var.gCenter.append('text')
+                .text(getMinValueText())
+                .style('fill', option.label.color)
+                .style('text-anchor', 'middle')
+                .attr('dy', attributes.minmax.min_dy)
+                .attr('x', attributes.minmax.min_x)
+                .attr('font-size', attributes.minmax.fontsize)
+                .attr('class', option.label.class);
+
+            d3var.max = d3var.gCenter.append('text')
+                .text(getMaxValueText())
+                .style('fill', option.label.color)
+                .style('text-anchor', 'middle')
+                .attr('dy', attributes.minmax.max_dy)
+                .attr('x', attributes.minmax.max_x)
+                .attr('font-size', attributes.minmax.fontsize)
+                .attr('class', option.label.class);
         }
 
         // need to relayout
@@ -791,28 +791,11 @@ GaugeD3 = function(_option) {
         var x = newSize.width / widgetSize.width;
         var y = newSize.height / widgetSize.height;
 
-        d3var.center.attr('transform', getCenteringTransform(rc)+',scale('+x+', '+y+')');
-    }
-
-    function calcPercentage(val) {
-       var range, newval;
-        if (option.value.min < 0) {
-            if (option.value.max < 0) {
-                newval = Math.abs(val + Math.abs(option.value.min));
-                range = Math.abs(option.value.min) - Math.abs(option.value.max);
-            } else {
-                newval = val + Math.abs(option.value.min);
-                range = option.value.max + Math.abs(option.value.min);
-            }
-        } else {
-            newval = val - option.value.min;
-            range = option.value.max - option.value.min;
-        }
-        return ((100/range)*newval)/100;
+        d3var.gCenter.attr('transform', getCenteringTransform(rc)+',scale('+x+', '+y+')');
     }
 
     function initialTransition() {
-        d3var.center.transition()
+        d3var.gCenter.transition()
             .duration(option.transition.startTime)
             .ease(option.transition.startType)
             .style('opacity', 1);
@@ -826,20 +809,14 @@ GaugeD3 = function(_option) {
                 var i = d3.interpolate(d.value, val);
                 d.value = val;
                 return function(t) {
-                    if (option.value.humanFriendly)
-                        this.textContent = humanFriendlyNumber(i(t).toFixed(option.value.humanFriendlyDecimal), option.value.humanFriendlyDecimal);
-                    else {
-                        if (option.value.formatNumber)
-                            this.textContent = formatNumber(i(t).toFixed(option.value.decimal));
-                        else
-                            this.textContent = i(t).toFixed(option.value.decimal);
-                    }
+                    this.textContent = getValueText(i(t));
                 };
             });
     }
 
     function levelArcTransition(val) {
-        var per = calcPercentage(val);
+
+        var per = d3var.scale_per(val);
 
         var newColor = getGaugeValueColor(val, per);
 
@@ -894,9 +871,9 @@ GaugeD3 = function(_option) {
             .ease(option.transition.refreshType)
             .style('fill', newColor)
             .attrTween('d', function(d) {
-                var angle = d3.interpolate(curArcAngle, d);
+                var angle = d3.interpolate(d3var.curArcAngle, d);
                 return function(t) {
-                    curArcAngle = angle(t);
+                    d3var.curArcAngle = angle(t);
                     return d3var.arc.endAngle(angle(t))();
                 };
             });
@@ -905,25 +882,31 @@ GaugeD3 = function(_option) {
     function refresh(val, min, max) {
         if (_.isNull(d3var.svg))
             return;
+        if (!_.isNumber(val))
+            return;
 
-        if (!_.isUndefined(min)) {
-            option.value.min = min;
-            d3var.min.datum(option.value.min)
-                .text(getMinValueText());
-        }
+        if (option.value.hideMinMax === false) {
+            if (!_.isUndefined(min)) {
+                option.value.min = min;
+                d3var.min.datum(option.value.min)
+                    .text(getMinValueText());
+            }
 
-        if (!_.isUndefined(max)) {
-            option.value.max = max;
-            d3var.max.datum(option.value.max)
-                .text(getMaxValueText());
+            if (!_.isUndefined(max)) {
+                option.value.max = max;
+                d3var.max.datum(option.value.max)
+                    .text(getMaxValueText());
+            }
         }
 
         val = getValueInRange(val);
 
-        if (option.value.transition === true)
-            valueTransition(val);
-        else
-            d3var.value.text(getValueText());
+        if (option.value.hide === false) {
+            if (option.value.transition === true)
+                valueTransition(val);
+            else
+                d3var.value.text(getValueText(val));
+        }
 
         levelArcTransition(val);
 
@@ -935,9 +918,14 @@ GaugeD3 = function(_option) {
         resize: function() {
             resize();
         },
-
         refresh: function(val, min, max) {
             refresh(Number(val), min, max);
+        },
+        destroy: function() {
+            if (_.isNull(d3var.svg)) {
+                d3var.gCenter.remove();
+                d3var.svg.remove();
+            }
         }
     };
 };
