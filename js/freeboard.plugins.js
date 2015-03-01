@@ -1820,8 +1820,10 @@
 		}
 
 		function createGauge() {
-			if (!_.isNull(gauge))
+			if (!_.isNull(gauge)) {
+				gauge.destroy();
 				gauge = null;
+			}
 
 			gaugeElement.empty();
 
@@ -1838,9 +1840,10 @@
 					max: (_.isUndefined(currentSettings.max_value) ? 0 : currentSettings.max_value),
 					color: currentSettings.value_fontcolor,
 					decimal: currentSettings.decimal,
-					humanFriendly: currentSettings.human_friendly,
-					humanFriendlyDecimal: currentSettings.decimal,
-					humanFriendlyMinMax: currentSettings.human_friendly,
+					comma: currentSettings.comma,
+					metricPrefix: currentSettings.metric_prefix,
+					metricPrefixDecimal: currentSettings.decimal,
+					metricPrefixMinMax: currentSettings.metric_prefix,
 					transition: currentSettings.animate,
 					hideMinMax: currentSettings.show_minmax ? false : true,
 					class: 'ultralight-text'
@@ -1880,7 +1883,8 @@
 				currentSettings.type != newSettings.type ||
 				currentSettings.value != newSettings.value ||
 				currentSettings.decimal != newSettings.decimal ||
-				currentSettings.human_friendly != newSettings.human_friendly ||
+				currentSettings.comma != newSettings.comma ||
+				currentSettings.metric_prefix != newSettings.metric_prefix ||
 				currentSettings.animate != newSettings.animate ||
 				currentSettings.units != newSettings.units ||
 				currentSettings.value_fontcolor != newSettings.value_fontcolor ||
@@ -1907,7 +1911,10 @@
 		};
 
 		this.onDispose = function () {
-			gauge = null;
+			if (!_.isNull(gauge)) {
+				gauge.destroy();
+				gauge = null;
+			}
 		};
 
 		this.onSizeChanged = function () {
@@ -2013,11 +2020,17 @@
 				default_value: 0
 			},
 			{
-				name: 'human_friendly',
-				display_name: '補助単位',
+				name: 'comma',
+				display_name: 'カンマ表示',
 				type: 'boolean',
 				default_value: false,
-				description: '1000なら1Kのように値を見やすくします。'
+			},
+			{
+				name: 'metric_prefix',
+				display_name: '国際単位系表示',
+				type: 'boolean',
+				default_value: false,
+				description: '1000なら1Kのように値を短縮します。'
 			},
 			{
 				name: 'animate',

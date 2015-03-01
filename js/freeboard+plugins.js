@@ -457,7 +457,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			if (_.isFunction(finishedCallback))
 				finishedCallback();
 
-			freeboardUI.processResize(true);
+			freeboardUI.processResize(true, true);
 		}
 
 		// This could have been self.plugins(object.plugins), but for some weird reason head.js was causing a function to be added to the list of plugins.
@@ -798,9 +798,10 @@ function FreeboardUI() {
 	var loadingIndicator = $('<div class="wrapperloading"><div class="loading up" ></div><div class="loading down"></div></div>');
 	var grid;
 
-	function processResize(layoutWidgets) {
+	function processResize(layoutWidgets, loading) {
 		var maxDisplayableColumns = getMaxDisplayableColumnCount();
 		var repositionFunction = function(){};
+
 		if (layoutWidgets) {
 			repositionFunction = function(index) {
 				var paneElement = this;
@@ -812,7 +813,15 @@ function FreeboardUI() {
 					.attr('data-row', newPosition.row)
 					.attr('data-col', newPosition.col);
 
-				paneModel.processSizeChange();
+				if (loading === true) {
+					// Give the animation a moment to complete. Really hacky.
+					var resize = _.debounce(function() {
+						paneModel.processSizeChange();
+					}, 500);
+					resize();
+				} else {
+					paneModel.processSizeChange();
+				}
 			};
 		}
 
@@ -1111,8 +1120,8 @@ function FreeboardUI() {
 			return getPositionForScreenSize(paneModel);
 		},
 
-		processResize : function(layoutWidgets) {
-			processResize(layoutWidgets);
+		processResize : function(layoutWidgets, loading) {
+			processResize(layoutWidgets, loading);
 		},
 
 		disableGrid : function() {
@@ -1337,7 +1346,7 @@ function PaneModel(theFreeboardModel, widgetPlugins) {
 				_.each(self.widgets(), function (widget) {
 					widget.processSizeChange();
 				});
-			}, 1000);
+			}, 500);
 		resize();
 	};
 
@@ -4841,8 +4850,10 @@ $.extend(freeboard, jQuery.eventEmitter);
 		}
 
 		function createGauge() {
-			if (!_.isNull(gauge))
+			if (!_.isNull(gauge)) {
+				gauge.destroy();
 				gauge = null;
+			}
 
 			gaugeElement.empty();
 
@@ -4859,9 +4870,10 @@ $.extend(freeboard, jQuery.eventEmitter);
 					max: (_.isUndefined(currentSettings.max_value) ? 0 : currentSettings.max_value),
 					color: currentSettings.value_fontcolor,
 					decimal: currentSettings.decimal,
-					humanFriendly: currentSettings.human_friendly,
-					humanFriendlyDecimal: currentSettings.decimal,
-					humanFriendlyMinMax: currentSettings.human_friendly,
+					comma: currentSettings.comma,
+					metricPrefix: currentSettings.metric_prefix,
+					metricPrefixDecimal: currentSettings.decimal,
+					metricPrefixMinMax: currentSettings.metric_prefix,
 					transition: currentSettings.animate,
 					hideMinMax: currentSettings.show_minmax ? false : true,
 					class: 'ultralight-text'
@@ -4901,7 +4913,8 @@ $.extend(freeboard, jQuery.eventEmitter);
 				currentSettings.type != newSettings.type ||
 				currentSettings.value != newSettings.value ||
 				currentSettings.decimal != newSettings.decimal ||
-				currentSettings.human_friendly != newSettings.human_friendly ||
+				currentSettings.comma != newSettings.comma ||
+				currentSettings.metric_prefix != newSettings.metric_prefix ||
 				currentSettings.animate != newSettings.animate ||
 				currentSettings.units != newSettings.units ||
 				currentSettings.value_fontcolor != newSettings.value_fontcolor ||
@@ -4928,7 +4941,10 @@ $.extend(freeboard, jQuery.eventEmitter);
 		};
 
 		this.onDispose = function () {
-			gauge = null;
+			if (!_.isNull(gauge)) {
+				gauge.destroy();
+				gauge = null;
+			}
 		};
 
 		this.onSizeChanged = function () {
@@ -5034,11 +5050,17 @@ $.extend(freeboard, jQuery.eventEmitter);
 				default_value: 0
 			},
 			{
-				name: 'human_friendly',
-				display_name: '補助単位',
+				name: 'comma',
+				display_name: 'カンマ表示',
 				type: 'boolean',
 				default_value: false,
-				description: '1000なら1Kのように値を見やすくします。'
+			},
+			{
+				name: 'metric_prefix',
+				display_name: '国際単位系表示',
+				type: 'boolean',
+				default_value: false,
+				description: '1000なら1Kのように値を短縮します。'
 			},
 			{
 				name: 'animate',

@@ -457,7 +457,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			if (_.isFunction(finishedCallback))
 				finishedCallback();
 
-			freeboardUI.processResize(true);
+			freeboardUI.processResize(true, true);
 		}
 
 		// This could have been self.plugins(object.plugins), but for some weird reason head.js was causing a function to be added to the list of plugins.
@@ -798,9 +798,10 @@ function FreeboardUI() {
 	var loadingIndicator = $('<div class="wrapperloading"><div class="loading up" ></div><div class="loading down"></div></div>');
 	var grid;
 
-	function processResize(layoutWidgets) {
+	function processResize(layoutWidgets, loading) {
 		var maxDisplayableColumns = getMaxDisplayableColumnCount();
 		var repositionFunction = function(){};
+
 		if (layoutWidgets) {
 			repositionFunction = function(index) {
 				var paneElement = this;
@@ -812,7 +813,15 @@ function FreeboardUI() {
 					.attr('data-row', newPosition.row)
 					.attr('data-col', newPosition.col);
 
-				paneModel.processSizeChange();
+				if (loading === true) {
+					// Give the animation a moment to complete. Really hacky.
+					var resize = _.debounce(function() {
+						paneModel.processSizeChange();
+					}, 500);
+					resize();
+				} else {
+					paneModel.processSizeChange();
+				}
 			};
 		}
 
@@ -1111,8 +1120,8 @@ function FreeboardUI() {
 			return getPositionForScreenSize(paneModel);
 		},
 
-		processResize : function(layoutWidgets) {
-			processResize(layoutWidgets);
+		processResize : function(layoutWidgets, loading) {
+			processResize(layoutWidgets, loading);
 		},
 
 		disableGrid : function() {
@@ -1337,7 +1346,7 @@ function PaneModel(theFreeboardModel, widgetPlugins) {
 				_.each(self.widgets(), function (widget) {
 					widget.processSizeChange();
 				});
-			}, 1000);
+			}, 500);
 		resize();
 	};
 
