@@ -58,12 +58,12 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'clock',
-		display_name: '時計',
-		description: '指定の間隔で更新され、異なるフォーマットで現在の時刻を返します。画面上にタイマーを表示したり、ウィジェットが一定の間隔でリフレッシュさせるために使用することができます。',
+		display_name: $.i18n.t('plugins_ds.clock.title'),
+		description: $.i18n.t('plugins_ds.clock.description'),
 		settings: [
 			{
 				name: 'timezone',
-				display_name: 'タイムゾーン',
+				display_name: $.i18n.t('plugins_ds.clock.timezone'),
 				type: 'option',
 				default_value: 'Asia/Tokyo',
 				options: [
@@ -455,11 +455,11 @@
 			},
 			{
 				name: 'refresh',
-				display_name: '更新頻度',
+				display_name: $.i18n.t('plugins_ds.clock.refresh'),
 				validate: 'required,custom[integer],min[1]',
 				style: 'width:100px',
 				type: 'number',
-				suffix: '秒',
+				suffix: $.i18n.t('plugins_ds.clock.refresh_suffix'),
 				default_value: 1
 			}
 		],

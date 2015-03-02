@@ -1,0 +1,74 @@
+{
+    "menu": {
+        "menu": "menu",
+        "load": "LOAD",
+        "save": "SAVE",
+        "addPanel": "Add Panel",
+        "dataSource": "Data Sources"
+    },
+    "global": {
+        "yes": "Yes",
+        "no": "No"
+    },
+    "desc": {
+        "limitChar20": "A maximum of 20 characters",
+        "limitChar100": "A maximum of 100 characters",
+        "limitChar500": "A maximum of 500 characters",
+        "limitChar2000": "A maximum of 2000 characters",
+        "limitChar5000": "A maximum of 5000 characters",
+        "limitBlock10": "Up to 10 block",
+        "limitBlock20": "Up to 20 block"
+    },
+    "dataSource": {
+        "title": "Data Source",
+        "givenName": "Given Name",
+        "lastUpdated": "Last updated",
+        "addTo": "Add to"
+    },
+    "panel": {
+        "title": "Pane",
+        "delete": {
+            "title": "Delete confirmation",
+            "text": "Are you sure you want to delete the pane"
+        },
+        "edit": {
+            "title": "Title",
+            "colWidth": "Column width"
+        }
+    },
+    "widget": {
+        "title": "Widget"
+    },
+    "JSEditor": {
+        "javascript": {
+            "exampleText": "// Example: Convert from Celsius to Fahrenheit, Truncation point two digits below",
+            "codeWindowHeader": "This JavaScript will be re-evaluated each time reference data source is updated. And <span class='cm-keyword'> return value </span> will be displayed in the widget. You function <code> <span class='cm-keyword'> function </span> (<span class='cm-def'> datasources </span>) </code> can be used to describe the contents in JavaScript of. argument datasources is an array of the added data source."
+        },
+        "json": {
+            "exampleText": "// Example: {title '\n //' value ': 10 \n} ';",
+            "codeWindowHeader": " Among the string enclosed in use the appropriate escape sequence. <br> example: 'function (label, series) {return (\\\" ID: \\\"+ label);}'"
+        },
+        "cancel": "Close"
+    },
+    "PluginEditor": {
+        "datasourceTool": "DataSource",
+        "tableOperation": "Add",
+        "dialog": {
+            "yes": "Save",
+            "no": "Cancel"
+        },
+        "type": "Type",
+        "firstOption": "Please select the type."
+    },
+    "plugins_wd": {
+    },
+    "plugins_ds": {
+        "clock": {
+            "title": "Clock",
+            "description": "TODO:",
+            "timezone": "Time Zone",
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds"
+        }
+    }
+}

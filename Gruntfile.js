@@ -32,6 +32,7 @@ module.exports = function(grunt) {
                         'lib/js/thirdparty/colpick.js',
                         'lib/js/thirdparty/webfont.js',
                         'lib/js/thirdparty/d3.v3.min.js',
+                        'lib/js/thirdparty/i18next-1.7.7.min.js'
                     ]
                 ],
                 dest : 'js/freeboard.thirdparty.js'

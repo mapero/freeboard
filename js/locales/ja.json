@@ -1,0 +1,75 @@
+{
+    "menu": {
+        "menu": "menu",
+        "load": "ロード",
+        "save": "保存",
+        "addPanel": "ペイン追加",
+        "dataSource": "データソース"
+    },
+    "global": {
+        "yes": "はい",
+        "no": "いいえ"
+    },
+    "desc": {
+        "limitChar20": "最大20文字",
+        "limitChar100": "最大100文字",
+        "limitChar500": "最大500文字",
+        "limitChar2000": "最大2000文字",
+        "limitChar5000": "最大5000文字",
+        "limitBlock10": "最大10ブロック",
+        "limitBlock20": "最大20ブロック"
+    },
+    "dataSource": {
+        "title": "データソース",
+        "givenName": "名前",
+        "lastUpdated": "最終更新日",
+        "addTo": "追加"
+    },
+    "panel": {
+        "title": "ペイン",
+        "delete": {
+            "title": "削除確認",
+            "text": " を削除してもよろしいですか?"
+        },
+        "edit": {
+            "title": "タイトル",
+            "colWidth": "カラム幅"
+        }
+    },
+    "widget": {
+        "title": "ウィジェット"
+    },
+    "JSEditor": {
+        "javascript": {
+            "exampleText": "// 例// 例: return datasouces[\"test\"][\"value\"];",
+            "codeWindowHeader": "このこのJavaScriptは、参照データソースが更新されるたびに再評価され、<span class=\"cm-keyword\">戻り値</span>がウィジェットに表示されます。関数 <code><span class=\"cm-keyword\">function</span>(<span class=\"cm-def\">datasources</span>)</code> の内部をJavaScriptで記述することができます。引数 <span class=\"cm-def\">datasources</span> は追加したデータソースの配列です。また引数 <span class=\"cm-def\">_global</span> へスクリプト外スコープの変数を格納することができます。(注:異なるスクリプト間では共有できません。)"
+
+        },
+        "json": {
+            "exampleText": "// 例: {\n//    \"title\": \"タイトル\"\\n\/\/    \"value\": 10\n}",
+            "codeWindowHeader": "<span class=\"cm-keyword\">JSON</span>形式のデータを入力して下さい。"
+        },
+        "cancel": "閉じる"
+    },
+    "PluginEditor": {
+        "datasourceTool": "データソース",
+        "tableOperation": "追加",
+        "dialog": {
+            "yes": "保存",
+            "no": "キャンセル"
+        },
+        "type": "タイプ",
+        "firstOption": "追加するタイプを選択してください。"
+    },
+    "plugins_wd": {
+    },
+    "plugins_ds": {
+        "clock": {
+            "title": "時計",
+            "description": "指定の間隔で更新され、異なるフォーマットで現在の時刻を返します。画面上にタイマーを表示したり、ウィジェットが一定の間隔でリフレッシュさせるために使用することができます。",
+            "timezone": "タイムゾーン",
+            "refresh": "更新頻度",
+            "refresh_suffix": "秒"
+        }
+    }
+}

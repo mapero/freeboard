@@ -12,7 +12,10 @@
     <link href="css/freeboard.min.css" rel="stylesheet" />
     <script src="js/freeboard.thirdparty.min.js"></script>
     <script type="text/javascript">
-        head.js("js/freeboard+plugins.min.js",
+        head.js("js/freeboard.min.js",
+                "js/locales/init.js",
+                "js/freeboard.plugins.min.js",
+
                 // *** Load more plugins here ***
                 function(){
                     $(function()
@@ -41,18 +44,18 @@
             </div>
             <div id="board-tools">
                 <div id="board-actions">
-                    <h2 id="menutitle" class="title menu">Menu</h2>
+                    <h2 id="menutitle" class="title menu" data-i18n="menu.menu">Menu</h2>
                     <ul class="board-toolbar collapse">
-                        <li data-bind="click: loadDashboardFromLocalFile"><i id="full-screen-icon" class="fa-w fa-folder-open"></i><label id="full-screen">ロード</label></li>
-                        <li data-bind="click: saveDashboard"><i class="fa-w fa-download"></i><label>保存</label></li>
-                        <li id="add-pane" data-bind="click: createPane"><i class="fa-w fa-plus"></i><label>ペイン追加</label></li>
+                        <li data-bind="click: loadDashboardFromLocalFile"><i id="full-screen-icon" class="fa-w fa-folder-open"></i><label id="full-screen" data-i18n="menu.load">Load</label></li>
+                        <li data-bind="click: saveDashboard"><i class="fa-w fa-download"></i><label data-i18n="menu.save">Save</label></li>
+                        <li id="add-pane" data-bind="click: createPane"><i class="fa-w fa-plus"></i><label data-i18n="menu.addPanel">Add PaneL</label></li>
                     </ul>
                 </div>
             </div>
             <div id="board-configs">
                 <div id="board-actions-right">
                     <ul class="board-toolbar collapse">
-                        <li id="toggle-datasources" data-bind="click: toggleDatasources"><i class="fa-w fa-globe"></i><label>データソース</label></li>
+                        <li id="toggle-datasources" data-bind="click: toggleDatasources"><i class="fa-w fa-globe"></i><label data-i18n="menu.dataSource">Data source</label></li>
                     </ul>
                 </div>
             </div>
@@ -83,7 +86,7 @@
 
 <div id="datasources" class="datasource-container" data-bind="if:allow_edit">
     <div class="datasource-container-header">
-        <h2 class="datasource-container-header title">データソース</h2>
+        <h2 class="datasource-container-header title" data-i18n="dataSource.title">Data source</h2>
         <div>
             <ul class="board-toolbar collapse">
                 <li data-bind="click: toggleDatasources"><i class="fa-w fa-remove"></i></li>
@@ -94,8 +97,8 @@
         <table class="table table-condensed sub-table" id="datasources-list" data-bind="if: datasources().length">
             <thead>
             <tr>
-                <th>名前</th>
-                <th class="lastupdate">最終更新日</th>
+                <th data-i18n="dataSource.givenName">Given Name</th>
+                <th data-i18n="dataSource.lastUpdated">Last updated</th>
                 <th class="toolbar">&nbsp;</th>
             </tr>
             </thead>
@@ -118,7 +121,7 @@
     </div>
     <div class="datasource-toolbar">
         <ul class="board-toolbar collapse">
-            <li data-bind="pluginEditor: {operation: 'add', type: 'datasource'}"><i class="fa-w fa-plus"></i><label>追加</label></li>
+            <li data-bind="pluginEditor: {operation: 'add', type: 'datasource'}"><i class="fa-w fa-plus"></i><label data-i18n="dataSource.addTo">Add to</label></li>
         </ul>
     </div>
 </div>
