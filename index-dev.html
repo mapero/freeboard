@@ -51,6 +51,7 @@
                 "lib/js/freeboard/JSEditor.js",
                 "lib/js/freeboard/DeveloperConsole.js",
                 "lib/js/freeboard/freeboard.js",
+
                 "js/locales/init.js",
 
                 "plugins/freeboard/plugin.ds.clock.js",
@@ -74,6 +75,7 @@
                 function(){
                     $(function()
                     { //DOM Ready
+                        freeboard.setAssetRoot("/freeboard-ui/");
                         freeboard.initialize(true);
 
                         var hashpattern = window.location.hash.match(/(&|#)source=([^&]+)/);

@@ -7,10 +7,9 @@
     'use strict';
 
     var currentBrowserLanguage = $.i18n.detectLanguage(),
-        path = "js/locales/__lng__.json";
+        path = 'js/locales/__lng__.json';
 
-    // currentBrowserLanguage = "en-us";
-
+    // currentBrowserLanguage = 'en-us';
     $.i18n.debug = true;
 
     var options = {
