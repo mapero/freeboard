@@ -81,34 +81,34 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'playback',
-		display_name: 'Playback',
-		description: '指定された間隔で連続したデータを再生します。オブジェクトの配列を含む有効なJSONファイルを受信します。',
+		display_name: $.i18n.t('plugins_ds.playback.title'),
+		description: $.i18n.t('plugins_ds.playback.description'),
 		settings: [
 			{
 				name: 'datafile',
-				display_name: 'データファイルURL',
+				display_name: $.i18n.t('plugins_ds.playback.datafile'),
 				validate: 'required,custom[url]',
 				type: 'text',
-				description: 'JSON配列データへのリンク'
+				description: $.i18n.t('plugins_ds.playback.datafile_desc')
 			},
 			{
 				name: 'is_jsonp',
-				display_name: 'JSONP使用',
+				display_name: $.i18n.t('plugins_ds.playback.is_jsonp'),
 				type: 'boolean'
 			},
 			{
 				name: 'loop',
-				display_name: 'ループ再生',
+				display_name: $.i18n.t('plugins_ds.playback.loop'),
 				type: 'boolean',
-				description: '巻戻しとループ再生時終了'
+				description: $.i18n.t('plugins_ds.playback.loop_desc'),
 			},
 			{
 				name: 'refresh',
-				display_name: '更新頻度',
+				display_name: $.i18n.t('plugins_ds.playback.refresh'),
 				validate: 'required,custom[integer],min[1]',
 				style: 'width:100px',
 				type: 'number',
-				suffix: '秒',
+				suffix: $.i18n.t('plugins_ds.playback.refresh_suffix'),
 				default_value: 5
 			}
 		],

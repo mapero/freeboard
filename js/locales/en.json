@@ -6,10 +6,12 @@
         "addPanel": "Add Panel",
         "dataSource": "Data Sources"
     },
+
     "global": {
         "yes": "Yes",
         "no": "No"
     },
+
     "desc": {
         "limitChar20": "A maximum of 20 characters",
         "limitChar100": "A maximum of 100 characters",
@@ -19,26 +21,30 @@
         "limitBlock10": "Up to 10 block",
         "limitBlock20": "Up to 20 block"
     },
+
     "dataSource": {
         "title": "Data Source",
         "givenName": "Given Name",
         "lastUpdated": "Last updated",
         "addTo": "Add"
     },
+
     "panel": {
         "title": "Pane",
         "delete": {
             "title": "Delete confirmation",
-            "text": "Are you sure you want to delete the pane"
+            "text": "Are you sure you want to delete"
         },
         "edit": {
             "title": "Title",
             "colWidth": "Column width"
         }
     },
+
     "widget": {
         "title": "Widget"
     },
+
     "JSEditor": {
         "javascript": {
             "exampleText": "// Example: Convert from Celsius to Fahrenheit, Truncation point two digits below",
@@ -50,6 +56,7 @@
         },
         "cancel": "Close"
     },
+
     "PluginEditor": {
         "datasourceTool": "DataSource",
         "tableOperation": "Add",
@@ -58,10 +65,12 @@
             "no": "Cancel"
         },
         "type": "Type",
-        "firstOption": "Please select the type."
+        "firstOption": "Please select the type"
     },
+
     "plugins_wd": {
     },
+
     "plugins_ds": {
         "clock": {
             "title": "Clock",
@@ -165,6 +174,77 @@
                 "Pacific/Tongatapu": "(UTC+13:00) Pacific/Tongatapu",
                 "Pacific/Apia": "(UTC+13:00) Pacific/Apia"
             },
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds"
+        },
+
+        "json": {
+            "title": "JSON",
+            "description": "This datasource will receive the JSON data from the specified URL.",
+            "url": "URL",
+            "use_thingproxy": "Try thingproxy",
+            "use_thingproxy_desc": "A direct JSON connection will be tried first, if that fails, a JSONP connection will be tried. If that fails, you can use thingproxy, which can solve many connection problems to APIs. <a href=\\\"https://github.com/Freeboard/thingproxy\\\" target=\\\"_blank\\\">More information</a>.",
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds",
+            "method": "Method",
+            "body": "Body",
+            "body_desc": "The body of the request. Normally only used if method is POST.",
+            "headers": "Header",
+            "headers_name": "Name",
+            "headers_value": "Value"
+        },
+
+        "mqtt": {
+            "title": "MQTT over Websocket",
+            "description": "The <a href=\\\" http://mqtt.org/\\\", target=\\\"_blank\\\">MQTT</a> protocol through the WebSocket, you will receive a JSON data from MQTT broker server.",
+            "hostname": "Hostname",
+            "hostname_desc": "A maximum of 1000 characters<br />Set the hostname of the MQTT broker server.<br />ex: location.hostname",
+            "port": "Port Number",
+            "clientID": "Client ID",
+            "clientID_desc": "A maximum of 23 characters<br />Any client ID string.",
+            "topic": "Topic",
+            "topic_desc": "A maximum of 500 characters<br />Set the topic name to subscribe.<br />ex: my/topic",
+            "username": "(optional) UserName",
+            "username_desc": "A maximum of 100 characters<br />If you do not need it to blank.",
+            "password": "(optional) Password",
+            "password_desc": "A maximum of 100 characters<br />If you do not need it to blank.",
+            "reconnect": "Automatic Reconnection"
+        },
+
+        "node_js": {
+            "title": "Node.js (Socket.io)",
+            "description": "This datasource will receive the JSON data from node.js (<a href=\\\"http://socket.io/\\\", target=\\\"_blank\\\">Socket.io</a>) server.",
+            "url": "URL",
+            "url_desc": "A maximum of 1000 characters (optional) If you use a custom namespace, add the last name space of URL.<br />ex: http://localhost/chat",
+            "events": "Events",
+            "events_desc": "Please specify the event name to be added to the data source.",
+            "event_name": "Event Name",
+            "rooms": "(optional) Rooms",
+            "rooms_desc": "If you want to use the room, you must specify the room name you want to add. Leave blank otherwise.",
+            "room_name": "Room Name",
+            "room_event": "Room Event Name"
+        },
+
+        "owm": {
+            "title": "Open Weather Map API",
+            "description": "This datasource will receive a variety of weather data, including the weather and forecasts history.",
+            "location": "Location",
+            "location_desc": "A maximum of 200 characters<br />ex: London, UK",
+            "units": "Units",
+            "units_metric": "Metric",
+            "units_imperial": "Imperial",
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds"
+        },
+
+        "playback": {
+            "title": "Playback",
+            "description": "Play the continuous data at a specified interval. It will receive a valid JSON file that contains an array of objects.",
+            "datafile": "Data File URL",
+            "datafile_desc": "A link to a JSON array of data.",
+            "is_jsonp": "Is JSONP",
+            "loop": "Loop",
+            "loop_desc": "Rewind and loop when finished",
             "refresh": "Refresh Every",
             "refresh_suffix": "seconds"
         }

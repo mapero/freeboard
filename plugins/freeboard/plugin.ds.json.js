@@ -107,34 +107,34 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'JSON',
-		display_name: 'JSON',
-		description: '指定のURLからJSONデータを受信します。',
+		display_name: $.i18n.t('plugins_ds.json.title'),
+		description: $.i18n.t('plugins_ds.json.description'),
 		settings: [
 			{
 				name: 'url',
-				display_name: 'URL',
+				display_name: $.i18n.t('plugins_ds.json.url'),
 				validate: 'required,custom[url]',
 				type: 'text'
 			},
 			{
 				name: 'use_thingproxy',
-				display_name: 'プロキシサーバー試行',
-				description: 'まず直接接続し、失敗した場合、JSONP接続を試みます。これも失敗した場合、プロキシサーバーを使用することができます。使用することで多くのAPI接続トラブルを解決できるでしょう。<a href="https://github.com/Freeboard/thingproxy" target="_blank">詳細</a>',
+				display_name: $.i18n.t('plugins_ds.json.use_thingproxy'),
+				description: $.i18n.t('plugins_ds.json.use_thingproxy_desc'),
 				type: 'boolean',
 				default_value: true
 			},
 			{
 				name: 'refresh',
-				display_name: '更新頻度',
+				display_name: $.i18n.t('plugins_ds.json.refresh'),
 				validate: 'required,custom[integer],min[1]',
 				style: 'width:100px',
 				type: 'number',
-				suffix: '秒',
+				suffix: $.i18n.t('plugins_ds.json.refresh_suffix'),
 				default_value: 5
 			},
 			{
 				name: 'method',
-				display_name: 'メソッド',
+				display_name: $.i18n.t('plugins_ds.json.method'),
 				type: 'option',
 				style: 'width:200px',
 				options: [
@@ -158,29 +158,27 @@
 			},
 			{
 				name: 'body',
-				display_name: 'Body',
+				display_name: $.i18n.t('plugins_ds.json.body'),
 				type: 'json',
 				validate: 'optional,maxSize[2000]',
-				description: 'リクエスト本文。通常はPOSTメソッド時に使用される。最大2000文字'
+				description: $.i18n.t('plugins_ds.json.body_desc')
 			},
 			{
 				name: 'headers',
-				display_name: 'Header',
+				display_name: $.i18n.t('plugins_ds.json.headers'),
 				type: 'array',
 				settings: [
 					{
 						name: 'name',
-						display_name: '名前',
+						display_name: $.i18n.t('plugins_ds.json.headers_name'),
 						type: 'text',
-						validate: 'optional,maxSize[500]',
-						description: '最大500文字'
+						validate: 'optional,maxSize[500]'
 					},
 					{
 						name: 'value',
-						display_name: '値',
+						display_name: $.i18n.t('plugins_ds.json.headers_value'),
 						type: 'text',
-						validate: 'optional,maxSize[500]',
-						description: '最大500文字'
+						validate: 'optional,maxSize[500]'
 					}
 				]
 			}

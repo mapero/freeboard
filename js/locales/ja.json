@@ -6,10 +6,12 @@
         "addPanel": "ペイン追加",
         "dataSource": "データソース"
     },
+
     "global": {
         "yes": "はい",
         "no": "いいえ"
     },
+
     "desc": {
         "limitChar20": "最大20文字",
         "limitChar100": "最大100文字",
@@ -19,12 +21,14 @@
         "limitBlock10": "最大10ブロック",
         "limitBlock20": "最大20ブロック"
     },
+
     "dataSource": {
         "title": "データソース",
         "givenName": "名前",
         "lastUpdated": "最終更新日",
         "addTo": "追加"
     },
+
     "panel": {
         "title": "ペイン",
         "delete": {
@@ -36,9 +40,11 @@
             "colWidth": "カラム幅"
         }
     },
+
     "widget": {
         "title": "ウィジェット"
     },
+
     "JSEditor": {
         "javascript": {
             "exampleText": "// 例// 例: return datasouces[\"test\"][\"value\"];",
@@ -51,6 +57,7 @@
         },
         "cancel": "閉じる"
     },
+
     "PluginEditor": {
         "datasourceTool": "データソース",
         "tableOperation": "追加",
@@ -61,8 +68,10 @@
         "type": "タイプ",
         "firstOption": "追加するタイプを選択してください。"
     },
+
     "plugins_wd": {
     },
+
     "plugins_ds": {
         "clock": {
             "title": "時計",
@@ -166,6 +175,77 @@
                 "Pacific/Tongatapu": "(UTC+13:00) ヌクアロファ",
                 "Pacific/Apia": "(UTC+13:00) サモア"
             },
+            "refresh": "更新頻度",
+            "refresh_suffix": "秒"
+        },
+
+        "json": {
+            "title": "JSON",
+            "description": "指定のURLからJSONデータを受信します。",
+            "url": "URL",
+            "use_thingproxy": "プロキシサーバー試行",
+            "use_thingproxy_desc": "まず直接接続し、失敗した場合、JSONP接続を試みます。これも失敗した場合、プロキシサーバーを使用することができます。使用することで多くのAPI接続トラブルを解決できるでしょう。<a href=\\\"https://github.com/Freeboard/thingproxy\\\" target=\\\"_blank\\\">詳細</a>",
+            "refresh": "更新頻度",
+            "refresh_suffix": "秒",
+            "method": "メソッド",
+            "body": "Body",
+            "body_desc": "リクエスト本文。通常はPOSTメソッド時に使用される。最大2000文字",
+            "headers": "Header",
+            "headers_name": "名前",
+            "headers_value": "値"
+        },
+
+        "mqtt": {
+            "title": "MQTT over Websocket",
+            "description": "<a href=\\\"http://mqtt.org/\\\", target=\\\"_blank\\\">MQTT</a>プロトコルをWebSocketを介し、MQTTブローカーサーバーからJSONデータを受信します。",
+            "hostname": "DNSホスト名",
+            "hostname_desc": "最大1000文字<br />MQTTブローカーサーバーのDNSホスト名を設定して下さい。<br />例: location.hostname",
+            "port": "ポート番号",
+            "clientID": "クライアントID",
+            "clientID_desc": "最大23文字<br />任意のクライアントID文字列",
+            "topic": "トピック",
+            "topic_desc": "最大500文字<br />購読するトピック名を設定して下さい。<br />例: my/topic",
+            "username": "(オプション) ユーザー名",
+            "username_desc": "最大100文字<br />必要ない場合は空白。",
+            "password": "(オプション) パスワード",
+            "password_desc": "最大100文字<br />必要ない場合は空白。",
+            "reconnect": "自動再接続"
+        },
+
+        "node_js": {
+            "title": "Node.js (Socket.io)",
+            "description": "<a href=\\\"http://socket.io/\\\", target=\\\"_blank\\\">Socket.io</a>を使用したnode.jsサーバーからJSONデータを受信します。",
+            "url": "URL",
+            "url_desc": "最大1000文字 (オプション) カスタム名前空間を使用する場合、URLの最後に名前空間を追加して下さい。<br />例: http://localhost/chat",
+            "events": "イベント",
+            "events_desc": "データソースへ追加するイベント名を指定して下さい。",
+            "event_name": "イベント名",
+            "rooms": "(オプション) ルーム",
+            "rooms_desc": "ルームを使用する場合, 追加したいルーム名を指定して下さい。その他の場合は空白のままにしておいて下さい。",
+            "room_name": "ルーム名",
+            "room_event": "ルームに参加するイベント名"
+        },
+
+        "owm": {
+            "title": "Open Weather Map API",
+            "description": "天候や予測履歴を含む各種気象データを受信します。",
+            "location": "場所",
+            "location_desc": "最大200文字<br>例: London, UK",
+            "units": "単位",
+            "units_metric": "メトリック",
+            "units_imperial": "インペリアル",
+            "refresh": "更新頻度",
+            "refresh_suffix": "秒"
+        },
+
+        "playback": {
+            "title": "Playback",
+            "description": "指定された間隔で連続したデータを再生します。オブジェクトの配列を含む有効なJSONファイルを受信します。",
+            "datafile": "データファイルURL",
+            "datafile_desc": "JSON配列データへのリンク",
+            "is_jsonp": "JSONP使用",
+            "loop": "ループ再生",
+            "loop_desc": "巻戻しとループ再生時終了",
             "refresh": "更新頻度",
             "refresh_suffix": "秒"
         }

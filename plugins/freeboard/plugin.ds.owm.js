@@ -77,40 +77,40 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: "openweathermap",
-		display_name: "Open Weather Map API",
-		description: "天候や予測履歴を含む各種気象データを受信します。",
+		display_name: $.i18n.t('plugins_ds.owm.title'),
+		description: $.i18n.t('plugins_ds.owm.description'),
 		settings: [
 			{
 				name: "location",
-				display_name: "場所",
+				display_name: $.i18n.t('plugins_ds.owm.location'),
 				validate: "required,maxSize[200]",
 				type: "text",
-				description: "最大200文字<br>例: London, UK"
+				description: $.i18n.t('plugins_ds.owm.location_desc')
 			},
 			{
 				name: "units",
-				display_name: "単位",
+				display_name: $.i18n.t('plugins_ds.owm.units'),
 				style: "width:200px",
 				type: "option",
 				default_value: "metric",
 				options: [
 					{
-						name: "メトリック",
+						name: $.i18n.t('plugins_ds.owm.units_metric'),
 						value: "metric"
 					},
 					{
-						name: "インペリアル",
+						name: $.i18n.t('plugins_ds.owm.units_imperial'),
 						value: "imperial"
 					}
 				]
 			},
 			{
 				name: "refresh",
-				display_name: "更新頻度",
+				display_name: $.i18n.t('plugins_ds.owm.refresh'),
 				validate: "required,custom[integer],min[5]",
 				style: "width:100px",
 				type: "number",
-				suffix: "秒",
+				suffix: $.i18n.t('plugins_ds.owm.refresh_suffix'),
 				default_value: 5
 			}
 		],
