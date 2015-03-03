@@ -24,12 +24,14 @@
         head.js("lib/js/thirdparty/knockout.js",
                 "lib/js/thirdparty/jquery.js",
                 "lib/js/thirdparty/jquery-ui.js",
+                "lib/js/thirdparty/i18next-1.7.7.min.js",
                 "lib/js/thirdparty/bowser.min.js",
                 "lib/js/thirdparty/lodash.js",
                 "lib/js/thirdparty/jquery.gridster.js",
                 "lib/js/thirdparty/jquery.caret.js",
                 "lib/js/thirdparty/jquery.xdomainrequest.js",
                 "lib/js/thirdparty/jquery.validationEngine-ja.js",
+                "lib/js/thirdparty/jquery.validationEngine-en.js",
                 "lib/js/thirdparty/jquery.validationEngine.js",
                 "lib/js/thirdparty/moment.js",
                 "lib/js/thirdparty/moment-timezone.js",
@@ -38,7 +40,6 @@
                 "lib/js/thirdparty/colpick.js",
                 "lib/js/thirdparty/webfont.js",
                 "lib/js/thirdparty/d3.v3.min.js",
-                "lib/js/thirdparty/i18next-1.7.7.min.js",
 
                 "lib/js/freeboard/FreeboardModel.js",
                 "lib/js/freeboard/DatasourceModel.js",
@@ -52,27 +53,27 @@
                 "lib/js/freeboard/DeveloperConsole.js",
                 "lib/js/freeboard/freeboard.js",
 
-                "js/locales/init.js",
-
-                "plugins/freeboard/plugin.ds.clock.js",
-                "plugins/freeboard/plugin.ds.json.js",
-                "plugins/freeboard/plugin.ds.yahoow.js",
-                "plugins/freeboard/plugin.ds.owm.js",
-                "plugins/freeboard/plugin.ds.playback.js",
-                "plugins/freeboard/plugin.ds.websocket.js",
-                "plugins/freeboard/plugin.ds.nodejs.js",
-                "plugins/freeboard/plugin.ds.mqtt.js",
-
-                "plugins/freeboard/plugin.wg.text.js",
-                "plugins/freeboard/plugin.wg.gmap.js",
-                "plugins/freeboard/plugin.wg.pointer.js",
-                "plugins/freeboard/plugin.wg.gauge.js",
-                "plugins/freeboard/plugin.wg.c3js.js",
-                "plugins/freeboard/plugin.wg.indicator.js",
-                "plugins/freeboard/plugin.wg.picture.js",
-
                 // *** Load more plugins here ***
                 function(){
+
+                    // The Firefox only load order is different measures
+                    head.js("plugins/freeboard/plugin.ds.clock.js",
+                            "plugins/freeboard/plugin.ds.json.js",
+                            "plugins/freeboard/plugin.ds.yahoow.js",
+                            "plugins/freeboard/plugin.ds.owm.js",
+                            "plugins/freeboard/plugin.ds.playback.js",
+                            "plugins/freeboard/plugin.ds.websocket.js",
+                            "plugins/freeboard/plugin.ds.nodejs.js",
+                            "plugins/freeboard/plugin.ds.mqtt.js",
+
+                            "plugins/freeboard/plugin.wg.text.js",
+                            "plugins/freeboard/plugin.wg.gmap.js",
+                            "plugins/freeboard/plugin.wg.pointer.js",
+                            "plugins/freeboard/plugin.wg.gauge.js",
+                            "plugins/freeboard/plugin.wg.c3js.js",
+                            "plugins/freeboard/plugin.wg.indicator.js",
+                            "plugins/freeboard/plugin.wg.picture.js");
+
                     $(function()
                     { //DOM Ready
                         freeboard.setAssetRoot("/freeboard-ui/");

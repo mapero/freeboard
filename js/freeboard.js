@@ -2457,7 +2457,6 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 // Jquery plugin to watch for attribute changes
 (function($)
 {
-
 	function isDOMAttrModifiedSupported() {
 		var p = document.createElement('p');
 		var flag = false;
@@ -2618,6 +2617,27 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 
 var freeboard = (function() {
 	'use strict';
+
+	// i18next initialize
+	(function() {
+		'use strict';
+
+		var lang = $.i18n.detectLanguage().split('-');
+		var path = 'js/locales/' + lang[0] + '.json';
+
+		$.i18n.debug = true;
+
+		var options = {
+			resGetPath: path,
+			lowerCaseLng: true,
+			fallbackLng: 'en',
+			getAsync: false,
+			lng: lang[0]
+		};
+		$.i18n.init(options, function(t) {
+			$('html').i18n();
+		});
+	})();
 
 	var datasourcePlugins = {};
 	var widgetPlugins = {};
@@ -2908,7 +2928,7 @@ var freeboard = (function() {
 		},
 
 		loadDatasourcePlugin: function(plugin) {
-			if (_.isUndefined(plugin.display_name))
+			if (_.isUndefined(plugin.display_name) || plugin.display_name === '')
 				plugin.display_name = plugin.type_name;
 
 			// Datasource name must be unique
@@ -2921,8 +2941,6 @@ var freeboard = (function() {
 				if (!_.isUndefined(res))
 					return options.allrules.alreadyusedname.alertText;
 			};
-
-			var tmp = $.i18n.t('dataSource.givenName');
 
 			// Add a required setting called name to the beginning
 			plugin.settings.unshift({

@@ -23,7 +23,7 @@
         "title": "Data Source",
         "givenName": "Given Name",
         "lastUpdated": "Last updated",
-        "addTo": "Add to"
+        "addTo": "Add"
     },
     "panel": {
         "title": "Pane",
@@ -65,7 +65,7 @@
     "plugins_ds": {
         "clock": {
             "title": "Clock",
-            "description": "TODO:",
+            "description": "This data source is updated at specified intervals, returns the current time in a different format.You can display a timer on the screen, the widget will be able to use in order to refresh at regular intervals.",
             "timezone": "Time Zone",
             "timezone_options": {
                 "Etc/GMT+12": "(UTC-12:00) Etc/GMT+12",
