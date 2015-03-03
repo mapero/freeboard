@@ -240,7 +240,7 @@ function DialogBox(contentElement, title, okTitle, cancelTitle, closeCallback) {
 
 	function closeModal()
 	{
-		if (bowser.msie) {
+		if (head.browser.ie) {
 			overlay.remove();
 		} else {
 			overlay.removeClass('show').addClass('hide');
@@ -286,7 +286,7 @@ function DialogBox(contentElement, title, okTitle, cancelTitle, closeCallback) {
 
 	overlay.append(modalDialog);
 	$('body').append(overlay);
-	if (!bowser.msie)
+	if (!head.browser.ie)
 		overlay.removeClass('hide').addClass('show');
 
 	// ValidationEngine initialize
@@ -534,11 +534,11 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 
 					reader.readAsText(file);
 				}
-				if (bowser.msie)
+				if (head.browser.ie)
 					$('#myfile').remove();
 			});
 
-			if (bowser.msie) {
+			if (head.browser.ie) {
 				document.body.appendChild(input);
 				var evt = document.createEvent('MouseEvents');
 				evt.initEvent('click',true,true,window,0,0,0,0,0,false,false,false,false,0,null);
@@ -556,7 +556,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 		var blob = new Blob([JSON.stringify(self.serialize())], {'type': contentType});
 		var file = 'dashboard.json';
 
-		if (bowser.msie) {
+		if (head.browser.ie) {
 			window.navigator.msSaveBlob(blob, file);
 		} else {
 			var url = (window.URL || window.webkitURL);
@@ -661,7 +661,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			$('#toggle-header-icon').addClass('fa-wrench').removeClass('fa-chevron-up');
 			$('.gridster .gs_w').css({cursor: 'default'});
 
-			if (bowser.msie) {
+			if (head.browser.ie) {
 				$('#main-header').css('top', '-' + barHeight + 'px');
 				$('#board-content').css('top', '20px');
 			} else {
@@ -677,7 +677,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			$('#toggle-header-icon').addClass('fa-chevron-up').removeClass('fa-wrench');
 			$('.gridster .gs_w').css({cursor: 'pointer'});
 
-			if (bowser.msie) {
+			if (head.browser.ie) {
 				$('#main-header').css('top', '0px');
 				$('#board-content').css('top', headerHeight + 'px');
 			} else {
@@ -738,7 +738,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			$('html').addClass('boardtools-opening');
 			$('#board-actions > ul').removeClass('collapse');
 
-			if (bowser.msie) {
+			if (head.browser.ie) {
 				mh.offset({ top: 0, left: width });
 				bc.offset({ top: mhHeight, left: width });
 			} else {
@@ -751,7 +751,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 			$('html').removeClass('boardtools-opening');
 			$('#board-actions > ul').addClass('collapse');
 
-			if (bowser.msie) {
+			if (head.browser.ie) {
 				mh.offset({ top: 0, left: 0 });
 				bc.offset({ top: mhHeight, left: 0 });
 			} else {
@@ -2839,7 +2839,7 @@ var freeboard = (function() {
 	// DOM Ready
 	$(function() {
 		// browser check
-		if (bowser.msie && bowser.version <= 9) {
+		if (head.browser.ie && head.browser.version <= 9) {
 			showNotSupport();
 			return;
 		}
