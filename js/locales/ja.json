@@ -4,7 +4,7 @@
         "load": "ロード",
         "save": "保存",
         "addPanel": "ペイン追加",
-        "dataSource": "データソース"
+        "datasource": "データソース"
     },
 
     "global": {
@@ -12,37 +12,11 @@
         "no": "いいえ"
     },
 
-    "desc": {
-        "limitChar20": "最大20文字",
-        "limitChar100": "最大100文字",
-        "limitChar500": "最大500文字",
-        "limitChar2000": "最大2000文字",
-        "limitChar5000": "最大5000文字",
-        "limitBlock10": "最大10ブロック",
-        "limitBlock20": "最大20ブロック"
-    },
-
-    "dataSource": {
+    "datasource_panel": {
         "title": "データソース",
-        "givenName": "名前",
-        "lastUpdated": "最終更新日",
-        "addTo": "追加"
-    },
-
-    "panel": {
-        "title": "ペイン",
-        "delete": {
-            "title": "削除確認",
-            "text": " を削除してもよろしいですか?"
-        },
-        "edit": {
-            "title": "タイトル",
-            "colWidth": "カラム幅"
-        }
-    },
-
-    "widget": {
-        "title": "ウィジェット"
+        "given_name": "名前",
+        "lastupdated": "最終更新日",
+        "add": "追加"
     },
 
     "JSEditor": {
@@ -59,14 +33,35 @@
     },
 
     "PluginEditor": {
-        "datasourceTool": "データソース",
-        "tableOperation": "追加",
+        "pane": {
+            "title": "ペイン",
+            "edit": {
+                "title": "タイトル",
+                "title_desc": "最大20文字",
+                "colwidth": "カラム幅",
+                "colwidth_desc": "最大10ブロック"
+            }
+        },
+        "datasource": {
+            "title": "データソース",
+            "given_name": "名前",
+            "given_name_desc": "最大20文字"
+        },
+        "widget": {
+            "title": "ウィジェット"
+        },
+        "delete": {
+            "title": "削除確認",
+            "text": " を削除してもよろしいですか?"
+        },
+        "datasource_tool": "データソース",
+        "table_operation": "追加",
         "dialog": {
             "yes": "保存",
             "no": "キャンセル"
         },
         "type": "タイプ",
-        "firstOption": "追加するタイプを選択してください。"
+        "first_option": "追加するタイプを選択してください。"
     },
 
     "plugins_wd": {
@@ -248,6 +243,74 @@
             "loop_desc": "巻戻しとループ再生時終了",
             "refresh": "更新頻度",
             "refresh_suffix": "秒"
+        },
+
+        "websocket": {
+            "title": "WebSocket",
+            "description": "WebSocket APIを使用し、JSONデータを受信します。",
+            "uri": "サーバーURI",
+            "uri_desc": "最大1000文字 例: ws://server:port/path",
+            "reconnect": "自動再接続"
+        },
+
+        "yahooweather": {
+            "title": "Yahoo Weather API",
+            "description": "<a href=\\\"https://developer.yahoo.com/weather/documentation.html\\\" target=\\\"_blank\\\">Yahoo Weather API</a>を使用し、天候や予測含む各種気象データを受信します。",
+            "location": "ロケーション郵便番号",
+            "location_desc": "最大100文字 半角英字の地名でも可",
+            "units": "単位",
+            "units_metric": "メトリック",
+            "units_imperial": "インペリアル",
+            "refresh": "更新頻度",
+            "refresh_suffix": "秒",
+            "cond_0": "竜巻",
+            "cond_1": "台風",
+            "cond_2": "ハリケーン",
+            "cond_3": "激しい雷雨",
+            "cond_4": "雷雨",
+            "cond_5": "雪混じりの雨",
+            "cond_6": "みぞれ混じりの雨",
+            "cond_7": "みぞれ混じりの雪",
+            "cond_8": "着氷性の霧雨",
+            "cond_9": "霧雨",
+            "cond_10": "着氷性の雨",
+            "cond_11": "にわか雨",
+            "cond_12": "にわか雨",
+            "cond_13": "雪の突風",
+            "cond_14": "時々雪",
+            "cond_15": "吹雪",
+            "cond_16": "雪",
+            "cond_17": "雹",
+            "cond_18": "吹雪",
+            "cond_19": "雪",
+            "cond_20": "霧",
+            "cond_21": "靄",
+            "cond_22": "埃っぽい",
+            "cond_23": "荒れ模様",
+            "cond_24": "強風",
+            "cond_25": "寒い",
+            "cond_26": "曇り",
+            "cond_27": "おおむね曇り(夜)",
+            "cond_28": "おおむね曇り(昼)",
+            "cond_29": "ところにより曇り(夜)",
+            "cond_30": "ところにより曇り(昼)",
+            "cond_31": "快晴(夜)",
+            "cond_32": "陽気な晴れ",
+            "cond_33": "晴れ(夜)",
+            "cond_34": "晴れ(昼)",
+            "cond_35": "雨と雹",
+            "cond_36": "暑い",
+            "cond_37": "局地的に雷雨",
+            "cond_38": "ところにより雷雨",
+            "cond_39": "ところにより雷雨",
+            "cond_40": "ところによりにわか雨",
+            "cond_41": "大雪",
+            "cond_42": "吹雪",
+            "cond_43": "大雪",
+            "cond_44": "ところにより曇り",
+            "cond_45": "雷雨",
+            "cond_46": "吹雪",
+            "cond_47": "ところにより雷雨"
         }
     }
 }

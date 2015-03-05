@@ -3,8 +3,8 @@
         "menu": "menu",
         "load": "LOAD",
         "save": "SAVE",
-        "addPanel": "Add Panel",
-        "dataSource": "Data Sources"
+        "add_panel": "Add Panel",
+        "datasource": "DataSources"
     },
 
     "global": {
@@ -12,37 +12,11 @@
         "no": "No"
     },
 
-    "desc": {
-        "limitChar20": "A maximum of 20 characters",
-        "limitChar100": "A maximum of 100 characters",
-        "limitChar500": "A maximum of 500 characters",
-        "limitChar2000": "A maximum of 2000 characters",
-        "limitChar5000": "A maximum of 5000 characters",
-        "limitBlock10": "Up to 10 block",
-        "limitBlock20": "Up to 20 block"
-    },
-
-    "dataSource": {
-        "title": "Data Source",
-        "givenName": "Given Name",
-        "lastUpdated": "Last updated",
-        "addTo": "Add"
-    },
-
-    "panel": {
-        "title": "Pane",
-        "delete": {
-            "title": "Delete confirmation",
-            "text": "Are you sure you want to delete"
-        },
-        "edit": {
-            "title": "Title",
-            "colWidth": "Column width"
-        }
-    },
-
-    "widget": {
-        "title": "Widget"
+    "datasource_panel": {
+        "title": "DataSources",
+        "given_name": "Given Name",
+        "lastupdated": "Last updated",
+        "add": "Add"
     },
 
     "JSEditor": {
@@ -58,14 +32,35 @@
     },
 
     "PluginEditor": {
-        "datasourceTool": "DataSource",
-        "tableOperation": "Add",
+        "pane": {
+            "title": "Pane",
+            "edit": {
+                "title": "Title",
+                "title_desc": "A maximum of 20 characters",
+                "colwidth": "Column width",
+                "colwidth_desc": "Up to 10 block"
+            }
+        },
+        "datasource": {
+            "title": "DataSource",
+            "given_name": "Given Name",
+            "given_name_desc": "A maximum of 20 characters"
+        },
+        "widget": {
+            "title": "Widget"
+        },
+        "delete": {
+            "title": "Delete confirmation",
+            "text": "Are you sure you want to delete"
+        },
+        "datasource_tool": "DataSource",
+        "table_operation": "Add",
         "dialog": {
             "yes": "Save",
             "no": "Cancel"
         },
         "type": "Type",
-        "firstOption": "Please select the type"
+        "first_option": "Please select the type"
     },
 
     "plugins_wd": {
@@ -247,6 +242,74 @@
             "loop_desc": "Rewind and loop when finished",
             "refresh": "Refresh Every",
             "refresh_suffix": "seconds"
+        },
+
+        "websocket": {
+            "title": "WebSocket",
+            "description": "This datasources will receive a JSON data by using the WebSocket API.",
+            "uri": "URI",
+            "uri_desc": "A maximum of 1000 characters ex: ws://server:port/path",
+            "reconnect": "Automatic Reconnection"
+        },
+
+        "yahooweather": {
+            "title": "Yahoo Weather API",
+            "description": "This datasources will receive a JSON data by using the <a href=\\\"https://developer.yahoo.com/weather/documentation.html\\\" target=\\\"_blank\\\">Yahoo Weather API</a>.",
+            "location": "Location",
+            "location_desc": "A maximum of 100 characters And also acceptable place name",
+            "units": "Units",
+            "units_metric": "Metric",
+            "units_imperial": "Imperial",
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds",
+            "cond_0": "tornado",
+            "cond_1": "tropical storm",
+            "cond_2": "hurricane",
+            "cond_3": "severe thunderstorms",
+            "cond_4": "thunderstorms",
+            "cond_5": "mixed rain and snow",
+            "cond_6": "mixed rain and sleet",
+            "cond_7": "mixed snow and sleet",
+            "cond_8": "freezing drizzle",
+            "cond_9": "drizzle",
+            "cond_10": "freezing rain",
+            "cond_11": "showers",
+            "cond_12": "showers",
+            "cond_13": "snow flurries",
+            "cond_14": "light snow showers",
+            "cond_15": "blowing snow",
+            "cond_16": "snow",
+            "cond_17": "hail",
+            "cond_18": "sleet",
+            "cond_19": "dust",
+            "cond_20": "foggy",
+            "cond_21": "haze",
+            "cond_22": "smoky",
+            "cond_23": "blustery",
+            "cond_24": "windy",
+            "cond_25": "cold",
+            "cond_26": "cloudy",
+            "cond_27": "mostly cloudy (night)",
+            "cond_28": "mostly cloudy (day)",
+            "cond_29": "partly cloudy (night)",
+            "cond_30": "partly cloudy (day)",
+            "cond_31": "clear (night)",
+            "cond_32": "sunny",
+            "cond_33": "fair (night)",
+            "cond_34": "fair (day)",
+            "cond_35": "mixed rain and hail",
+            "cond_36": "hot",
+            "cond_37": "isolated thunderstorms",
+            "cond_38": "scattered thunderstorms",
+            "cond_39": "scattered thunderstorms",
+            "cond_40": "scattered showers",
+            "cond_41": "heavy snow",
+            "cond_42": "scattered snow showers",
+            "cond_43": "heavy snow",
+            "cond_44": "heavy snow",
+            "cond_45": "scattered snow showers",
+            "cond_46": "heavy snow",
+            "cond_47": "isolated thundershowers"
         }
     }
 }

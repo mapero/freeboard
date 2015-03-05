@@ -57,7 +57,7 @@
             <div id="board-configs">
                 <div id="board-actions-right">
                     <ul class="board-toolbar collapse">
-                        <li id="toggle-datasources" data-bind="click: toggleDatasources"><i class="fa-w fa-globe"></i><label data-i18n="menu.dataSource">Data source</label></li>
+                        <li id="toggle-datasources" data-bind="click: toggleDatasources"><i class="fa-w fa-globe"></i><label data-i18n="menu.datasource">Datasource</label></li>
                     </ul>
                 </div>
             </div>
@@ -88,7 +88,7 @@
 
 <div id="datasources" class="datasource-container" data-bind="if:allow_edit">
     <div class="datasource-container-header">
-        <h2 class="datasource-container-header title" data-i18n="dataSource.title">Data source</h2>
+        <h2 class="datasource-container-header title" data-i18n="datasource_panel.title">Datasources</h2>
         <div>
             <ul class="board-toolbar collapse">
                 <li data-bind="click: toggleDatasources"><i class="fa-w fa-remove"></i></li>
@@ -99,8 +99,8 @@
         <table class="table table-condensed sub-table" id="datasources-list" data-bind="if: datasources().length">
             <thead>
             <tr>
-                <th data-i18n="dataSource.givenName">Given Name</th>
-                <th data-i18n="dataSource.lastUpdated">Last updated</th>
+                <th data-i18n="datasource_panel.given_name">Given Name</th>
+                <th data-i18n="datasource_panel.lastupdated">Last updated</th>
                 <th class="toolbar">&nbsp;</th>
             </tr>
             </thead>
@@ -123,7 +123,7 @@
     </div>
     <div class="datasource-toolbar">
         <ul class="board-toolbar collapse">
-            <li data-bind="pluginEditor: {operation: 'add', type: 'datasource'}"><i class="fa-w fa-plus"></i><label data-i18n="dataSource.addTo">Add to</label></li>
+            <li data-bind="pluginEditor: {operation: 'add', type: 'datasource'}"><i class="fa-w fa-plus"></i><label data-i18n="datasource_panel.add">Add</label></li>
         </ul>
     </div>
 </div>
