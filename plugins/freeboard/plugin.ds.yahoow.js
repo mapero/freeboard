@@ -137,7 +137,7 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'yahooweather',
-		display_name: $.i18n.t('plugins_ds.yahooweather.title'),
+		display_name: $.i18n.t('plugins_ds.yahooweather.display_name'),
 		description: $.i18n.t('plugins_ds.yahooweather.description'),
 		settings: [
 			{

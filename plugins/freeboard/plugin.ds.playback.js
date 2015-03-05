@@ -81,7 +81,7 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'playback',
-		display_name: $.i18n.t('plugins_ds.playback.title'),
+		display_name: $.i18n.t('plugins_ds.playback.display_name'),
 		description: $.i18n.t('plugins_ds.playback.description'),
 		settings: [
 			{

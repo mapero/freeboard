@@ -77,7 +77,7 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: "openweathermap",
-		display_name: $.i18n.t('plugins_ds.owm.title'),
+		display_name: $.i18n.t('plugins_ds.owm.display_name'),
 		description: $.i18n.t('plugins_ds.owm.description'),
 		settings: [
 			{

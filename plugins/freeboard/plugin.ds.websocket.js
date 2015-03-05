@@ -80,7 +80,7 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'websocket',
-		display_name: $.i18n.t('plugins_ds.websocket.title'),
+		display_name: $.i18n.t('plugins_ds.websocket.display_name'),
 		description: $.i18n.t('plugins_ds.websocket.description'),
 		settings: [
 			{

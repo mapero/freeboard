@@ -102,7 +102,7 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name : 'mqtt',
-		display_name : $.i18n.t('plugins_ds.mqtt.title'),
+		display_name : $.i18n.t('plugins_ds.mqtt.display_name'),
 		description : $.i18n.t('plugins_ds.mqtt.description'),
 		external_scripts : [ 'plugins/thirdparty/mqttws31.min.js' ],
 		settings : [

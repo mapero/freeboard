@@ -107,7 +107,7 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'JSON',
-		display_name: $.i18n.t('plugins_ds.json.title'),
+		display_name: $.i18n.t('plugins_ds.json.display_name'),
 		description: $.i18n.t('plugins_ds.json.description'),
 		settings: [
 			{

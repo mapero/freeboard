@@ -153,36 +153,36 @@
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'google_map',
-		display_name: 'Google Map',
-		description: 'GoogleMapを表示するウィジェットです。緯度経度に値を設定するとその周辺の地図が表示されます。',
+		display_name: $.i18n.t('plugins_wd.gmap.display_name'),
+		description: $.i18n.t('plugins_wd.gmap.description'),
 		fill_size: true,
 		settings: [
 			{
 				name: 'blocks',
-				display_name: '高さ (ブロック数)',
+				display_name: $.i18n.t('plugins_wd.gmap.blocks'),
 				validate: 'required,custom[integer],min[4],max[20]',
 				type: 'number',
 				style: 'width:100px',
 				default_value: 4,
-				description: '1ブロック60ピクセル。20ブロックまで'
+				description: $.i18n.t('plugins_wd.gmap.blocks_desc')
 			},
 			{
 				name: 'lat',
-				display_name: '緯度',
+				display_name: $.i18n.t('plugins_wd.gmap.lat'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.gmap.lat_desc')
 			},
 			{
 				name: 'lon',
-				display_name: '経度',
+				display_name: $.i18n.t('plugins_wd.gmap.lon'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.gmap.lon_desc')
 			},
 			{
 				name: 'drawpath',
-				display_name: '移動経路の表示',
+				display_name: $.i18n.t('plugins_wd.gmap.drawpath'),
 				type: 'boolean',
 				default_value: false
 			}

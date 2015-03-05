@@ -58,7 +58,7 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'clock',
-		display_name: $.i18n.t('plugins_ds.clock.title'),
+		display_name: $.i18n.t('plugins_ds.clock.display_name'),
 		description: $.i18n.t('plugins_ds.clock.description'),
 		settings: [
 			{

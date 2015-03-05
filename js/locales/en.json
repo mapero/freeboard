@@ -15,7 +15,7 @@
     "datasource_panel": {
         "title": "DataSources",
         "given_name": "Given Name",
-        "lastupdated": "Last updated",
+        "lastupdated": "Last Updated",
         "add": "Add"
     },
 
@@ -26,7 +26,8 @@
         },
         "json": {
             "exampleText": "// Example: {title '\n //' value ': 10 \n} ';",
-            "codeWindowHeader": " Among the string enclosed in use the appropriate escape sequence. <br> example: 'function (label, series) {return (\\\" ID: \\\"+ label);}'"
+            "codeWindowHeader": " Among the string enclosed in use the appropriate escape sequence. <br> example: 'function (label, series) {return (\" ID: \"+ label);}'",
+            "error": "Please correct the json error."
         },
         "cancel": "Close"
     },
@@ -37,7 +38,7 @@
             "edit": {
                 "title": "Title",
                 "title_desc": "A maximum of 20 characters",
-                "colwidth": "Column width",
+                "colwidth": "Column Width",
                 "colwidth_desc": "Up to 10 block"
             }
         },
@@ -64,11 +65,159 @@
     },
 
     "plugins_wd": {
+        "text": {
+            "display_name": "Text",
+            "description": "This is a widget that can display text and sparkline chart.",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "size": "TextSize",
+            "size_options": {
+                "reqular": "Regular",
+                "big": "Big"
+            },
+            "value": "Value",
+            "value_desc": "A maximum of 2000 characters",
+            "decimal": "Decimal",
+            "comma": "Comma",
+            "metric_prefix": "Metric Prefix",
+            "metric_prefix_desc": "A metric prefix is a unit prefix that precedes a basic unit of measure to indicate a decadic multiple or fraction of the unit. Each prefix has a unique symbol that is prepended to the unit symbol.",
+            "units": "Units",
+            "units_desc": "A maximum of 20 characters",
+            "animate": "Animate Value Changes",
+            "chart": "Include Sparkline",
+            "chart_type": "Chart Type",
+            "chart_type_options": {
+                "line": "Line",
+                "area": "Area"
+            },
+            "chart_color": "Chart Color",
+            "chart_color_desc": "Default: #ff9900",
+            "chart_minmax_color": "MinMax Spot Color",
+            "chart_minmax_color_desc": "Default: #0496ff"
+        },
+
+        "pointer": {
+            "display_name": "Pointer",
+            "description": "This is a widget that displays the direction and value.",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "blocks": "Height",
+            "blocks_desc": "Number of blocks. 1 block 60 pixels. 10 to block.",
+            "direction": "Direction",
+            "direction_desc": "A maximum of 2000 characters<br />Please enter the angle.",
+            "value_text": "Value Text",
+            "value_text_desc": "A maximum of 2000 characters",
+            "units": "Units",
+            "units_desc": "A maximum of 20 characters",
+            "circle_color": "Circle color",
+            "circle_color_desc": "Default: #ff9900",
+            "pointer_color": "Pointer color",
+            "pointer_color_desc": "Default: #fff"
+        },
+
+        "picture": {
+            "display_name": "Picture",
+            "description": "This is a widget that displays the image. It is used to be used to display an image, such as a Web camera.",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "blocks": "Height",
+            "blocks_desc": "Number of blocks. 1 block 60 pixels. 20 to block.",
+            "src": "Image URL",
+            "src_desc": "A maximum of 2000 characters",
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds",
+            "refresh_desc": "Leave blank if the image doesn't need to be refreshed."
+        },
+
+        "indicator": {
+            "display_name": "Indicator Light",
+            "description": "This widget is lit under the conditions of the specified value. 1 is turned on, should the value is set to 0 to OFF.",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "value": "Value",
+            "value_desc": "A maximum of 2000 characters",
+            "on_text": "On Text",
+            "on_text_desc": "A maximum of 500 characters",
+            "off_text": "Off Text",
+            "off_text_desc": "A maximum of 500 characters"
+        },
+
+        "gmap": {
+            "display_name": "Google Map",
+            "description": "This widget displays a GoogleMap. When the value is set to latitude longitude map of its surroundings will be displayed.",
+            "blocks": "Height",
+            "blocks_desc": "Number of blocks. 1 block 60 pixels. 20 to block.",
+            "lat": "Latitude",
+            "lat_desc": "A maximum of 2000 characters",
+            "lon": "Longitude",
+            "lon_desc": "A maximum of 2000 characters",
+            "drawpath": "Draw path"
+        },
+
+        "gauge": {
+            "display_name": "Gauge",
+            "description": "This widget displays a gauge.",
+            "blocks": "Height",
+            "blocks_desc": "Number of blocks. 1 block 60 pixels. 20 to block.",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "type": "Type",
+            "type_options": {
+                "half": "Half",
+                "quarter-left-top": "Quarter Left Top",
+                "quarter-right-top": "Quarter Right Top",
+                "quarter-left-bottom": "Quarter Left Bottom",
+                "quarter-right-bottom": "Quarter Right Bottom",
+                "threequarter-left-top": "ThreeQuarter Left Top",
+                "threequarter-right-top": "ThreeQuarter Right Top",
+                "threequarter-left-bottom": "ThreeQuarter Left Bottom",
+                "threequarter-right-bottom": "ThreeQuarter Right Bottom",
+                "threequarter-bottom": "ThreeQuarter Bottom",
+                "donut": "Donut"
+            },
+            "value": "Value",
+            "value_desc": "A maximum of 2000 characters",
+            "decimal": "Decimal",
+            "comma": "Comma",
+            "metric_prefix": "Metric Prefix",
+            "metric_prefix_desc": "A metric prefix is a unit prefix that precedes a basic unit of measure to indicate a decadic multiple or fraction of the unit. Each prefix has a unique symbol that is prepended to the unit symbol.",
+            "animate": "Animate Value Changes",
+            "units": "Units",
+            "units_desc": "A maximum of 20 characters",
+            "value_fontcolor": "Value FontColor",
+            "value_fontcolor_desc": "Default: #d3d4d4",
+            "gauge_upper_color": "Upper GaugeColor",
+            "gauge_upper_color_desc": "Default: #ff0000",
+            "gauge_mid_color": "Mid GaugeColor",
+            "gauge_mid_color_desc": "Default: #f9c802",
+            "gauge_lower_color": "Lower GaugeColor",
+            "gauge_lower_color_desc": "Default: #a9d70b",
+            "gauge_color": "Gauge BackgroundColor",
+            "gauge_color_desc": "Default: #edebeb",
+            "gauge_width": "Gauge Width",
+            "gauge_width_desc": "Between 0-100",
+            "show_minmax": "Show MinMax Value",
+            "min_value": "Min Value",
+            "max_value": "Max Value",
+            "max_value_desc": "Minimum value or more."
+        },
+
+        "c3js": {
+            "display_name": "C3 Chart",
+            "description": "This widget will display a variety of formats chart. For more information <a href=\"http://c3js.org/\" target=\"_blank\">http://c3js.org/</a>",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "blocks": "Height",
+            "blocks_desc": "Number of blocks. 1 block 60 pixels. 20 to block.",
+            "options": "Chart Options",
+            "options_desc": "A maximum of 5000 characters. JSON format string.",
+            "options_invalid": "Invalid chart options."
+        }
     },
 
     "plugins_ds": {
         "clock": {
-            "title": "Clock",
+            "display_name": "Clock",
             "description": "This data source is updated at specified intervals, returns the current time in a different format.You can display a timer on the screen, the widget will be able to use in order to refresh at regular intervals.",
             "timezone": "Time Zone",
             "timezone_options": {
@@ -174,11 +323,11 @@
         },
 
         "json": {
-            "title": "JSON",
+            "display_name": "JSON",
             "description": "This datasource will receive the JSON data from the specified URL.",
             "url": "URL",
             "use_thingproxy": "Try thingproxy",
-            "use_thingproxy_desc": "A direct JSON connection will be tried first, if that fails, a JSONP connection will be tried. If that fails, you can use thingproxy, which can solve many connection problems to APIs. <a href=\\\"https://github.com/Freeboard/thingproxy\\\" target=\\\"_blank\\\">More information</a>.",
+            "use_thingproxy_desc": "A direct JSON connection will be tried first, if that fails, a JSONP connection will be tried. If that fails, you can use thingproxy, which can solve many connection problems to APIs. <a href=\"https://github.com/Freeboard/thingproxy\" target=\"_blank\">More information</a>.",
             "refresh": "Refresh Every",
             "refresh_suffix": "seconds",
             "method": "Method",
@@ -190,8 +339,8 @@
         },
 
         "mqtt": {
-            "title": "MQTT over Websocket",
-            "description": "The <a href=\\\" http://mqtt.org/\\\", target=\\\"_blank\\\">MQTT</a> protocol through the WebSocket, you will receive a JSON data from MQTT broker server.",
+            "display_name": "MQTT over Websocket",
+            "description": "The <a href=\" http://mqtt.org/\", target=\"_blank\">MQTT</a> protocol through the WebSocket, you will receive a JSON data from MQTT broker server.",
             "hostname": "Hostname",
             "hostname_desc": "A maximum of 1000 characters<br />Set the hostname of the MQTT broker server.<br />ex: location.hostname",
             "port": "Port Number",
@@ -207,8 +356,8 @@
         },
 
         "node_js": {
-            "title": "Node.js (Socket.io)",
-            "description": "This datasource will receive the JSON data from node.js (<a href=\\\"http://socket.io/\\\", target=\\\"_blank\\\">Socket.io</a>) server.",
+            "display_name": "Node.js (Socket.io)",
+            "description": "This datasource will receive the JSON data from node.js (<a href=\"http://socket.io/\", target=\"_blank\">Socket.io</a>) server.",
             "url": "URL",
             "url_desc": "A maximum of 1000 characters (optional) If you use a custom namespace, add the last name space of URL.<br />ex: http://localhost/chat",
             "events": "Events",
@@ -221,7 +370,7 @@
         },
 
         "owm": {
-            "title": "Open Weather Map API",
+            "display_name": "Open Weather Map API",
             "description": "This datasource will receive a variety of weather data, including the weather and forecasts history.",
             "location": "Location",
             "location_desc": "A maximum of 200 characters<br />ex: London, UK",
@@ -233,7 +382,7 @@
         },
 
         "playback": {
-            "title": "Playback",
+            "display_name": "Playback",
             "description": "Play the continuous data at a specified interval. It will receive a valid JSON file that contains an array of objects.",
             "datafile": "Data File URL",
             "datafile_desc": "A link to a JSON array of data.",
@@ -245,7 +394,7 @@
         },
 
         "websocket": {
-            "title": "WebSocket",
+            "display_name": "WebSocket",
             "description": "This datasources will receive a JSON data by using the WebSocket API.",
             "uri": "URI",
             "uri_desc": "A maximum of 1000 characters ex: ws://server:port/path",
@@ -253,63 +402,63 @@
         },
 
         "yahooweather": {
-            "title": "Yahoo Weather API",
-            "description": "This datasources will receive a JSON data by using the <a href=\\\"https://developer.yahoo.com/weather/documentation.html\\\" target=\\\"_blank\\\">Yahoo Weather API</a>.",
-            "location": "Location",
+            "display_name": "Yahoo Weather API",
+            "description": "This datasources will receive a JSON data by using the <a href=\"https://developer.yahoo.com/weather/documentation.html\" target=\"_blank\">Yahoo Weather API</a>.",
+            "location": "Location ZipCode",
             "location_desc": "A maximum of 100 characters And also acceptable place name",
             "units": "Units",
             "units_metric": "Metric",
             "units_imperial": "Imperial",
             "refresh": "Refresh Every",
             "refresh_suffix": "seconds",
-            "cond_0": "tornado",
-            "cond_1": "tropical storm",
-            "cond_2": "hurricane",
-            "cond_3": "severe thunderstorms",
-            "cond_4": "thunderstorms",
-            "cond_5": "mixed rain and snow",
-            "cond_6": "mixed rain and sleet",
-            "cond_7": "mixed snow and sleet",
-            "cond_8": "freezing drizzle",
-            "cond_9": "drizzle",
-            "cond_10": "freezing rain",
-            "cond_11": "showers",
-            "cond_12": "showers",
-            "cond_13": "snow flurries",
-            "cond_14": "light snow showers",
-            "cond_15": "blowing snow",
-            "cond_16": "snow",
-            "cond_17": "hail",
-            "cond_18": "sleet",
-            "cond_19": "dust",
-            "cond_20": "foggy",
-            "cond_21": "haze",
-            "cond_22": "smoky",
-            "cond_23": "blustery",
-            "cond_24": "windy",
-            "cond_25": "cold",
-            "cond_26": "cloudy",
-            "cond_27": "mostly cloudy (night)",
-            "cond_28": "mostly cloudy (day)",
-            "cond_29": "partly cloudy (night)",
-            "cond_30": "partly cloudy (day)",
-            "cond_31": "clear (night)",
-            "cond_32": "sunny",
-            "cond_33": "fair (night)",
-            "cond_34": "fair (day)",
-            "cond_35": "mixed rain and hail",
-            "cond_36": "hot",
-            "cond_37": "isolated thunderstorms",
-            "cond_38": "scattered thunderstorms",
-            "cond_39": "scattered thunderstorms",
-            "cond_40": "scattered showers",
-            "cond_41": "heavy snow",
-            "cond_42": "scattered snow showers",
-            "cond_43": "heavy snow",
-            "cond_44": "heavy snow",
-            "cond_45": "scattered snow showers",
-            "cond_46": "heavy snow",
-            "cond_47": "isolated thundershowers"
+            "cond_0": "Tornado",
+            "cond_1": "Tropical storm",
+            "cond_2": "Hurricane",
+            "cond_3": "Severe thunderstorms",
+            "cond_4": "Thunderstorms",
+            "cond_5": "Mixed rain and snow",
+            "cond_6": "Mixed rain and sleet",
+            "cond_7": "Mixed snow and sleet",
+            "cond_8": "Freezing drizzle",
+            "cond_9": "Drizzle",
+            "cond_10": "Freezing rain",
+            "cond_11": "Showers",
+            "cond_12": "Showers",
+            "cond_13": "Snow flurries",
+            "cond_14": "Light snow showers",
+            "cond_15": "Blowing snow",
+            "cond_16": "Snow",
+            "cond_17": "Hail",
+            "cond_18": "Sleet",
+            "cond_19": "Dust",
+            "cond_20": "Foggy",
+            "cond_21": "Haze",
+            "cond_22": "Smoky",
+            "cond_23": "Blustery",
+            "cond_24": "Windy",
+            "cond_25": "Cold",
+            "cond_26": "Cloudy",
+            "cond_27": "Mostly cloudy (night)",
+            "cond_28": "Mostly cloudy (day)",
+            "cond_29": "Partly cloudy (night)",
+            "cond_30": "Partly cloudy (day)",
+            "cond_31": "Clear (night)",
+            "cond_32": "Sunny",
+            "cond_33": "Fair (night)",
+            "cond_34": "Fair (day)",
+            "cond_35": "Mixed rain and hail",
+            "cond_36": "Hot",
+            "cond_37": "Isolated thunderstorms",
+            "cond_38": "Scattered thunderstorms",
+            "cond_39": "Scattered thunderstorms",
+            "cond_40": "Scattered showers",
+            "cond_41": "Heavy snow",
+            "cond_42": "Scattered snow showers",
+            "cond_43": "Heavy snow",
+            "cond_44": "Heavy snow",
+            "cond_45": "Scattered snow showers",
+            "cond_46": "Heavy snow",
+            "cond_47": "Isolated thundershowers"
         }
     }
 }

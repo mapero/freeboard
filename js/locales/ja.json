@@ -27,7 +27,8 @@
         },
         "json": {
             "exampleText": "// 例: {\n//    \"title\": \"タイトル\"\\n\/\/    \"value\": 10\n}",
-            "codeWindowHeader": "<span class=\"cm-keyword\">JSON</span>形式のデータを入力して下さい。"
+            "codeWindowHeader": "<span class=\"cm-keyword\">JSON</span>形式のデータを入力して下さい。",
+            "error": "JSONエラーを修正してください。"
         },
         "cancel": "閉じる"
     },
@@ -65,11 +66,159 @@
     },
 
     "plugins_wd": {
+        "text": {
+            "display_name": "テキスト",
+            "description": "テキストと簡易チャートが表示できるウィジェットです。",
+            "title": "タイトル",
+            "title_desc": "最大100文字",
+            "size": "テキストサイズ",
+            "size_options": {
+                "reqular": "レギュラー",
+                "big": "ビッグ"
+            },
+            "value": "値",
+            "value_desc": "最大2000文字",
+            "decimal": "表示小数点以下桁数",
+            "comma": "カンマ表示",
+            "metric_prefix": "国際単位系表示",
+            "metric_prefix_desc": "1000なら1Kのように値を短縮します。",
+            "units": "単位",
+            "units_desc": "最大20文字",
+            "animate": "値変化アニメーション",
+            "chart": "簡易チャートを含む",
+            "chart_type": "チャートタイプ",
+            "chart_type_options": {
+                "line": "ライン",
+                "area": "エリア"
+            },
+            "chart_color": "チャート色",
+            "chart_color_desc": "デフォルト色: #ff9900",
+            "chart_minmax_color": "チャート最大最小値色",
+            "chart_minmax_color_desc": "デフォルト色: #0496ff"
+        },
+
+        "pointer": {
+            "display_name": "ポインタ",
+            "description": "方角と値を表示するウィジェットです。",
+            "title": "タイトル",
+            "title_desc": "最大100文字",
+            "blocks": "高さ (ブロック数)",
+            "blocks_desc": "1ブロック60ピクセル。10ブロックまで",
+            "direction": "方向",
+            "direction_desc": "最大2000文字<br />角度を入力して下さい。",
+            "value_text": "値テキスト",
+            "value_text_desc": "最大2000文字",
+            "units": "単位",
+            "units_desc": "最大20文字",
+            "circle_color": "サークル色",
+            "circle_color_desc": "デフォルト色: #ff9900",
+            "pointer_color": "ポインタ色",
+            "pointer_color_desc": "デフォルト色: #fff"
+        },
+
+        "picture": {
+            "display_name": "画像",
+            "description": "画像を表示するウィジェットです。Webカメラなどの映像を表示する事に使用します。",
+            "title": "タイトル",
+            "title_desc": "最大100文字",
+            "blocks": "高さ (ブロック数)",
+            "blocks_desc": "1ブロック60ピクセル。20ブロックまで",
+            "src": "画像URL",
+            "src_desc": "最大2000文字",
+            "refresh": "更新頻度",
+            "refresh_suffix": "秒",
+            "refresh_desc": "更新する必要がない場合は空白のまま"
+        },
+
+        "indicator": {
+            "display_name": "インジケーターライト",
+            "description": "指定した値の条件でライトが点灯するウィジェットです。ONにするには 1 を、OFFにするには 0 を値に設定して下さい。",
+            "title": "タイトル",
+            "title_desc": "最大100文字",
+            "value": "値",
+            "value_desc": "最大2000文字",
+            "on_text": "ON時テキスト",
+            "on_text_desc": "最大500文字",
+            "off_text": "OFF時テキスト",
+            "off_text_desc": "最大500文字"
+        },
+
+        "gmap": {
+            "display_name": "Google Map",
+            "description": "GoogleMapを表示するウィジェットです。緯度経度に値を設定するとその周辺の地図が表示されます。",
+            "blocks": "高さ (ブロック数)",
+            "blocks_desc": "1ブロック60ピクセル。20ブロックまで",
+            "lat": "緯度",
+            "lat_desc": "最大2000文字",
+            "lon": "経度",
+            "lon_desc": "最大2000文字",
+            "drawpath": "移動経路の表示"
+        },
+
+        "gauge": {
+            "display_name": "ゲージ",
+            "description": "ゲージを表示するウィジェットです。",
+            "title": "タイトル",
+            "title_desc": "最大100文字",
+            "blocks": "高さ (ブロック数)",
+            "blocks_desc": "1ブロック60ピクセル。20ブロックまで",
+            "type": "型",
+            "type_options": {
+                "half": "ハーフ",
+                "quarter-left-top": "クオーター 左上",
+                "quarter-right-top": "クオーター 右上",
+                "quarter-left-bottom": "クオーター 左下",
+                "quarter-right-bottom": "クオーター 右下",
+                "threequarter-left-top": "スリークオーター 左上",
+                "threequarter-right-top": "スリークオーター 右上",
+                "threequarter-left-bottom": "スリークオーター 左下",
+                "threequarter-right-bottom": "スリークオーター 右下",
+                "threequarter-bottom": "スリークオーター 下",
+                "donut": "ドーナッツ"
+            },
+            "value": "値",
+            "value_desc": "最大2000文字",
+            "decimal": "表示小数点以下桁数",
+            "comma": "カンマ表示",
+            "metric_prefix": "国際単位系表示",
+            "metric_prefix_desc": "1000なら1Kのように値を短縮します。",
+            "animate": "値変化アニメーション",
+            "units": "単位",
+            "units_desc": "最大20文字",
+            "value_fontcolor": "値フォント色",
+            "value_fontcolor_desc": "デフォルト色: #d3d4d4",
+            "gauge_upper_color": "ゲージ色 Upper",
+            "gauge_upper_color_desc": "デフォルト色: #ff0000",
+            "gauge_mid_color": "ゲージ色 Mid",
+            "gauge_mid_color_desc": "デフォルト色: #f9c802",
+            "gauge_lower_color": "ゲージ色 Lower",
+            "gauge_lower_color_desc": "デフォルト色: #a9d70b",
+            "gauge_color": "ゲージ背景色",
+            "gauge_color_desc": "デフォルト色: #edebeb",
+            "gauge_width": "ゲージ太さ",
+            "gauge_width_desc": "0から100まで",
+            "show_minmax": "最小最大値表示",
+            "min_value": "最小値",
+            "max_value": "最大値",
+            "max_value_desc": "最小値以上"
+        },
+
+        "c3js": {
+            "display_name": "C3チャート",
+            "description": "様々な形式のチャートを表示するウィジェットです。詳細は <a href=\"http://c3js.org/\" target=\"_blank\">http://c3js.org/</a>",
+            "title": "タイトル",
+            "title_desc": "最大100文字",
+            "blocks": "高さ (ブロック数)",
+            "blocks_desc": "1ブロック60ピクセル。20ブロックまで",
+            "options": "チャートオプション",
+            "options_desc": "最大5000文字 JSON形式文字列。",
+            "options_invalid": "チャートオプションが不正です。"
+        }
     },
 
     "plugins_ds": {
         "clock": {
-            "title": "時計",
+            "display_name": "時計",
             "description": "指定の間隔で更新され、異なるフォーマットで現在の時刻を返します。画面上にタイマーを表示したり、ウィジェットが一定の間隔でリフレッシュさせるために使用することができます。",
             "timezone": "タイムゾーン",
             "timezone_options": {
@@ -175,11 +324,11 @@
         },
 
         "json": {
-            "title": "JSON",
+            "display_name": "JSON",
             "description": "指定のURLからJSONデータを受信します。",
             "url": "URL",
             "use_thingproxy": "プロキシサーバー試行",
-            "use_thingproxy_desc": "まず直接接続し、失敗した場合、JSONP接続を試みます。これも失敗した場合、プロキシサーバーを使用することができます。使用することで多くのAPI接続トラブルを解決できるでしょう。<a href=\\\"https://github.com/Freeboard/thingproxy\\\" target=\\\"_blank\\\">詳細</a>",
+            "use_thingproxy_desc": "まず直接接続し、失敗した場合、JSONP接続を試みます。これも失敗した場合、プロキシサーバーを使用することができます。使用することで多くのAPI接続トラブルを解決できるでしょう。<a href=\"https://github.com/Freeboard/thingproxy\" target=\"_blank\">詳細</a>",
             "refresh": "更新頻度",
             "refresh_suffix": "秒",
             "method": "メソッド",
@@ -191,8 +340,8 @@
         },
 
         "mqtt": {
-            "title": "MQTT over Websocket",
-            "description": "<a href=\\\"http://mqtt.org/\\\", target=\\\"_blank\\\">MQTT</a>プロトコルをWebSocketを介し、MQTTブローカーサーバーからJSONデータを受信します。",
+            "display_name": "MQTT over Websocket",
+            "description": "<a href=\"http://mqtt.org/\", target=\"_blank\">MQTT</a>プロトコルをWebSocketを介し、MQTTブローカーサーバーからJSONデータを受信します。",
             "hostname": "DNSホスト名",
             "hostname_desc": "最大1000文字<br />MQTTブローカーサーバーのDNSホスト名を設定して下さい。<br />例: location.hostname",
             "port": "ポート番号",
@@ -208,8 +357,8 @@
         },
 
         "node_js": {
-            "title": "Node.js (Socket.io)",
-            "description": "<a href=\\\"http://socket.io/\\\", target=\\\"_blank\\\">Socket.io</a>を使用したnode.jsサーバーからJSONデータを受信します。",
+            "display_name": "Node.js (Socket.io)",
+            "description": "<a href=\"http://socket.io/\", target=\"_blank\">Socket.io</a>を使用したnode.jsサーバーからJSONデータを受信します。",
             "url": "URL",
             "url_desc": "最大1000文字 (オプション) カスタム名前空間を使用する場合、URLの最後に名前空間を追加して下さい。<br />例: http://localhost/chat",
             "events": "イベント",
@@ -222,7 +371,7 @@
         },
 
         "owm": {
-            "title": "Open Weather Map API",
+            "display_name": "Open Weather Map API",
             "description": "天候や予測履歴を含む各種気象データを受信します。",
             "location": "場所",
             "location_desc": "最大200文字<br>例: London, UK",
@@ -234,7 +383,7 @@
         },
 
         "playback": {
-            "title": "Playback",
+            "display_name": "Playback",
             "description": "指定された間隔で連続したデータを再生します。オブジェクトの配列を含む有効なJSONファイルを受信します。",
             "datafile": "データファイルURL",
             "datafile_desc": "JSON配列データへのリンク",
@@ -246,7 +395,7 @@
         },
 
         "websocket": {
-            "title": "WebSocket",
+            "display_name": "WebSocket",
             "description": "WebSocket APIを使用し、JSONデータを受信します。",
             "uri": "サーバーURI",
             "uri_desc": "最大1000文字 例: ws://server:port/path",
@@ -254,8 +403,8 @@
         },
 
         "yahooweather": {
-            "title": "Yahoo Weather API",
-            "description": "<a href=\\\"https://developer.yahoo.com/weather/documentation.html\\\" target=\\\"_blank\\\">Yahoo Weather API</a>を使用し、天候や予測含む各種気象データを受信します。",
+            "display_name": "Yahoo Weather API",
+            "description": "<a href=\"https://developer.yahoo.com/weather/documentation.html\" target=\"_blank\">Yahoo Weather API</a>を使用し、天候や予測含む各種気象データを受信します。",
             "location": "ロケーション郵便番号",
             "location_desc": "最大100文字 半角英字の地名でも可",
             "units": "単位",

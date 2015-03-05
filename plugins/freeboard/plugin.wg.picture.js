@@ -97,40 +97,40 @@
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'picture',
-		display_name: '画像',
-		description: '画像を表示するウィジェットです。Webカメラなどの映像を表示する事に使用します。',
+		display_name: $.i18n.t('plugins_wd.picture.display_name'),
+		description: $.i18n.t('plugins_wd.picture.description'),
 		settings: [
 			{
 				name: 'title',
-				display_name: 'タイトル',
+				display_name: $.i18n.t('plugins_wd.picture.title'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字'
+				description: $.i18n.t('plugins_wd.picture.title_desc')
 			},
 			{
 				name: 'blocks',
-				display_name: '高さ (ブロック数)',
+				display_name: $.i18n.t('plugins_wd.picture.blocks'),
 				validate: 'required,custom[integer],min[4],max[20]',
 				type: 'number',
 				style: 'width:100px',
 				default_value: 4,
-				description: '1ブロック60ピクセル。20ブロックまで'
+				description: $.i18n.t('plugins_wd.picture.blocks_desc'),
 			},
 			{
 				name: 'src',
-				display_name: '画像URL',
+				display_name: $.i18n.t('plugins_wd.picture.src'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.picture.src_desc')
 			},
 			{
-				type: 'number',
-				display_name: '更新頻度',
+				name: 'refresh',
+				display_name: $.i18n.t('plugins_wd.picture.refresh'),
 				validate: 'optional,custom[integer],min[1]',
 				style: 'width:100px',
-				name: 'number',
-				suffix: '秒',
-				description:'更新する必要がない場合は空白のまま'
+				type: 'number',
+				suffix: $.i18n.t('plugins_wd.picture.refresh_suffix'),
+				description: $.i18n.t('plugins_wd.picture.refresh_desc')
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {

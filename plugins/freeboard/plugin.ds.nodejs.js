@@ -116,7 +116,7 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name : 'node_js',
-		display_name : $.i18n.t('plugins_ds.node_js.title'),
+		display_name : $.i18n.t('plugins_ds.node_js.display_name'),
 		description : $.i18n.t('plugins_ds.node_js.description'),
 		external_scripts : [ 'https://cdn.socket.io/socket.io-1.2.1.js' ],
 		settings : [
