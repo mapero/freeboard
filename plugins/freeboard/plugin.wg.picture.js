@@ -124,11 +124,11 @@
 				description: '最大2000文字'
 			},
 			{
-				type: 'number',
+				name: 'refresh',
 				display_name: '更新頻度',
 				validate: 'optional,custom[integer],min[1]',
+				type: 'number',
 				style: 'width:100px',
-				name: 'number',
 				suffix: '秒',
 				description:'更新する必要がない場合は空白のまま'
 			}
