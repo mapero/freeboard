@@ -22,7 +22,7 @@
     "JSEditor": {
         "javascript": {
             "exampleText": "// Example: Convert from Celsius to Fahrenheit, Truncation point two digits below",
-            "codeWindowHeader": "This JavaScript will be re-evaluated each time reference data source is updated. And <span class='cm-keyword'> return value </span> will be displayed in the widget. You function <code> <span class='cm-keyword'> function </span> (<span class='cm-def'> datasources </span>) </code> can be used to describe the contents in JavaScript of. argument datasources is an array of the added data source."
+            "codeWindowHeader": "This JavaScript will be re-evaluated each time reference data source is updated. And <span class='cm-keyword'> return value </span> will be displayed in the widget. You function <code> <span class='cm-keyword'> function </span> (<span class='cm-def'> datasources </span>) </code> can be used to describe the contents in JavaScript of. argument datasources is an array of the added data source. The argument <span class = \"cm-def \"> _ global </span> It is possible to store a variable of the script out of scope to. (Note: You can not be shared between different script.)"
         },
         "json": {
             "exampleText": "// Example: {title '\n //' value ': 10 \n} ';",
@@ -72,7 +72,7 @@
             "title_desc": "A maximum of 100 characters",
             "size": "TextSize",
             "size_options": {
-                "reqular": "Regular",
+                "regular": "Regular",
                 "big": "Big"
             },
             "value": "Value",
@@ -104,7 +104,7 @@
             "blocks": "Height",
             "blocks_desc": "Number of blocks. 1 block 60 pixels. 10 to block.",
             "direction": "Direction",
-            "direction_desc": "A maximum of 2000 characters<br />Please enter the angle.",
+            "direction_desc": "A maximum of 2000 characters<br />Enter the angle.",
             "value_text": "Value Text",
             "value_text_desc": "A maximum of 2000 characters",
             "units": "Units",
@@ -209,6 +209,8 @@
             "title_desc": "A maximum of 100 characters",
             "blocks": "Height",
             "blocks_desc": "Number of blocks. 1 block 60 pixels. 20 to block.",
+            "value": "Value",
+            "value_desc": "A maximum of 5000 characters.",
             "options": "Chart Options",
             "options_desc": "A maximum of 5000 characters. JSON format string.",
             "options_invalid": "Invalid chart options."
@@ -405,7 +407,7 @@
             "display_name": "Yahoo Weather API",
             "description": "This datasources will receive a JSON data by using the <a href=\"https://developer.yahoo.com/weather/documentation.html\" target=\"_blank\">Yahoo Weather API</a>.",
             "location": "Location ZipCode",
-            "location_desc": "A maximum of 100 characters And also acceptable place name",
+            "location_desc": "A maximum of 100 characters. And also acceptable place name",
             "units": "Units",
             "units_metric": "Metric",
             "units_imperial": "Imperial",

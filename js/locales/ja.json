@@ -73,7 +73,7 @@
             "title_desc": "最大100文字",
             "size": "テキストサイズ",
             "size_options": {
-                "reqular": "レギュラー",
+                "regular": "レギュラー",
                 "big": "ビッグ"
             },
             "value": "値",
@@ -210,6 +210,8 @@
             "title_desc": "最大100文字",
             "blocks": "高さ (ブロック数)",
             "blocks_desc": "1ブロック60ピクセル。20ブロックまで",
+            "value": "値",
+            "value_desc": "最大5000文字",
             "options": "チャートオプション",
             "options_desc": "最大5000文字 JSON形式文字列。",
             "options_invalid": "チャートオプションが不正です。"
