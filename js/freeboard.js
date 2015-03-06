@@ -1204,8 +1204,8 @@ JSEditor = function() {
 
 		switch (mode) {
 			case 'javascript':
-				exampleText = '// 例: return datasouces["test"]["value"];';
-				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance">このJavaScriptは、参照データソースが更新されるたびに再評価され、<span class="cm-keyword">戻り値</span>がウィジェットに表示されます。関数 <code><span class="cm-keyword">function</span>(<span class="cm-def">datasources</span>)</code> の内部をJavaScriptで記述することができます。引数 <span class="cm-def">datasources</span> は追加したデータソースの配列です。また引数 <span class="cm-def">_global</span> へスクリプト外スコープの変数を格納することができます。(注:異なるスクリプト間では共有できません。)</div>');
+				exampleText = $.i18n.t('JSEditor.javascript.exampleText');
+				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance">' + $.i18n.t('JSEditor.javascript.codeWindowHeader') + '</div>');
 
 				// If value is empty, go ahead and suggest something
 				if (!value)
@@ -1224,8 +1224,8 @@ JSEditor = function() {
 				};
 				break;
 			case 'json':
-				exampleText = '// 例: {\n//    "title": "タイトル"\n//    "value": 10\n}';
-				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance"><span class="cm-keyword">JSON</span>形式のデータを入力して下さい。</div>');
+				exampleText = $.i18n.t('JSEditor.json.exampleText');
+				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance">' + $.i18n.t('JSEditor.json.codeWindowHeader') + '</div>');
 
 				config = {
 					value: value,
@@ -1247,7 +1247,7 @@ JSEditor = function() {
 
 		var codeMirrorEditor = CodeMirror(codeMirrorWrapper.get(0), config);
 
-		var closeButton = $('<span id="dialog-cancel" class="text-button">閉じる</span>').click(function () {
+		var closeButton = $('<span id="dialog-cancel" class="text-button">' + $.i18n.t('JSEditor.cancel') + '</span>').click(function () {
 			if (callback) {
 				var newValue = codeMirrorEditor.getValue();
 
@@ -1258,7 +1258,7 @@ JSEditor = function() {
 				switch (mode) {
 					case 'json':
 						if (JSHINT.errors.length > 0) {
-							alert('Please correct the json error.');
+							alert($.i18n.t('JSEditor.json.error'));
 							return;
 						}
 						break;
@@ -1282,7 +1282,6 @@ JSEditor = function() {
 		}
 	};
 };
-
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ F R E E B O A R D                                                  │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
@@ -1469,7 +1468,7 @@ PluginEditor = function(jsEditor, valueEditor) {
 
 		wrapperDiv.append(input).append(datasourceToolbox);
 
-		var datasourceTool = $('<li><i class="fa-w fa-plus"></i><label>データソース</label></li>')
+		var datasourceTool = $('<li><i class="fa-w fa-plus"></i><label>' + $.i18n.t('PluginEditor.datasource_tool') + '</label></li>')
 			.mousedown(function(e) {
 				e.preventDefault();
 				$(input).val('').focus().insertAtCaret('datasources[\"').trigger('freeboard-eval');
@@ -1575,7 +1574,7 @@ PluginEditor = function(jsEditor, valueEditor) {
 			processHeaderVisibility();
 		};
 
-		$('<div class="table-operation text-button">追加</div>').appendTo(valueCell).click(function() {
+		$('<div class="table-operation text-button">' + $.i18n.t('PluginEditor.table_operation') + '</div>').appendTo(valueCell).click(function() {
 			var newSubsettingValue = {};
 
 			_.each(settingDef.settings, function(subSettingDef) {
@@ -1594,7 +1593,7 @@ PluginEditor = function(jsEditor, valueEditor) {
 	function appendBooleanCell(form, valueCell, settingDef, currentSettingsValues, newSettings) {
 		newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
 
-		var onOffSwitch = $('<div class="onoffswitch"><label class="onoffswitch-label" for="' + settingDef.name + '-onoff"><div class="onoffswitch-inner"><span class="on">はい</span><span class="off">いいえ</span></div><div class="onoffswitch-switch"></div></label></div>').appendTo(valueCell);
+		var onOffSwitch = $('<div class="onoffswitch"><label class="onoffswitch-label" for="' + settingDef.name + '-onoff"><div class="onoffswitch-inner"><span class="on">' + $.i18n.t('global.yes') + '</span><span class="off">' + $.i18n.t('global.no') + '</span></div><div class="onoffswitch-switch"></div></label></div>').appendTo(valueCell);
 
 		var input = $('<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="' + settingDef.name + '-onoff">').prependTo(onOffSwitch).change(function() {
 			newSettings.settings[settingDef.name] = this.checked;
@@ -1745,7 +1744,8 @@ PluginEditor = function(jsEditor, valueEditor) {
 		}
 
 		if (settingDef.multi_input) {
-			var inputAdder = $('<ul class="board-toolbar"><li class="add-setting-row"><i class="fa-w fa-plus"></i><label>追加</label></li></ul>')
+			var inputAdder = $('<ul class="board-toolbar"><li class="add-setting-row"><i class="fa-w fa-plus"></i><label>' + $.i18n.t('PluginEditor.tableOperation') + '</label></li></ul>')
+
 				.mousedown(function(e) {
 					e.preventDefault();
 					_appendCalculatedSettingRow(valueCell, newSettings, settingDef, null, true);
@@ -1829,7 +1829,7 @@ PluginEditor = function(jsEditor, valueEditor) {
 			});
 		}
 
-		var db = new DialogBox(form, title, '保存', 'キャンセル', function(okcancel) {
+		var db = new DialogBox(form, title, $.i18n.t('PluginEditor.dialog.yes'), $.i18n.t('PluginEditor.dialog.no'), function(okcancel) {
 			if (okcancel === 'ok') {
 				// escape text value
 				_.each(selectedType.settings, function(def) {
@@ -1852,10 +1852,10 @@ PluginEditor = function(jsEditor, valueEditor) {
 		var typeSelect;
 
 		if (pluginTypeNames.length > 1) {
-			var typeRow = createSettingRow(form, 'plugin-types', 'タイプ');
+			var typeRow = createSettingRow(form, 'plugin-types', $.i18n.t('PluginEditor.type'));
 			typeSelect = $('<select></select>').appendTo($('<div class="styled-select"></div>').appendTo(typeRow));
 
-			typeSelect.append($('<option>追加するタイプを選択してください。</option>').attr('value', 'undefined'));
+			typeSelect.append($('<option>'+$.i18n.t('PluginEditor.first_option')+'</option>').attr('value', 'undefined'));
 
 			_.each(pluginTypes, function(pluginType) {
 				typeSelect.append($('<option></option>').text(pluginType.display_name).attr('value', pluginType.type_name));
@@ -1916,7 +1916,6 @@ PluginEditor = function(jsEditor, valueEditor) {
 		}
 	};
 };
-
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ F R E E B O A R D                                                  │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
@@ -2591,6 +2590,7 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 })(jQuery);
 
 (function(jQuery) {
+	'use strict';
 
 	jQuery.eventEmitter = {
 		_JQInit: function() {
@@ -2613,11 +2613,29 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 			this._JQ.unbind(evt, handler);
 		}
 	};
-
 }(jQuery));
 
 var freeboard = (function() {
 	'use strict';
+
+	// i18next initialize
+	(function() {
+		var lang = $.i18n.detectLanguage().split('-');
+		var path = 'js/locales/' + lang[0] + '.json';
+
+		$.i18n.debug = true;
+
+		var options = {
+			resGetPath: path,
+			lowerCaseLng: true,
+			fallbackLng: 'en',
+			getAsync: false,
+			lng: lang[0]
+		};
+		$.i18n.init(options, function(t) {
+			$('html').i18n();
+		});
+	})();
 
 	var datasourcePlugins = {};
 	var widgetPlugins = {};
@@ -2639,34 +2657,40 @@ var freeboard = (function() {
 			var settings;
 			var title = '';
 
-			if (options.type === 'datasource') {
+			if (options.type == 'datasource') {
 				types = datasourcePlugins;
-				title = 'データソース';
-			} else if (options.type === 'widget') {
+				title = $.i18n.t('PluginEditor.datasource.title');
+			} else if (options.type == 'widget') {
 				types = widgetPlugins;
-				title = 'ウィジェット';
-			} else if (options.type === 'pane') {
-				title = 'ペイン';
+				title = $.i18n.t('PluginEditor.widget.title');
+			} else if (options.type == 'pane') {
+				title = $.i18n.t('PluginEditor.pane.title');
 			}
 
 			$(element).click(function(event) {
-				if (options.operation === 'delete') {
-					var phraseElement = $('<p>' + title + ' を削除してもよろしいですか？</p>');
-					var db = new DialogBox(phraseElement, '削除確認', 'はい', 'いいえ', function(okcancel) {
-						if (okcancel === 'ok') {
-							if (options.type === 'datasource')
+				if (options.operation == 'delete') {
+					var _title = $.i18n.t('PluginEditor.delete.title'),
+						_yes = $.i18n.t('global.yes'),
+						_no = $.i18n.t('global.no'),
+						_ask = $.i18n.t('PluginEditor.delete.text');
+
+					var phraseElement = $('<p>' + title + ' ' + _ask + ' ？</p>');
+					var db = new DialogBox(phraseElement, _title, _yes, _no, function(okcancel) {
+						if (okcancel == 'ok') {
+							if (options.type == 'datasource') {
 								theFreeboardModel.deleteDatasource(viewModel);
-							else if (options.type === 'widget')
+							} else if (options.type == 'widget') {
 								theFreeboardModel.deleteWidget(viewModel);
-							else if (options.type === 'pane')
+							} else if (options.type == 'pane') {
 								theFreeboardModel.deletePane(viewModel);
+							}
 						}
 					});
 				} else {
 					var instanceType;
 
 					if (options.type === 'datasource') {
-						if(options.operation ===  'add') {
+						if(options.operation === 'add') {
 							settings = {};
 						} else {
 							instanceType = viewModel.type();
@@ -2692,24 +2716,21 @@ var freeboard = (function() {
 
 						types = {
 							settings: {
-								settings: [
-									{
-										name: 'title',
-										display_name: 'タイトル',
-										validate: 'optional,maxSize[100]',
-										type: 'text',
-										description: '最大100文字'
-									},
-									{
-										name : 'col_width',
-										display_name : 'カラム幅',
-										validate: 'required,custom[integer],min[1],max[10]',
-										style: 'width:100px',
-										type: 'number',
-										default_value : 1,
-										description: '最大10ブロック'
-									}
-								]
+								settings: [{
+									name: "title",
+									display_name: $.i18n.t('PluginEditor.pane.edit.title'),
+									validate: "optional,maxSize[100]",
+									type: "text",
+									description: $.i18n.t('PluginEditor.pane.edit.title_desc')
+								}, {
+									name: "col_width",
+									display_name: $.i18n.t('PluginEditor.pane.edit.colwidth'),
+									validate: "required,custom[integer],min[1],max[10]",
+									style: "width:100px",
+									type: "number",
+									default_value: 1,
+									description: $.i18n.t('PluginEditor.pane.edit.colwidth_desc')
+								}]
 							}
 						};
 					}
@@ -2855,6 +2876,7 @@ var freeboard = (function() {
 	// PUBLIC FUNCTIONS
 	return {
 		initialize          : function(allowEdit, finishedCallback) {
+
 			// Check to see if we have a query param called load. If so, we should load that dashboard initially
 			var freeboardLocation = getParameterByName('load');
 
@@ -2904,7 +2926,7 @@ var freeboard = (function() {
 		},
 
 		loadDatasourcePlugin: function(plugin) {
-			if (_.isUndefined(plugin.display_name))
+			if (_.isUndefined(plugin.display_name) || plugin.display_name === '')
 				plugin.display_name = plugin.type_name;
 
 			// Datasource name must be unique
@@ -2920,12 +2942,11 @@ var freeboard = (function() {
 
 			// Add a required setting called name to the beginning
 			plugin.settings.unshift({
-				name : 'name',
-				display_name : '名前',
+				name: 'name',
+				display_name: $.i18n.t('PluginEditor.datasource.given_name'),
 				validate: 'funcCall[freeboard.isUniqueDatasourceName],required,custom[illegalEscapeChar],maxSize[20]',
 				type: 'text',
-				escape: true,
-				description: '最大20文字まで'
+				description: $.i18n.t('PluginEditor.datasource.given_name_desc')
 			});
 
 			theFreeboardModel.addPluginSource(plugin.source);

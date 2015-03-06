@@ -65,36 +65,36 @@
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'indicator',
-		display_name: '点灯ライト',
-		description: '指定した値の条件でライトが点灯するウィジェットです。ONにするには 1 を、OFFにするには 0 を値に設定して下さい。',
+		display_name: $.i18n.t('plugins_wd.indicator.display_name'),
+		description: $.i18n.t('plugins_wd.indicator.description.display_name'),
 		settings: [
 			{
 				name: 'title',
-				display_name: 'タイトル',
+				display_name: $.i18n.t('plugins_wd.indicator.title'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字'
+				description: $.i18n.t('plugins_wd.indicator.title_desc')
 			},
 			{
 				name: 'value',
-				display_name: '値',
+				display_name: $.i18n.t('plugins_wd.indicator.value'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.indicator.value_desc')
 			},
 			{
 				name: 'on_text',
-				display_name: 'ON時テキスト',
+				display_name: $.i18n.t('plugins_wd.indicator.on_text'),
 				validate: 'optional,maxSize[500]',
 				type: 'calculated',
-				description: '最大500文字'
+				description: $.i18n.t('plugins_wd.indicator.on_text_desc')
 			},
 			{
 				name: 'off_text',
-				display_name: 'OFF時テキスト',
+				display_name: $.i18n.t('plugins_wd.indicator.off_text'),
 				validate: 'optional,maxSize[500]',
 				type: 'calculated',
-				description: '最大500文字'
+				description: $.i18n.t('plugins_wd.indicator.off_text_desc')
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {

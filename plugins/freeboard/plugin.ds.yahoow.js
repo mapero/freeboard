@@ -18,54 +18,54 @@
 
 		// condition code
 		var conditionMap = [
-			'竜巻',                     // 0   tornado
-			'台風',                     // 1   tropical storm
-			'ハリケーン',               // 2   hurricane
-			'激しい雷雨',               // 3   severe thunderstorms
-			'雷雨',                     // 4   thunderstorms
-			'雪混じりの雨',             // 5   mixed rain and snow
-			'みぞれ混じりの雨',         // 6   mixed rain and sleet
-			'みぞれ混じりの雪',         // 7   mixed snow and sleet
-			'着氷性の霧雨',             // 8   freezing drizzle
-			'霧雨',                     // 9   drizzle
-			'着氷性の雨',               // 10  freezing rain
-			'にわか雨',                 // 11  showers
-			'にわか雨',                 // 12  showers
-			'雪の突風',                 // 13  snow flurries
-			'時々雪',                   // 14  light snow showers
-			'吹雪',                     // 15  blowing snow
-			'雪',                       // 16  snow
-			'雹',                       // 17  hail
-			'みぞれ',                   // 18  sleet
-			'ほこり',                   // 19  dust
-			'霧',                       // 20  foggy
-			'靄',                       // 21  haze
-			'埃っぽい',                 // 22  smoky
-			'荒れ模様',                 // 23  blustery
-			'強風',                     // 24  windy
-			'寒い',                     // 25  cold
-			'曇り',                     // 26  cloudy
-			'おおむね曇り(夜)',         // 27  mostly cloudy (night)
-			'おおむね曇り(昼)',         // 28  mostly cloudy (day)
-			'ところにより曇り(夜)',     // 29  partly cloudy (night)
-			'ところにより曇り(昼)',     // 30  partly cloudy (day)
-			'快晴(夜)',                 // 31  clear (night)
-			'陽気な晴れ',               // 32  sunny
-			'晴れ(夜)',                 // 33  fair (night)
-			'晴れ(昼)',                 // 34  fair (day)
-			'雨と雹',                   // 35  mixed rain and hail
-			'暑い',                     // 36  hot
-			'局地的に雷雨',             // 37  isolated thunderstorms
-			'ところにより雷雨',         // 38  scattered thunderstorms
-			'ところにより雷雨',         // 39  scattered thunderstorms
-			'ところによりにわか雨',     // 40  scattered showers
-			'大雪',                     // 41  heavy snow
-			'吹雪',                     // 42  scattered snow showers
-			'大雪',                     // 43  heavy snow
-			'ところにより曇り',         // 44  partly cloudy
-			'雷雨',                     // 45  thundershowers
-			'吹雪',                     // 46  snow showers
-			'ところにより雷雨'          // 47  isolated thundershowers
+			$.i18n.t('plugins_ds.yahooweather.cond_0'),     // 0   tornado
+			$.i18n.t('plugins_ds.yahooweather.cond_1'),     // 1   tropical storm
+			$.i18n.t('plugins_ds.yahooweather.cond_2'),     // 2   hurricane
+			$.i18n.t('plugins_ds.yahooweather.cond_3'),     // 3   severe thunderstorms
+			$.i18n.t('plugins_ds.yahooweather.cond_4'),     // 4   thunderstorms
+			$.i18n.t('plugins_ds.yahooweather.cond_5'),     // 5   mixed rain and snow
+			$.i18n.t('plugins_ds.yahooweather.cond_6'),     // 6   mixed rain and sleet
+			$.i18n.t('plugins_ds.yahooweather.cond_7'),     // 7   mixed snow and sleet
+			$.i18n.t('plugins_ds.yahooweather.cond_8'),     // 8   freezing drizzle
+			$.i18n.t('plugins_ds.yahooweather.cond_9'),     // 9   drizzle
+			$.i18n.t('plugins_ds.yahooweather.cond_10'),    // 10  freezing rain
+			$.i18n.t('plugins_ds.yahooweather.cond_11'),    // 11  showers
+			$.i18n.t('plugins_ds.yahooweather.cond_12'),    // 12  showers
+			$.i18n.t('plugins_ds.yahooweather.cond_13'),    // 13  snow flurries
+			$.i18n.t('plugins_ds.yahooweather.cond_14'),    // 14  light snow showers
+			$.i18n.t('plugins_ds.yahooweather.cond_15'),    // 15  blowing snow
+			$.i18n.t('plugins_ds.yahooweather.cond_16'),    // 16  snow
+			$.i18n.t('plugins_ds.yahooweather.cond_17'),    // 17  hail
+			$.i18n.t('plugins_ds.yahooweather.cond_18'),    // 18  sleet
+			$.i18n.t('plugins_ds.yahooweather.cond_19'),    // 19  dust
+			$.i18n.t('plugins_ds.yahooweather.cond_20'),    // 20  foggy
+			$.i18n.t('plugins_ds.yahooweather.cond_21'),    // 21  haze
+			$.i18n.t('plugins_ds.yahooweather.cond_22'),    // 22  smoky
+			$.i18n.t('plugins_ds.yahooweather.cond_23'),    // 23  blustery
+			$.i18n.t('plugins_ds.yahooweather.cond_24'),    // 24  windy
+			$.i18n.t('plugins_ds.yahooweather.cond_25'),    // 25  cold
+			$.i18n.t('plugins_ds.yahooweather.cond_26'),    // 26  cloudy
+			$.i18n.t('plugins_ds.yahooweather.cond_27'),    // 27  mostly cloudy (night)
+			$.i18n.t('plugins_ds.yahooweather.cond_28'),    // 28  mostly cloudy (day)
+			$.i18n.t('plugins_ds.yahooweather.cond_29'),    // 29  partly cloudy (night)
+			$.i18n.t('plugins_ds.yahooweather.cond_30'),    // 30  partly cloudy (day)
+			$.i18n.t('plugins_ds.yahooweather.cond_31'),    // 31  clear (night)
+			$.i18n.t('plugins_ds.yahooweather.cond_32'),    // 32  sunny
+			$.i18n.t('plugins_ds.yahooweather.cond_33'),    // 33  fair (night)
+			$.i18n.t('plugins_ds.yahooweather.cond_34'),    // 34  fair (day)
+			$.i18n.t('plugins_ds.yahooweather.cond_35'),    // 35  mixed rain and hail
+			$.i18n.t('plugins_ds.yahooweather.cond_36'),    // 36  hot
+			$.i18n.t('plugins_ds.yahooweather.cond_37'),    // 37  isolated thunderstorms
+			$.i18n.t('plugins_ds.yahooweather.cond_38'),    // 38  scattered thunderstorms
+			$.i18n.t('plugins_ds.yahooweather.cond_39'),    // 39  scattered thunderstorms
+			$.i18n.t('plugins_ds.yahooweather.cond_40'),    // 40  scattered showers
+			$.i18n.t('plugins_ds.yahooweather.cond_41'),    // 41  heavy snow
+			$.i18n.t('plugins_ds.yahooweather.cond_42'),    // 42  scattered snow showers
+			$.i18n.t('plugins_ds.yahooweather.cond_43'),    // 43  heavy snow
+			$.i18n.t('plugins_ds.yahooweather.cond_44'),    // 44  partly cloudy
+			$.i18n.t('plugins_ds.yahooweather.cond_45'),    // 45  thundershowers
+			$.i18n.t('plugins_ds.yahooweather.cond_46'),    // 46  snow showers
+			$.i18n.t('plugins_ds.yahooweather.cond_47')     // 47  isolated thundershowers
 		];
 
 		function updateRefresh(refreshTime) {
@@ -137,40 +137,40 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'yahooweather',
-		display_name: 'Yahoo Weather API',
-		description: '<a href="https://developer.yahoo.com/weather/documentation.html" target="_blank">Yahoo Weather API</a>を使用し、天候や予測含む各種気象データを受信します。',
+		display_name: $.i18n.t('plugins_ds.yahooweather.display_name'),
+		description: $.i18n.t('plugins_ds.yahooweather.description'),
 		settings: [
 			{
 				name: 'location',
-				display_name: 'ロケーション郵便番号',
+				display_name: $.i18n.t('plugins_ds.yahooweather.location'),
 				validate: 'required,maxSize[100]',
 				type: 'text',
-				description: '最大100文字 半角英字の地名でも可'
+				description: $.i18n.t('plugins_ds.yahooweather.location_desc')
 			},
 			{
 				name: 'units',
-				display_name: '単位',
+				display_name: $.i18n.t('plugins_ds.yahooweather.units'),
 				style: 'width:200px',
 				type: 'option',
 				default_value: 'metric',
 				options: [
 					{
-						name: 'メトリック',
+						name: $.i18n.t('plugins_ds.yahooweather.units_metric'),
 						value: 'metric'
 					},
 					{
-						name: 'インペリアル',
+						name: $.i18n.t('plugins_ds.yahooweather.units_imperial'),
 						value: 'imperial'
 					}
 				]
 			},
 			{
 				name: 'refresh',
-				display_name: '更新頻度',
+				display_name: $.i18n.t('plugins_ds.yahooweather.refresh'),
 				validate: 'required,custom[integer],min[30]',
 				style: 'width:100px',
 				type: 'number',
-				suffix: '秒',
+				suffix: $.i18n.t('plugins_ds.yahooweather.refresh_suffix'),
 				default_value: 30
 			}
 		],

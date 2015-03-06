@@ -116,42 +116,42 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name : 'node_js',
-		display_name : 'Node.js (Socket.io)',
-		description : '<a href="http://socket.io/", target="_blank">Socket.io</a>を使用したnode.jsサーバーからJSONデータを受信します。',
+		display_name : $.i18n.t('plugins_ds.node_js.display_name'),
+		description : $.i18n.t('plugins_ds.node_js.description'),
 		external_scripts : [ 'https://cdn.socket.io/socket.io-1.2.1.js' ],
 		settings : [
 			{
 				name: 'url',
-				display_name: 'サーバーURL',
+				display_name: $.i18n.t('plugins_ds.node_js.url'),
 				validate: 'required,maxSize[1000]',
 				type: 'text',
-				description: '最大1000文字 (オプション) カスタム名前空間を使用する場合、URLの最後に名前空間を追加して下さい。<br>例: http://localhost/chat'
+				description: $.i18n.t('plugins_ds.node_js.url_desc')
 			},
 			{
 				name : 'events',
-				display_name : 'イベント',
-				description : 'データソースへ追加するイベント名を指定して下さい。',
+				display_name : $.i18n.t('plugins_ds.node_js.events'),
+				description : $.i18n.t('plugins_ds.node_js.events_desc'),
 				type : 'array',
 				settings : [ {
 					name : 'eventName',
-					display_name : 'イベント名',
+					display_name : $.i18n.t('plugins_ds.node_js.event_name'),
 					validate: 'optional,maxSize[100]',
 					type: 'text'
 				} ]
 			},
 			{
 				name : 'rooms',
-				display_name : '(オプション) ルーム',
-				description : 'ルームを使用する場合, 追加したいルーム名を指定して下さい。その他の場合は空白のままにしておいて下さい。',
+				display_name : $.i18n.t('plugins_ds.node_js.rooms'),
+				description : $.i18n.t('plugins_ds.node_js.rooms_desc'),
 				type : 'array',
 				settings : [ {
 					name : 'roomName',
-					display_name : 'ルーム名',
+					display_name : $.i18n.t('plugins_ds.node_js.room_name'),
 					validate: 'optional,maxSize[100]',
 					type: 'text'
 				}, {
 					name : 'roomEvent',
-					display_name : 'ルームに参加するイベント名',
+					display_name : $.i18n.t('plugins_ds.node_js.room_event'),
 					validate: 'optional,maxSize[100]',
 					type: 'text'
 				} ]

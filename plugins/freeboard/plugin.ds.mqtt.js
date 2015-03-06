@@ -102,20 +102,20 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name : 'mqtt',
-		display_name : 'MQTT over Websocket',
-		description : '<a href="http://mqtt.org/", target="_blank">MQTT</a>プロトコルをWebSocketを介し、MQTTブローカーサーバーからJSONデータを受信します。',
+		display_name : $.i18n.t('plugins_ds.mqtt.display_name'),
+		description : $.i18n.t('plugins_ds.mqtt.description'),
 		external_scripts : [ 'plugins/thirdparty/mqttws31.min.js' ],
 		settings : [
 			{
 				name : 'hostname',
-				display_name : 'DNSホスト名',
+				display_name : $.i18n.t('plugins_ds.mqtt.hostname'),
 				validate: 'required,maxSize[1000]',
 				type: 'text',
-				description: '最大1000文字<br>MQTTブローカーサーバーのDNSホスト名を設定して下さい。<br>例: location.hostname'
+				description: $.i18n.t('plugins_ds.mqtt.hostname_desc'),
 			},
 			{
 				name : 'port',
-				display_name : 'ポート番号',
+				display_name : $.i18n.t('plugins_ds.mqtt.port'),
 				validate: 'required,custom[integer],min[1]',
 				type: 'number',
 				style: 'width:100px',
@@ -123,40 +123,39 @@
 			},
 			{
 				name : 'clientID',
-				display_name : 'クライアントID',
+				display_name : $.i18n.t('plugins_ds.mqtt.clientID'),
 				validate: 'required,maxSize[23]',
 				type: 'text',
-				description: '最大23文字<br>任意のクライアントID文字列',
+				description: $.i18n.t('plugins_ds.mqtt.clientID_desc'),
 				default_value: 'SensorCorpus'
 			},
 			{
 				name : 'topic',
-				display_name : 'トピック',
+				display_name : $.i18n.t('plugins_ds.mqtt.topic'),
 				validate: 'required,maxSize[500]',
 				type: 'text',
-				description: '最大500文字<br>購読するトピック名を設定して下さい。<br>例: my/topic',
+				description: $.i18n.t('plugins_ds.mqtt.topic_desc'),
 				default_value: ''
 			},
 			{
 				name : 'username',
-				display_name : '(オプション) ユーザー名',
+				display_name : $.i18n.t('plugins_ds.mqtt.username'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字<br>必要ない場合は空白。'
+				description: $.i18n.t('plugins_ds.mqtt.username_desc')
 			},
 			{
 				name : 'password',
-				display_name : '(オプション) パスワード',
+				display_name : $.i18n.t('plugins_ds.mqtt.password'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字<br>必要ない場合は空白。'
+				description: $.i18n.t('plugins_ds.mqtt.password_desc'),
 			},
 			{
 				name: 'reconnect',
-				display_name: '自動再接続',
+				display_name: $.i18n.t('plugins_ds.mqtt.reconnect'),
 				type: 'boolean',
-				default_value: true,
-				description: '接続が切れた際自動的に再接続します。'
+				default_value: true
 			}
 		],
 		newInstance : function(settings, newInstanceCallback, updateCallback) {

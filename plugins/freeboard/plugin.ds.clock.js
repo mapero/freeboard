@@ -58,408 +58,408 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'clock',
-		display_name: '時計',
-		description: '指定の間隔で更新され、異なるフォーマットで現在の時刻を返します。画面上にタイマーを表示したり、ウィジェットが一定の間隔でリフレッシュさせるために使用することができます。',
+		display_name: $.i18n.t('plugins_ds.clock.display_name'),
+		description: $.i18n.t('plugins_ds.clock.description'),
 		settings: [
 			{
 				name: 'timezone',
-				display_name: 'タイムゾーン',
+				display_name: $.i18n.t('plugins_ds.clock.timezone'),
 				type: 'option',
 				default_value: 'Asia/Tokyo',
 				options: [
 					{
-						name: '(UTC-12:00) 国際日付変更線 西側',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Etc/GMT+12'),
 						value: 'Etc/GMT+12'
 					},
 					{
-						name: '(UTC-11:00) 協定世界時-11',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Etc/GMT+11'),
 						value: 'Etc/GMT+11'
 					},
 					{
-						name: '(UTC-10:00) ハワイ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Honolulu'),
 						value: 'Pacific/Honolulu'
 					},
 					{
-						name: '(UTC-09:00) アラスカ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Anchorage'),
 						value: 'America/Anchorage'
 					},
 					{
-						name: '(UTC-08:00) バハカリフォルニア',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Santa_Isabel'),
 						value: 'America/Santa_Isabel'
 					},
 					{
-						name: '(UTC-08:00) 太平洋標準時(米国およびカナダ)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Los_Angeles'),
 						value: 'America/Los_Angeles'
 					},
 					{
-						name: '(UTC-07:00) チワワ、ラパス、マサトラン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Chihuahua'),
 						value: 'America/Chihuahua'
 					},
 					{
-						name: '(UTC-07:00) アリゾナ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Phoenix'),
 						value: 'America/Phoenix'
 					},
 					{
-						name: '(UTC-07:00) 山地標準時(米国およびカナダ)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Denver'),
 						value: 'America/Denver'
 					},
 					{
-						name: '(UTC-06:00) 中央アメリカ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Guatemala'),
 						value: 'America/Guatemala'
 					},
 					{
-						name: '(UTC-06:00) 中部標準時(米国およびカナダ)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Chicago'),
 						value: 'America/Chicago'
 					},
 					{
-						name: '(UTC-06:00) サスカチュワン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Regina'),
 						value: 'America/Regina'
 					},
 					{
-						name: '(UTC-06:00) グアダラハラ、メキシコシティ、モンテレー',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Mexico_City'),
 						value: 'America/Mexico_City'
 					},
 					{
-						name: '(UTC-05:00) ボゴタ、リマ、キト',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Bogota'),
 						value: 'America/Bogota'
 					},
 					{
-						name: '(UTC-05:00) インディアナ東部',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Indiana/Indianapolis'),
 						value: 'America/Indiana/Indianapolis'
 					},
 					{
-						name: '(UTC-05:00) 東部標準時(米国およびカナダ)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/New_York'),
 						value: 'America/New_York'
 					},
 					{
-						name: '(UTC-04:30) カラカス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Caracas'),
 						value: 'America/Caracas'
 					},
 					{
-						name: '(UTC-04:00) 大西洋標準時(カナダ)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Halifax'),
 						value: 'America/Halifax'
 					},
 					{
-						name: '(UTC-04:00) アスンシオン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Asuncion'),
 						value: 'America/Asuncion'
 					},
 					{
-						name: '(UTC-04:00) ジョージタウン、ラパス、マナウス、サンフアン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/La_Paz'),
 						value: 'America/La_Paz'
 					},
 					{
-						name: '(UTC-04:00) クイアバ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Cuiaba'),
 						value: 'America/Cuiaba'
 					},
 					{
-						name: '(UTC-04:00) サンチアゴ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Santiago'),
 						value: 'America/Santiago'
 					},
 					{
-						name: '(UTC-03:30) ニューファンドランド',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/St_Johns'),
 						value: 'America/St_Johns'
 					},
 					{
-						name: '(UTC-03:00) ブラジリア',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Sao_Paulo'),
 						value: 'America/Sao_Paulo'
 					},
 					{
-						name: '(UTC-03:00) グリーンランド',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Godthab'),
 						value: 'America/Godthab'
 					},
 					{
-						name: '(UTC-03:00) カイエンヌ、フォルタレザ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Cayenne'),
 						value: 'America/Cayenne'
 					},
 					{
-						name: '(UTC-03:00) ブエノスアイレス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Argentina/Buenos_Aires'),
 						value: 'America/Argentina/Buenos_Aires'
 					},
 					{
-						name: '(UTC-03:00) モンテビデオ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Montevideo'),
 						value: 'America/Montevideo'
 					},
 					{
-						name: '(UTC-02:00) 協定世界時-2',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Etc/GMT+2'),
 						value: 'Etc/GMT+2'
 					},
 					{
-						name: '(UTC-01:00) カーボベルデ諸島',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Cape_Verde'),
 						value: 'America/Cape_Verde'
 					},
 					{
-						name: '(UTC-01:00) アゾレス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Atlantic/Azores'),
 						value: 'Atlantic/Azores'
 					},
 					{
-						name: '(UTC+00:00) カサブランカ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Casablanca'),
 						value: 'America/Casablanca'
 					},
 					{
-						name: '(UTC+00:00) モンロビア、レイキャビク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Atlantic/Reykjavik'),
 						value: 'Atlantic/Reykjavik'
 					},
 					{
-						name: '(UTC+00:00) ダブリン、エジンバラ、リスボン、ロンドン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/London'),
 						value: 'Europe/London'
 					},
 					{
-						name: '(UTC+00:00) 協定世界時',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Etc/GMT'),
 						value: 'Etc/GMT'
 					},
 					{
-						name: '(UTC+01:00) アムステルダム、ベルリン、ベルン、ローマ、ストックホルム、ウィーン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Berlin'),
 						value: 'Europe/Berlin'
 					},
 					{
-						name: '(UTC+01:00) ブリュッセル、コペンハーゲン、マドリード、パリ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Paris'),
 						value: 'Europe/Paris'
 					},
 					{
-						name: '(UTC+01:00) 西中央アフリカ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Africa/Lagos'),
 						value: 'Africa/Lagos'
 					},
 					{
-						name: '(UTC+01:00) ベオグラード、ブラチスラバ、ブダペスト、リュブリャナ、プラハ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Budapest'),
 						value: 'Europe/Budapest'
 					},
 					{
-						name: '(UTC+01:00) サラエボ、スコピエ、ワルシャワ、ザグレブ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Warsaw'),
 						value: 'Europe/Warsaw'
 					},
 					{
-						name: '(UTC+01:00) ウィントフック',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Africa/Windhoek'),
 						value: 'Africa/Windhoek'
 					},
 					{
-						name: '(UTC+02:00) アテネ、ブカレスト、イスタンブール',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Istanbul'),
 						value: 'Europe/Istanbul'
 					},
 					{
-						name: '(UTC+02:00) ヘルシンキ、キエフ、リガ、ソフィア、タリン、ビリニュス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Kiev'),
 						value: 'Europe/Kiev'
 					},
 					{
-						name: '(UTC+02:00) カイロ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Africa/Cairo'),
 						value: 'Africa/Cairo'
 					},
 					{
-						name: '(UTC+02:00) ダマスカス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Damascus'),
 						value: 'Asia/Damascus'
 					},
 					{
-						name: '(UTC+02:00) アンマン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Amman'),
 						value: 'Asia/Amman'
 					},
 					{
-						name: '(UTC+02:00) ハラーレ、プレトリア',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Africa/Johannesburg'),
 						value: 'Africa/Johannesburg'
 					},
 					{
-						name: '(UTC+02:00) エルサレム',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Jerusalem'),
 						value: 'Asia/Jerusalem'
 					},
 					{
-						name: '(UTC+02:00) ベイルート',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Beirut'),
 						value: 'Asia/Beirut'
 					},
 					{
-						name: '(UTC+03:00) バグダッド',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Baghdad'),
 						value: 'Asia/Baghdad'
 					},
 					{
-						name: '(UTC+03:00) ミンスク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Minsk'),
 						value: 'Europe/Minsk'
 					},
 					{
-						name: '(UTC+03:00) クエート、リヤド',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Riyadh'),
 						value: 'Asia/Riyadh'
 					},
 					{
-						name: '(UTC+03:00) ナイロビ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Africa/Nairobi'),
 						value: 'Africa/Nairobi'
 					},
 					{
-						name: '(UTC+03:30) テヘラン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Tehran'),
 						value: 'Asia/Tehran'
 					},
 					{
-						name: '(UTC+04:00) モスクワ、サンクトペテルブルグ、ボルゴグラード',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Moscow'),
 						value: 'Europe/Moscow'
 					},
 					{
-						name: '(UTC+04:00) トビリシ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Tbilisi'),
 						value: 'Asia/Tbilisi'
 					},
 					{
-						name: '(UTC+04:00) エレバン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Yerevan'),
 						value: 'Asia/Yerevan'
 					},
 					{
-						name: '(UTC+04:00) アブダビ、マスカット',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Dubai'),
 						value: 'Asia/Dubai'
 					},
 					{
-						name: '(UTC+04:00) バクー',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Baku'),
 						value: 'Asia/Baku'
 					},
 					{
-						name: '(UTC+04:00) ポートルイス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Indian/Mauritius'),
 						value: 'Indian/Mauritius'
 					},
 					{
-						name: '(UTC+04:30) カブール',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Kabul'),
 						value: 'Asia/Kabul'
 					},
 					{
-						name: '(UTC+05:00) タシケント',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Tashkent'),
 						value: 'Asia/Tashkent'
 					},
 					{
-						name: '(UTC+05:00) イスラマバード、カラチ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Karachi'),
 						value: 'Asia/Karachi'
 					},
 					{
-						name: '(UTC+05:30) スリジャヤワルダナプラコッテ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Colombo'),
 						value: 'Asia/Colombo'
 					},
 					{
-						name: '(UTC+05:30) チェンナイ、コルカタ、ムンバイ、ニューデリー',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Indian/Kolkata'),
 						value: 'Indian/Kolkata'
 					},
 					{
-						name: '(UTC+05:45) カトマンズ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Kathmandu'),
 						value: 'Asia/Kathmandu'
 					},
 					{
-						name: '(UTC+06:00) アスタナ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Almaty'),
 						value: 'Asia/Almaty'
 					},
 					{
-						name: '(UTC+06:00) ダッカ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Dhaka'),
 						value: 'Asia/Dhaka'
 					},
 					{
-						name: '(UTC+06:00) エカテリンブルグ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Yekaterinburg'),
 						value: 'Asia/Yekaterinburg'
 					},
 					{
-						name: '(UTC+06:30) ヤンゴン(ラングーン)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Rangoon'),
 						value: 'Asia/Rangoon'
 					},
 					{
-						name: '(UTC+07:00) バンコク、ハノイ、ジャカルタ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Bangkok'),
 						value: 'Asia/Bangkok'
 					},
 					{
-						name: '(UTC+07:00) ノヴォシビルスク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Novosibirsk'),
 						value: 'Asia/Novosibirsk'
 					},
 					{
-						name: '(UTC+08:00) クラスノヤルスク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Krasnoyarsk'),
 						value: 'Asia/Krasnoyarsk'
 					},
 					{
-						name: '(UTC+08:00) ウランバートル',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Ulaanbaatar'),
 						value: 'Asia/Ulaanbaatar'
 					},
 					{
-						name: '(UTC+08:00) 北京、重慶、香港特別行政区、ウルムチ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Shanghai'),
 						value: 'Asia/Shanghai'
 					},
 					{
-						name: '(UTC+08:00) パース',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Perth'),
 						value: 'Australia/Perth'
 					},
 					{
-						name: '(UTC+08:00) クアラルンプール、シンガポール',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Singapore'),
 						value: 'Asia/Singapore'
 					},
 					{
-						name: '(UTC+08:00) 台北',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Taipei'),
 						value: 'Asia/Taipei'
 					},
 					{
-						name: '(UTC+09:00) イルクーツク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Irkutsk'),
 						value: 'Asia/Irkutsk'
 					},
 					{
-						name: '(UTC+09:00) ソウル',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Seoul'),
 						value: 'Asia/Seoul'
 					},
 					{
-						name: '(UTC+09:00) 大阪、札幌、東京',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Tokyo'),
 						value: 'Asia/Tokyo'
 					},
 					{
-						name: '(UTC+09:30) ダーウィン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Darwin'),
 						value: 'Australia/Darwin'
 					},
 					{
-						name: '(UTC+09:30) アデレード',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Adelaide'),
 						value: 'Australia/Adelaide'
 					},
 					{
-						name: '(UTC+10:00) ホバート',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Hobart'),
 						value: 'Australia/Hobart'
 					},
 					{
-						name: '(UTC+10:00) ヤクーツク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Yakutsk'),
 						value: 'Asia/Yakutsk'
 					},
 					{
-						name: '(UTC+10:00) ブリスベン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Brisbane'),
 						value: 'Australia/Brisbane'
 					},
 					{
-						name: '(UTC+10:00) グアム、ポートモレスビー',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Port_Moresby'),
 						value: 'Pacific/Port_Moresby'
 					},
 					{
-						name: '(UTC+10:00) キャンベラ、メルボルン、シドニー',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Sydney'),
 						value: 'Australia/Sydney'
 					},
 					{
-						name: '(UTC+11:00) ウラジオストク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Vladivostok'),
 						value: 'Asia/Vladivostok'
 					},
 					{
-						name: '(UTC+11:00) ソロモン諸島、ニューカレドニア',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Guadalcanal'),
 						value: 'Pacific/Guadalcanal'
 					},
 					{
-						name: '(UTC+12:00) 協定世界時+12',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Etc/GMT-12'),
 						value: 'Etc/GMT-12'
 					},
 					{
-						name: '(UTC+12:00) フィジー、マーシャル諸島',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Fiji'),
 						value: 'Pacific/Fiji'
 					},
 					{
-						name: '(UTC+12:00) マガダン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Magadan'),
 						value: 'Asia/Magadan'
 					},
 					{
-						name: '(UTC+12:00) オークランド、ウェリントン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Auckland'),
 						value: 'Pacific/Auckland'
 					},
 					{
-						name: '(UTC+13:00) ヌクアロファ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Tongatapu'),
 						value: 'Pacific/Tongatapu'
 					},
 					{
-						name: '(UTC+13:00) サモア',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Apia'),
 						value: 'Pacific/Apia'
 					}
 				]
 			},
 			{
 				name: 'refresh',
-				display_name: '更新頻度',
+				display_name: $.i18n.t('plugins_ds.clock.refresh'),
 				validate: 'required,custom[integer],min[1]',
 				style: 'width:100px',
 				type: 'number',
-				suffix: '秒',
+				suffix: $.i18n.t('plugins_ds.clock.refresh_suffix'),
 				default_value: 1
 			}
 		],

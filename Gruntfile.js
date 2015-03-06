@@ -16,10 +16,12 @@ module.exports = function(grunt) {
                         'lib/js/thirdparty/knockout.js',
                         'lib/js/thirdparty/jquery.js',
                         'lib/js/thirdparty/jquery-ui.js',
+                        'lib/js/thirdparty/i18next-1.7.7.min.js',
                         'lib/js/thirdparty/lodash.js',
                         'lib/js/thirdparty/jquery.gridster.js',
                         'lib/js/thirdparty/jquery.caret.js',
                         'lib/js/thirdparty/jquery.xdomainrequest.js',
+                        'lib/js/thirdparty/jquery.validationEngine-en.js',
                         'lib/js/thirdparty/jquery.validationEngine-ja.js',
                         'lib/js/thirdparty/jquery.validationEngine.js',
                         'lib/js/thirdparty/moment.js',
@@ -29,7 +31,7 @@ module.exports = function(grunt) {
                         'lib/js/thirdparty/codemirror-csslint.js',
                         'lib/js/thirdparty/colpick.js',
                         'lib/js/thirdparty/webfont.js',
-                        'lib/js/thirdparty/d3.v3.min.js',
+                        'lib/js/thirdparty/d3.v3.min.js'
                     ]
                 ],
                 dest : 'js/freeboard.thirdparty.js'

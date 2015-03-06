@@ -606,41 +606,41 @@
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'text_widget',
-		display_name: 'テキスト',
-		description: 'テキストと簡易チャートが表示できるウィジェットです。',
+		display_name: $.i18n.t('plugins_wd.text.display_name'),
+		description: $.i18n.t('plugins_wd.text.description'),
 		settings: [
 			{
 				name: 'title',
-				display_name: 'タイトル',
+				display_name: $.i18n.t('plugins_wd.text.title'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字'
+				description: $.i18n.t('plugins_wd.text.title_desc')
 			},
 			{
 				name: 'size',
-				display_name: 'テキストサイズ',
+				display_name: $.i18n.t('plugins_wd.text.size'),
 				type: 'option',
 				options: [
 					{
-						name: 'レギュラー',
+						name: $.i18n.t('plugins_wd.text.size_options.regular'),
 						value: 'regular'
 					},
 					{
-						name: 'ビッグ',
+						name: $.i18n.t('plugins_wd.text.size_options.big'),
 						value: 'big'
 					}
 				]
 			},
 			{
 				name: 'value',
-				display_name: '値',
+				display_name: $.i18n.t('plugins_wd.text.value'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.text.value_desc')
 			},
 			{
 				name: 'decimal',
-				display_name: '表示小数点以下桁数',
+				display_name: $.i18n.t('plugins_wd.text.decimal'),
 				type: 'number',
 				validate: 'required,custom[integer],min[0],max[20]',
 				style: 'width:100px',
@@ -648,66 +648,66 @@
 			},
 			{
 				name: 'comma',
-				display_name: 'カンマ表示',
+				display_name: $.i18n.t('plugins_wd.text.comma'),
 				type: 'boolean',
 				default_value: false,
 			},
 			{
 				name: 'metric_prefix',
-				display_name: '国際単位系表示',
+				display_name: $.i18n.t('plugins_wd.text.metric_prefix'),
 				type: 'boolean',
 				default_value: false,
-				description: '1000なら1Kのように値を短縮します。'
+				description: $.i18n.t('plugins_wd.text.metric_prefix_desc')
 			},
 			{
 				name: 'units',
-				display_name: '単位',
+				display_name: $.i18n.t('plugins_wd.text.units'),
 				validate: 'optional,maxSize[20]',
 				type: 'text',
 				style: 'width:150px',
-				description: '最大20文字'
+				description: $.i18n.t('plugins_wd.text.units_desc')
 			},
 			{
 				name: 'animate',
-				display_name: '値変化アニメーション',
+				display_name: $.i18n.t('plugins_wd.text.animate'),
 				type: 'boolean',
 				default_value: true
 			},
 			{
 				name: 'chart',
-				display_name: '簡易チャートを含む',
+				display_name: $.i18n.t('plugins_wd.text.chart'),
 				type: 'boolean'
 			},
 			{
 				name: 'chart_type',
-				display_name: 'チャートタイプ',
+				display_name: $.i18n.t('plugins_wd.text.chart_type'),
 				type: 'option',
 				options: [
 					{
-						name: 'ライン',
+						name: $.i18n.t('plugins_wd.text.chart_type_options.line'),
 						value: 'line'
 					},
 					{
-						name: 'エリア',
+						name: $.i18n.t('plugins_wd.text.chart_type_options.area'),
 						value: 'area'
 					}
 				]
 			},
 			{
 				name: 'chart_color',
-				display_name: 'チャート色',
+				display_name: $.i18n.t('plugins_wd.text.chart_color'),
 				validate: 'required,custom[hexcolor]',
 				type: 'color',
 				default_value: '#ff9900',
-				description: 'デフォルト色: #ff9900'
+				description: $.i18n.t('plugins_wd.text.chart_color_desc')
 			},
 			{
 				name: 'chart_minmax_color',
-				display_name: 'チャート最大最小値色',
+				display_name: $.i18n.t('plugins_wd.text.chart_minmax_color'),
 				validate: 'required,custom[hexcolor]',
 				type: 'color',
 				default_value: '#0496ff',
-				description: 'デフォルト色: #0496ff'
+				description: $.i18n.t('plugins_wd.text.chart_minmax_color_desc')
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {

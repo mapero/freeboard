@@ -227,62 +227,62 @@
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'pointer',
-		display_name: 'ポインタ',
-		description: '方角と値を表示するウィジェットです。',
+		display_name: $.i18n.t('plugins_wd.pointer.display_name'),
+		description: $.i18n.t('plugins_wd.pointer.description'),
 		settings: [
 			{
 				name: 'title',
-				display_name: 'タイトル',
+				display_name: $.i18n.t('plugins_wd.pointer.title'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字'
+				description: $.i18n.t('plugins_wd.pointer.title_desc')
 			},
 			{
 				name: 'blocks',
-				display_name: '高さ (ブロック数)',
+				display_name: $.i18n.t('plugins_wd.pointer.blocks'),
 				validate: 'required,custom[integer],min[4],max[10]',
 				type: 'number',
 				style: 'width:100px',
 				default_value: 4,
-				description: '1ブロック60ピクセル。10ブロックまで'
+				description: $.i18n.t('plugins_wd.pointer.blocks_desc')
 			},
 			{
 				name: 'direction',
-				display_name: '方向',
+				display_name: $.i18n.t('plugins_wd.pointer.direction'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字<br>角度を入力して下さい。'
+				description: $.i18n.t('plugins_wd.pointer.direction_desc')
 			},
 			{
 				name: 'value_text',
-				display_name: '値テキスト',
+				display_name: $.i18n.t('plugins_wd.pointer.value_text'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.pointer.value_text_desc')
 			},
 			{
 				name: 'units',
-				display_name: '単位',
+				display_name: $.i18n.t('plugins_wd.pointer.units'),
 				validate: 'optional,maxSize[20]',
 				style: 'width:150px',
 				type: 'text',
-				description: '最大20文字'
+				description: $.i18n.t('plugins_wd.pointer.units_desc')
 			},
 			{
 				name: 'circle_color',
-				display_name: 'サークル色',
+				display_name: $.i18n.t('plugins_wd.pointer.circle_color'),
 				validate: 'required,custom[hexcolor]',
 				type: 'color',
 				default_value: '#ff9900',
-				description: 'デフォルト色: #ff9900'
+				description: $.i18n.t('plugins_wd.pointer.circle_color_desc')
 			},
 			{
 				name: 'pointer_color',
-				display_name: 'ポインタ色',
+				display_name: $.i18n.t('plugins_wd.pointer.pointer_color'),
 				validate: 'required,custom[hexcolor]',
 				type: 'color',
 				default_value: '#fff',
-				description: 'デフォルト色: #fff'
+				description: $.i18n.t('plugins_wd.pointer.pointer_color_desc')
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {

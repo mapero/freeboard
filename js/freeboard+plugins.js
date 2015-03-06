@@ -1204,8 +1204,8 @@ JSEditor = function() {
 
 		switch (mode) {
 			case 'javascript':
-				exampleText = '// 例: return datasouces["test"]["value"];';
-				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance">このJavaScriptは、参照データソースが更新されるたびに再評価され、<span class="cm-keyword">戻り値</span>がウィジェットに表示されます。関数 <code><span class="cm-keyword">function</span>(<span class="cm-def">datasources</span>)</code> の内部をJavaScriptで記述することができます。引数 <span class="cm-def">datasources</span> は追加したデータソースの配列です。また引数 <span class="cm-def">_global</span> へスクリプト外スコープの変数を格納することができます。(注:異なるスクリプト間では共有できません。)</div>');
+				exampleText = $.i18n.t('JSEditor.javascript.exampleText');
+				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance">' + $.i18n.t('JSEditor.javascript.codeWindowHeader') + '</div>');
 
 				// If value is empty, go ahead and suggest something
 				if (!value)
@@ -1224,8 +1224,8 @@ JSEditor = function() {
 				};
 				break;
 			case 'json':
-				exampleText = '// 例: {\n//    "title": "タイトル"\n//    "value": 10\n}';
-				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance"><span class="cm-keyword">JSON</span>形式のデータを入力して下さい。</div>');
+				exampleText = $.i18n.t('JSEditor.json.exampleText');
+				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance">' + $.i18n.t('JSEditor.json.codeWindowHeader') + '</div>');
 
 				config = {
 					value: value,
@@ -1247,7 +1247,7 @@ JSEditor = function() {
 
 		var codeMirrorEditor = CodeMirror(codeMirrorWrapper.get(0), config);
 
-		var closeButton = $('<span id="dialog-cancel" class="text-button">閉じる</span>').click(function () {
+		var closeButton = $('<span id="dialog-cancel" class="text-button">' + $.i18n.t('JSEditor.cancel') + '</span>').click(function () {
 			if (callback) {
 				var newValue = codeMirrorEditor.getValue();
 
@@ -1258,7 +1258,7 @@ JSEditor = function() {
 				switch (mode) {
 					case 'json':
 						if (JSHINT.errors.length > 0) {
-							alert('Please correct the json error.');
+							alert($.i18n.t('JSEditor.json.error'));
 							return;
 						}
 						break;
@@ -1282,7 +1282,6 @@ JSEditor = function() {
 		}
 	};
 };
-
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ F R E E B O A R D                                                  │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
@@ -1469,7 +1468,7 @@ PluginEditor = function(jsEditor, valueEditor) {
 
 		wrapperDiv.append(input).append(datasourceToolbox);
 
-		var datasourceTool = $('<li><i class="fa-w fa-plus"></i><label>データソース</label></li>')
+		var datasourceTool = $('<li><i class="fa-w fa-plus"></i><label>' + $.i18n.t('PluginEditor.datasource_tool') + '</label></li>')
 			.mousedown(function(e) {
 				e.preventDefault();
 				$(input).val('').focus().insertAtCaret('datasources[\"').trigger('freeboard-eval');
@@ -1575,7 +1574,7 @@ PluginEditor = function(jsEditor, valueEditor) {
 			processHeaderVisibility();
 		};
 
-		$('<div class="table-operation text-button">追加</div>').appendTo(valueCell).click(function() {
+		$('<div class="table-operation text-button">' + $.i18n.t('PluginEditor.table_operation') + '</div>').appendTo(valueCell).click(function() {
 			var newSubsettingValue = {};
 
 			_.each(settingDef.settings, function(subSettingDef) {
@@ -1594,7 +1593,7 @@ PluginEditor = function(jsEditor, valueEditor) {
 	function appendBooleanCell(form, valueCell, settingDef, currentSettingsValues, newSettings) {
 		newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
 
-		var onOffSwitch = $('<div class="onoffswitch"><label class="onoffswitch-label" for="' + settingDef.name + '-onoff"><div class="onoffswitch-inner"><span class="on">はい</span><span class="off">いいえ</span></div><div class="onoffswitch-switch"></div></label></div>').appendTo(valueCell);
+		var onOffSwitch = $('<div class="onoffswitch"><label class="onoffswitch-label" for="' + settingDef.name + '-onoff"><div class="onoffswitch-inner"><span class="on">' + $.i18n.t('global.yes') + '</span><span class="off">' + $.i18n.t('global.no') + '</span></div><div class="onoffswitch-switch"></div></label></div>').appendTo(valueCell);
 
 		var input = $('<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="' + settingDef.name + '-onoff">').prependTo(onOffSwitch).change(function() {
 			newSettings.settings[settingDef.name] = this.checked;
@@ -1745,7 +1744,8 @@ PluginEditor = function(jsEditor, valueEditor) {
 		}
 
 		if (settingDef.multi_input) {
-			var inputAdder = $('<ul class="board-toolbar"><li class="add-setting-row"><i class="fa-w fa-plus"></i><label>追加</label></li></ul>')
+			var inputAdder = $('<ul class="board-toolbar"><li class="add-setting-row"><i class="fa-w fa-plus"></i><label>' + $.i18n.t('PluginEditor.tableOperation') + '</label></li></ul>')
+
 				.mousedown(function(e) {
 					e.preventDefault();
 					_appendCalculatedSettingRow(valueCell, newSettings, settingDef, null, true);
@@ -1829,7 +1829,7 @@ PluginEditor = function(jsEditor, valueEditor) {
 			});
 		}
 
-		var db = new DialogBox(form, title, '保存', 'キャンセル', function(okcancel) {
+		var db = new DialogBox(form, title, $.i18n.t('PluginEditor.dialog.yes'), $.i18n.t('PluginEditor.dialog.no'), function(okcancel) {
 			if (okcancel === 'ok') {
 				// escape text value
 				_.each(selectedType.settings, function(def) {
@@ -1852,10 +1852,10 @@ PluginEditor = function(jsEditor, valueEditor) {
 		var typeSelect;
 
 		if (pluginTypeNames.length > 1) {
-			var typeRow = createSettingRow(form, 'plugin-types', 'タイプ');
+			var typeRow = createSettingRow(form, 'plugin-types', $.i18n.t('PluginEditor.type'));
 			typeSelect = $('<select></select>').appendTo($('<div class="styled-select"></div>').appendTo(typeRow));
 
-			typeSelect.append($('<option>追加するタイプを選択してください。</option>').attr('value', 'undefined'));
+			typeSelect.append($('<option>'+$.i18n.t('PluginEditor.first_option')+'</option>').attr('value', 'undefined'));
 
 			_.each(pluginTypes, function(pluginType) {
 				typeSelect.append($('<option></option>').text(pluginType.display_name).attr('value', pluginType.type_name));
@@ -1916,7 +1916,6 @@ PluginEditor = function(jsEditor, valueEditor) {
 		}
 	};
 };
-
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ F R E E B O A R D                                                  │ \\
 // ├────────────────────────────────────────────────────────────────────┤ \\
@@ -2591,6 +2590,7 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 })(jQuery);
 
 (function(jQuery) {
+	'use strict';
 
 	jQuery.eventEmitter = {
 		_JQInit: function() {
@@ -2613,11 +2613,29 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 			this._JQ.unbind(evt, handler);
 		}
 	};
-
 }(jQuery));
 
 var freeboard = (function() {
 	'use strict';
+
+	// i18next initialize
+	(function() {
+		var lang = $.i18n.detectLanguage().split('-');
+		var path = 'js/locales/' + lang[0] + '.json';
+
+		$.i18n.debug = true;
+
+		var options = {
+			resGetPath: path,
+			lowerCaseLng: true,
+			fallbackLng: 'en',
+			getAsync: false,
+			lng: lang[0]
+		};
+		$.i18n.init(options, function(t) {
+			$('html').i18n();
+		});
+	})();
 
 	var datasourcePlugins = {};
 	var widgetPlugins = {};
@@ -2639,34 +2657,40 @@ var freeboard = (function() {
 			var settings;
 			var title = '';
 
-			if (options.type === 'datasource') {
+			if (options.type == 'datasource') {
 				types = datasourcePlugins;
-				title = 'データソース';
-			} else if (options.type === 'widget') {
+				title = $.i18n.t('PluginEditor.datasource.title');
+			} else if (options.type == 'widget') {
 				types = widgetPlugins;
-				title = 'ウィジェット';
-			} else if (options.type === 'pane') {
-				title = 'ペイン';
+				title = $.i18n.t('PluginEditor.widget.title');
+			} else if (options.type == 'pane') {
+				title = $.i18n.t('PluginEditor.pane.title');
 			}
 
 			$(element).click(function(event) {
-				if (options.operation === 'delete') {
-					var phraseElement = $('<p>' + title + ' を削除してもよろしいですか？</p>');
-					var db = new DialogBox(phraseElement, '削除確認', 'はい', 'いいえ', function(okcancel) {
-						if (okcancel === 'ok') {
-							if (options.type === 'datasource')
+				if (options.operation == 'delete') {
+					var _title = $.i18n.t('PluginEditor.delete.title'),
+						_yes = $.i18n.t('global.yes'),
+						_no = $.i18n.t('global.no'),
+						_ask = $.i18n.t('PluginEditor.delete.text');
+
+					var phraseElement = $('<p>' + title + ' ' + _ask + ' ？</p>');
+					var db = new DialogBox(phraseElement, _title, _yes, _no, function(okcancel) {
+						if (okcancel == 'ok') {
+							if (options.type == 'datasource') {
 								theFreeboardModel.deleteDatasource(viewModel);
-							else if (options.type === 'widget')
+							} else if (options.type == 'widget') {
 								theFreeboardModel.deleteWidget(viewModel);
-							else if (options.type === 'pane')
+							} else if (options.type == 'pane') {
 								theFreeboardModel.deletePane(viewModel);
+							}
 						}
 					});
 				} else {
 					var instanceType;
 
 					if (options.type === 'datasource') {
-						if(options.operation ===  'add') {
+						if(options.operation === 'add') {
 							settings = {};
 						} else {
 							instanceType = viewModel.type();
@@ -2692,24 +2716,21 @@ var freeboard = (function() {
 
 						types = {
 							settings: {
-								settings: [
-									{
-										name: 'title',
-										display_name: 'タイトル',
-										validate: 'optional,maxSize[100]',
-										type: 'text',
-										description: '最大100文字'
-									},
-									{
-										name : 'col_width',
-										display_name : 'カラム幅',
-										validate: 'required,custom[integer],min[1],max[10]',
-										style: 'width:100px',
-										type: 'number',
-										default_value : 1,
-										description: '最大10ブロック'
-									}
-								]
+								settings: [{
+									name: "title",
+									display_name: $.i18n.t('PluginEditor.pane.edit.title'),
+									validate: "optional,maxSize[100]",
+									type: "text",
+									description: $.i18n.t('PluginEditor.pane.edit.title_desc')
+								}, {
+									name: "col_width",
+									display_name: $.i18n.t('PluginEditor.pane.edit.colwidth'),
+									validate: "required,custom[integer],min[1],max[10]",
+									style: "width:100px",
+									type: "number",
+									default_value: 1,
+									description: $.i18n.t('PluginEditor.pane.edit.colwidth_desc')
+								}]
 							}
 						};
 					}
@@ -2855,6 +2876,7 @@ var freeboard = (function() {
 	// PUBLIC FUNCTIONS
 	return {
 		initialize          : function(allowEdit, finishedCallback) {
+
 			// Check to see if we have a query param called load. If so, we should load that dashboard initially
 			var freeboardLocation = getParameterByName('load');
 
@@ -2904,7 +2926,7 @@ var freeboard = (function() {
 		},
 
 		loadDatasourcePlugin: function(plugin) {
-			if (_.isUndefined(plugin.display_name))
+			if (_.isUndefined(plugin.display_name) || plugin.display_name === '')
 				plugin.display_name = plugin.type_name;
 
 			// Datasource name must be unique
@@ -2920,12 +2942,11 @@ var freeboard = (function() {
 
 			// Add a required setting called name to the beginning
 			plugin.settings.unshift({
-				name : 'name',
-				display_name : '名前',
+				name: 'name',
+				display_name: $.i18n.t('PluginEditor.datasource.given_name'),
 				validate: 'funcCall[freeboard.isUniqueDatasourceName],required,custom[illegalEscapeChar],maxSize[20]',
 				type: 'text',
-				escape: true,
-				description: '最大20文字まで'
+				description: $.i18n.t('PluginEditor.datasource.given_name_desc')
 			});
 
 			theFreeboardModel.addPluginSource(plugin.source);
@@ -3088,408 +3109,408 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'clock',
-		display_name: '時計',
-		description: '指定の間隔で更新され、異なるフォーマットで現在の時刻を返します。画面上にタイマーを表示したり、ウィジェットが一定の間隔でリフレッシュさせるために使用することができます。',
+		display_name: $.i18n.t('plugins_ds.clock.display_name'),
+		description: $.i18n.t('plugins_ds.clock.description'),
 		settings: [
 			{
 				name: 'timezone',
-				display_name: 'タイムゾーン',
+				display_name: $.i18n.t('plugins_ds.clock.timezone'),
 				type: 'option',
 				default_value: 'Asia/Tokyo',
 				options: [
 					{
-						name: '(UTC-12:00) 国際日付変更線 西側',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Etc/GMT+12'),
 						value: 'Etc/GMT+12'
 					},
 					{
-						name: '(UTC-11:00) 協定世界時-11',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Etc/GMT+11'),
 						value: 'Etc/GMT+11'
 					},
 					{
-						name: '(UTC-10:00) ハワイ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Honolulu'),
 						value: 'Pacific/Honolulu'
 					},
 					{
-						name: '(UTC-09:00) アラスカ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Anchorage'),
 						value: 'America/Anchorage'
 					},
 					{
-						name: '(UTC-08:00) バハカリフォルニア',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Santa_Isabel'),
 						value: 'America/Santa_Isabel'
 					},
 					{
-						name: '(UTC-08:00) 太平洋標準時(米国およびカナダ)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Los_Angeles'),
 						value: 'America/Los_Angeles'
 					},
 					{
-						name: '(UTC-07:00) チワワ、ラパス、マサトラン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Chihuahua'),
 						value: 'America/Chihuahua'
 					},
 					{
-						name: '(UTC-07:00) アリゾナ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Phoenix'),
 						value: 'America/Phoenix'
 					},
 					{
-						name: '(UTC-07:00) 山地標準時(米国およびカナダ)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Denver'),
 						value: 'America/Denver'
 					},
 					{
-						name: '(UTC-06:00) 中央アメリカ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Guatemala'),
 						value: 'America/Guatemala'
 					},
 					{
-						name: '(UTC-06:00) 中部標準時(米国およびカナダ)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Chicago'),
 						value: 'America/Chicago'
 					},
 					{
-						name: '(UTC-06:00) サスカチュワン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Regina'),
 						value: 'America/Regina'
 					},
 					{
-						name: '(UTC-06:00) グアダラハラ、メキシコシティ、モンテレー',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Mexico_City'),
 						value: 'America/Mexico_City'
 					},
 					{
-						name: '(UTC-05:00) ボゴタ、リマ、キト',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Bogota'),
 						value: 'America/Bogota'
 					},
 					{
-						name: '(UTC-05:00) インディアナ東部',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Indiana/Indianapolis'),
 						value: 'America/Indiana/Indianapolis'
 					},
 					{
-						name: '(UTC-05:00) 東部標準時(米国およびカナダ)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/New_York'),
 						value: 'America/New_York'
 					},
 					{
-						name: '(UTC-04:30) カラカス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Caracas'),
 						value: 'America/Caracas'
 					},
 					{
-						name: '(UTC-04:00) 大西洋標準時(カナダ)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Halifax'),
 						value: 'America/Halifax'
 					},
 					{
-						name: '(UTC-04:00) アスンシオン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Asuncion'),
 						value: 'America/Asuncion'
 					},
 					{
-						name: '(UTC-04:00) ジョージタウン、ラパス、マナウス、サンフアン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/La_Paz'),
 						value: 'America/La_Paz'
 					},
 					{
-						name: '(UTC-04:00) クイアバ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Cuiaba'),
 						value: 'America/Cuiaba'
 					},
 					{
-						name: '(UTC-04:00) サンチアゴ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Santiago'),
 						value: 'America/Santiago'
 					},
 					{
-						name: '(UTC-03:30) ニューファンドランド',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/St_Johns'),
 						value: 'America/St_Johns'
 					},
 					{
-						name: '(UTC-03:00) ブラジリア',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Sao_Paulo'),
 						value: 'America/Sao_Paulo'
 					},
 					{
-						name: '(UTC-03:00) グリーンランド',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Godthab'),
 						value: 'America/Godthab'
 					},
 					{
-						name: '(UTC-03:00) カイエンヌ、フォルタレザ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Cayenne'),
 						value: 'America/Cayenne'
 					},
 					{
-						name: '(UTC-03:00) ブエノスアイレス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Argentina/Buenos_Aires'),
 						value: 'America/Argentina/Buenos_Aires'
 					},
 					{
-						name: '(UTC-03:00) モンテビデオ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Montevideo'),
 						value: 'America/Montevideo'
 					},
 					{
-						name: '(UTC-02:00) 協定世界時-2',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Etc/GMT+2'),
 						value: 'Etc/GMT+2'
 					},
 					{
-						name: '(UTC-01:00) カーボベルデ諸島',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Cape_Verde'),
 						value: 'America/Cape_Verde'
 					},
 					{
-						name: '(UTC-01:00) アゾレス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Atlantic/Azores'),
 						value: 'Atlantic/Azores'
 					},
 					{
-						name: '(UTC+00:00) カサブランカ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.America/Casablanca'),
 						value: 'America/Casablanca'
 					},
 					{
-						name: '(UTC+00:00) モンロビア、レイキャビク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Atlantic/Reykjavik'),
 						value: 'Atlantic/Reykjavik'
 					},
 					{
-						name: '(UTC+00:00) ダブリン、エジンバラ、リスボン、ロンドン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/London'),
 						value: 'Europe/London'
 					},
 					{
-						name: '(UTC+00:00) 協定世界時',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Etc/GMT'),
 						value: 'Etc/GMT'
 					},
 					{
-						name: '(UTC+01:00) アムステルダム、ベルリン、ベルン、ローマ、ストックホルム、ウィーン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Berlin'),
 						value: 'Europe/Berlin'
 					},
 					{
-						name: '(UTC+01:00) ブリュッセル、コペンハーゲン、マドリード、パリ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Paris'),
 						value: 'Europe/Paris'
 					},
 					{
-						name: '(UTC+01:00) 西中央アフリカ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Africa/Lagos'),
 						value: 'Africa/Lagos'
 					},
 					{
-						name: '(UTC+01:00) ベオグラード、ブラチスラバ、ブダペスト、リュブリャナ、プラハ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Budapest'),
 						value: 'Europe/Budapest'
 					},
 					{
-						name: '(UTC+01:00) サラエボ、スコピエ、ワルシャワ、ザグレブ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Warsaw'),
 						value: 'Europe/Warsaw'
 					},
 					{
-						name: '(UTC+01:00) ウィントフック',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Africa/Windhoek'),
 						value: 'Africa/Windhoek'
 					},
 					{
-						name: '(UTC+02:00) アテネ、ブカレスト、イスタンブール',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Istanbul'),
 						value: 'Europe/Istanbul'
 					},
 					{
-						name: '(UTC+02:00) ヘルシンキ、キエフ、リガ、ソフィア、タリン、ビリニュス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Kiev'),
 						value: 'Europe/Kiev'
 					},
 					{
-						name: '(UTC+02:00) カイロ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Africa/Cairo'),
 						value: 'Africa/Cairo'
 					},
 					{
-						name: '(UTC+02:00) ダマスカス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Damascus'),
 						value: 'Asia/Damascus'
 					},
 					{
-						name: '(UTC+02:00) アンマン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Amman'),
 						value: 'Asia/Amman'
 					},
 					{
-						name: '(UTC+02:00) ハラーレ、プレトリア',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Africa/Johannesburg'),
 						value: 'Africa/Johannesburg'
 					},
 					{
-						name: '(UTC+02:00) エルサレム',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Jerusalem'),
 						value: 'Asia/Jerusalem'
 					},
 					{
-						name: '(UTC+02:00) ベイルート',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Beirut'),
 						value: 'Asia/Beirut'
 					},
 					{
-						name: '(UTC+03:00) バグダッド',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Baghdad'),
 						value: 'Asia/Baghdad'
 					},
 					{
-						name: '(UTC+03:00) ミンスク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Minsk'),
 						value: 'Europe/Minsk'
 					},
 					{
-						name: '(UTC+03:00) クエート、リヤド',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Riyadh'),
 						value: 'Asia/Riyadh'
 					},
 					{
-						name: '(UTC+03:00) ナイロビ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Africa/Nairobi'),
 						value: 'Africa/Nairobi'
 					},
 					{
-						name: '(UTC+03:30) テヘラン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Tehran'),
 						value: 'Asia/Tehran'
 					},
 					{
-						name: '(UTC+04:00) モスクワ、サンクトペテルブルグ、ボルゴグラード',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Europe/Moscow'),
 						value: 'Europe/Moscow'
 					},
 					{
-						name: '(UTC+04:00) トビリシ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Tbilisi'),
 						value: 'Asia/Tbilisi'
 					},
 					{
-						name: '(UTC+04:00) エレバン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Yerevan'),
 						value: 'Asia/Yerevan'
 					},
 					{
-						name: '(UTC+04:00) アブダビ、マスカット',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Dubai'),
 						value: 'Asia/Dubai'
 					},
 					{
-						name: '(UTC+04:00) バクー',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Baku'),
 						value: 'Asia/Baku'
 					},
 					{
-						name: '(UTC+04:00) ポートルイス',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Indian/Mauritius'),
 						value: 'Indian/Mauritius'
 					},
 					{
-						name: '(UTC+04:30) カブール',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Kabul'),
 						value: 'Asia/Kabul'
 					},
 					{
-						name: '(UTC+05:00) タシケント',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Tashkent'),
 						value: 'Asia/Tashkent'
 					},
 					{
-						name: '(UTC+05:00) イスラマバード、カラチ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Karachi'),
 						value: 'Asia/Karachi'
 					},
 					{
-						name: '(UTC+05:30) スリジャヤワルダナプラコッテ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Colombo'),
 						value: 'Asia/Colombo'
 					},
 					{
-						name: '(UTC+05:30) チェンナイ、コルカタ、ムンバイ、ニューデリー',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Indian/Kolkata'),
 						value: 'Indian/Kolkata'
 					},
 					{
-						name: '(UTC+05:45) カトマンズ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Kathmandu'),
 						value: 'Asia/Kathmandu'
 					},
 					{
-						name: '(UTC+06:00) アスタナ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Almaty'),
 						value: 'Asia/Almaty'
 					},
 					{
-						name: '(UTC+06:00) ダッカ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Dhaka'),
 						value: 'Asia/Dhaka'
 					},
 					{
-						name: '(UTC+06:00) エカテリンブルグ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Yekaterinburg'),
 						value: 'Asia/Yekaterinburg'
 					},
 					{
-						name: '(UTC+06:30) ヤンゴン(ラングーン)',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Rangoon'),
 						value: 'Asia/Rangoon'
 					},
 					{
-						name: '(UTC+07:00) バンコク、ハノイ、ジャカルタ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Bangkok'),
 						value: 'Asia/Bangkok'
 					},
 					{
-						name: '(UTC+07:00) ノヴォシビルスク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Novosibirsk'),
 						value: 'Asia/Novosibirsk'
 					},
 					{
-						name: '(UTC+08:00) クラスノヤルスク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Krasnoyarsk'),
 						value: 'Asia/Krasnoyarsk'
 					},
 					{
-						name: '(UTC+08:00) ウランバートル',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Ulaanbaatar'),
 						value: 'Asia/Ulaanbaatar'
 					},
 					{
-						name: '(UTC+08:00) 北京、重慶、香港特別行政区、ウルムチ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Shanghai'),
 						value: 'Asia/Shanghai'
 					},
 					{
-						name: '(UTC+08:00) パース',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Perth'),
 						value: 'Australia/Perth'
 					},
 					{
-						name: '(UTC+08:00) クアラルンプール、シンガポール',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Singapore'),
 						value: 'Asia/Singapore'
 					},
 					{
-						name: '(UTC+08:00) 台北',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Taipei'),
 						value: 'Asia/Taipei'
 					},
 					{
-						name: '(UTC+09:00) イルクーツク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Irkutsk'),
 						value: 'Asia/Irkutsk'
 					},
 					{
-						name: '(UTC+09:00) ソウル',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Seoul'),
 						value: 'Asia/Seoul'
 					},
 					{
-						name: '(UTC+09:00) 大阪、札幌、東京',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Tokyo'),
 						value: 'Asia/Tokyo'
 					},
 					{
-						name: '(UTC+09:30) ダーウィン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Darwin'),
 						value: 'Australia/Darwin'
 					},
 					{
-						name: '(UTC+09:30) アデレード',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Adelaide'),
 						value: 'Australia/Adelaide'
 					},
 					{
-						name: '(UTC+10:00) ホバート',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Hobart'),
 						value: 'Australia/Hobart'
 					},
 					{
-						name: '(UTC+10:00) ヤクーツク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Yakutsk'),
 						value: 'Asia/Yakutsk'
 					},
 					{
-						name: '(UTC+10:00) ブリスベン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Brisbane'),
 						value: 'Australia/Brisbane'
 					},
 					{
-						name: '(UTC+10:00) グアム、ポートモレスビー',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Port_Moresby'),
 						value: 'Pacific/Port_Moresby'
 					},
 					{
-						name: '(UTC+10:00) キャンベラ、メルボルン、シドニー',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Australia/Sydney'),
 						value: 'Australia/Sydney'
 					},
 					{
-						name: '(UTC+11:00) ウラジオストク',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Vladivostok'),
 						value: 'Asia/Vladivostok'
 					},
 					{
-						name: '(UTC+11:00) ソロモン諸島、ニューカレドニア',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Guadalcanal'),
 						value: 'Pacific/Guadalcanal'
 					},
 					{
-						name: '(UTC+12:00) 協定世界時+12',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Etc/GMT-12'),
 						value: 'Etc/GMT-12'
 					},
 					{
-						name: '(UTC+12:00) フィジー、マーシャル諸島',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Fiji'),
 						value: 'Pacific/Fiji'
 					},
 					{
-						name: '(UTC+12:00) マガダン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Asia/Magadan'),
 						value: 'Asia/Magadan'
 					},
 					{
-						name: '(UTC+12:00) オークランド、ウェリントン',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Auckland'),
 						value: 'Pacific/Auckland'
 					},
 					{
-						name: '(UTC+13:00) ヌクアロファ',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Tongatapu'),
 						value: 'Pacific/Tongatapu'
 					},
 					{
-						name: '(UTC+13:00) サモア',
+						name: $.i18n.t('plugins_ds.clock.timezone_options.Pacific/Apia'),
 						value: 'Pacific/Apia'
 					}
 				]
 			},
 			{
 				name: 'refresh',
-				display_name: '更新頻度',
+				display_name: $.i18n.t('plugins_ds.clock.refresh'),
 				validate: 'required,custom[integer],min[1]',
 				style: 'width:100px',
 				type: 'number',
-				suffix: '秒',
+				suffix: $.i18n.t('plugins_ds.clock.refresh_suffix'),
 				default_value: 1
 			}
 		],
@@ -3608,34 +3629,34 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'JSON',
-		display_name: 'JSON',
-		description: '指定のURLからJSONデータを受信します。',
+		display_name: $.i18n.t('plugins_ds.json.display_name'),
+		description: $.i18n.t('plugins_ds.json.description'),
 		settings: [
 			{
 				name: 'url',
-				display_name: 'URL',
+				display_name: $.i18n.t('plugins_ds.json.url'),
 				validate: 'required,custom[url]',
 				type: 'text'
 			},
 			{
 				name: 'use_thingproxy',
-				display_name: 'プロキシサーバー試行',
-				description: 'まず直接接続し、失敗した場合、JSONP接続を試みます。これも失敗した場合、プロキシサーバーを使用することができます。使用することで多くのAPI接続トラブルを解決できるでしょう。<a href="https://github.com/Freeboard/thingproxy" target="_blank">詳細</a>',
+				display_name: $.i18n.t('plugins_ds.json.use_thingproxy'),
+				description: $.i18n.t('plugins_ds.json.use_thingproxy_desc'),
 				type: 'boolean',
 				default_value: true
 			},
 			{
 				name: 'refresh',
-				display_name: '更新頻度',
+				display_name: $.i18n.t('plugins_ds.json.refresh'),
 				validate: 'required,custom[integer],min[1]',
 				style: 'width:100px',
 				type: 'number',
-				suffix: '秒',
+				suffix: $.i18n.t('plugins_ds.json.refresh_suffix'),
 				default_value: 5
 			},
 			{
 				name: 'method',
-				display_name: 'メソッド',
+				display_name: $.i18n.t('plugins_ds.json.method'),
 				type: 'option',
 				style: 'width:200px',
 				options: [
@@ -3659,29 +3680,27 @@ $.extend(freeboard, jQuery.eventEmitter);
 			},
 			{
 				name: 'body',
-				display_name: 'Body',
+				display_name: $.i18n.t('plugins_ds.json.body'),
 				type: 'json',
 				validate: 'optional,maxSize[2000]',
-				description: 'リクエスト本文。通常はPOSTメソッド時に使用される。最大2000文字'
+				description: $.i18n.t('plugins_ds.json.body_desc')
 			},
 			{
 				name: 'headers',
-				display_name: 'Header',
+				display_name: $.i18n.t('plugins_ds.json.headers'),
 				type: 'array',
 				settings: [
 					{
 						name: 'name',
-						display_name: '名前',
+						display_name: $.i18n.t('plugins_ds.json.headers_name'),
 						type: 'text',
-						validate: 'optional,maxSize[500]',
-						description: '最大500文字'
+						validate: 'optional,maxSize[500]'
 					},
 					{
 						name: 'value',
-						display_name: '値',
+						display_name: $.i18n.t('plugins_ds.json.headers_value'),
 						type: 'text',
-						validate: 'optional,maxSize[500]',
-						description: '最大500文字'
+						validate: 'optional,maxSize[500]'
 					}
 				]
 			}
@@ -3796,20 +3815,20 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadDatasourcePlugin({
 		type_name : 'mqtt',
-		display_name : 'MQTT over Websocket',
-		description : '<a href="http://mqtt.org/", target="_blank">MQTT</a>プロトコルをWebSocketを介し、MQTTブローカーサーバーからJSONデータを受信します。',
+		display_name : $.i18n.t('plugins_ds.mqtt.display_name'),
+		description : $.i18n.t('plugins_ds.mqtt.description'),
 		external_scripts : [ 'plugins/thirdparty/mqttws31.min.js' ],
 		settings : [
 			{
 				name : 'hostname',
-				display_name : 'DNSホスト名',
+				display_name : $.i18n.t('plugins_ds.mqtt.hostname'),
 				validate: 'required,maxSize[1000]',
 				type: 'text',
-				description: '最大1000文字<br>MQTTブローカーサーバーのDNSホスト名を設定して下さい。<br>例: location.hostname'
+				description: $.i18n.t('plugins_ds.mqtt.hostname_desc'),
 			},
 			{
 				name : 'port',
-				display_name : 'ポート番号',
+				display_name : $.i18n.t('plugins_ds.mqtt.port'),
 				validate: 'required,custom[integer],min[1]',
 				type: 'number',
 				style: 'width:100px',
@@ -3817,40 +3836,39 @@ $.extend(freeboard, jQuery.eventEmitter);
 			},
 			{
 				name : 'clientID',
-				display_name : 'クライアントID',
+				display_name : $.i18n.t('plugins_ds.mqtt.clientID'),
 				validate: 'required,maxSize[23]',
 				type: 'text',
-				description: '最大23文字<br>任意のクライアントID文字列',
+				description: $.i18n.t('plugins_ds.mqtt.clientID_desc'),
 				default_value: 'SensorCorpus'
 			},
 			{
 				name : 'topic',
-				display_name : 'トピック',
+				display_name : $.i18n.t('plugins_ds.mqtt.topic'),
 				validate: 'required,maxSize[500]',
 				type: 'text',
-				description: '最大500文字<br>購読するトピック名を設定して下さい。<br>例: my/topic',
+				description: $.i18n.t('plugins_ds.mqtt.topic_desc'),
 				default_value: ''
 			},
 			{
 				name : 'username',
-				display_name : '(オプション) ユーザー名',
+				display_name : $.i18n.t('plugins_ds.mqtt.username'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字<br>必要ない場合は空白。'
+				description: $.i18n.t('plugins_ds.mqtt.username_desc')
 			},
 			{
 				name : 'password',
-				display_name : '(オプション) パスワード',
+				display_name : $.i18n.t('plugins_ds.mqtt.password'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字<br>必要ない場合は空白。'
+				description: $.i18n.t('plugins_ds.mqtt.password_desc'),
 			},
 			{
 				name: 'reconnect',
-				display_name: '自動再接続',
+				display_name: $.i18n.t('plugins_ds.mqtt.reconnect'),
 				type: 'boolean',
-				default_value: true,
-				description: '接続が切れた際自動的に再接続します。'
+				default_value: true
 			}
 		],
 		newInstance : function(settings, newInstanceCallback, updateCallback) {
@@ -3977,42 +3995,42 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadDatasourcePlugin({
 		type_name : 'node_js',
-		display_name : 'Node.js (Socket.io)',
-		description : '<a href="http://socket.io/", target="_blank">Socket.io</a>を使用したnode.jsサーバーからJSONデータを受信します。',
+		display_name : $.i18n.t('plugins_ds.node_js.display_name'),
+		description : $.i18n.t('plugins_ds.node_js.description'),
 		external_scripts : [ 'https://cdn.socket.io/socket.io-1.2.1.js' ],
 		settings : [
 			{
 				name: 'url',
-				display_name: 'サーバーURL',
+				display_name: $.i18n.t('plugins_ds.node_js.url'),
 				validate: 'required,maxSize[1000]',
 				type: 'text',
-				description: '最大1000文字 (オプション) カスタム名前空間を使用する場合、URLの最後に名前空間を追加して下さい。<br>例: http://localhost/chat'
+				description: $.i18n.t('plugins_ds.node_js.url_desc')
 			},
 			{
 				name : 'events',
-				display_name : 'イベント',
-				description : 'データソースへ追加するイベント名を指定して下さい。',
+				display_name : $.i18n.t('plugins_ds.node_js.events'),
+				description : $.i18n.t('plugins_ds.node_js.events_desc'),
 				type : 'array',
 				settings : [ {
 					name : 'eventName',
-					display_name : 'イベント名',
+					display_name : $.i18n.t('plugins_ds.node_js.event_name'),
 					validate: 'optional,maxSize[100]',
 					type: 'text'
 				} ]
 			},
 			{
 				name : 'rooms',
-				display_name : '(オプション) ルーム',
-				description : 'ルームを使用する場合, 追加したいルーム名を指定して下さい。その他の場合は空白のままにしておいて下さい。',
+				display_name : $.i18n.t('plugins_ds.node_js.rooms'),
+				description : $.i18n.t('plugins_ds.node_js.rooms_desc'),
 				type : 'array',
 				settings : [ {
 					name : 'roomName',
-					display_name : 'ルーム名',
+					display_name : $.i18n.t('plugins_ds.node_js.room_name'),
 					validate: 'optional,maxSize[100]',
 					type: 'text'
 				}, {
 					name : 'roomEvent',
-					display_name : 'ルームに参加するイベント名',
+					display_name : $.i18n.t('plugins_ds.node_js.room_event'),
 					validate: 'optional,maxSize[100]',
 					type: 'text'
 				} ]
@@ -4103,40 +4121,40 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadDatasourcePlugin({
 		type_name: "openweathermap",
-		display_name: "Open Weather Map API",
-		description: "天候や予測履歴を含む各種気象データを受信します。",
+		display_name: $.i18n.t('plugins_ds.owm.display_name'),
+		description: $.i18n.t('plugins_ds.owm.description'),
 		settings: [
 			{
 				name: "location",
-				display_name: "場所",
+				display_name: $.i18n.t('plugins_ds.owm.location'),
 				validate: "required,maxSize[200]",
 				type: "text",
-				description: "最大200文字<br>例: London, UK"
+				description: $.i18n.t('plugins_ds.owm.location_desc')
 			},
 			{
 				name: "units",
-				display_name: "単位",
+				display_name: $.i18n.t('plugins_ds.owm.units'),
 				style: "width:200px",
 				type: "option",
 				default_value: "metric",
 				options: [
 					{
-						name: "メトリック",
+						name: $.i18n.t('plugins_ds.owm.units_metric'),
 						value: "metric"
 					},
 					{
-						name: "インペリアル",
+						name: $.i18n.t('plugins_ds.owm.units_imperial'),
 						value: "imperial"
 					}
 				]
 			},
 			{
 				name: "refresh",
-				display_name: "更新頻度",
+				display_name: $.i18n.t('plugins_ds.owm.refresh'),
 				validate: "required,custom[integer],min[5]",
 				style: "width:100px",
 				type: "number",
-				suffix: "秒",
+				suffix: $.i18n.t('plugins_ds.owm.refresh_suffix'),
 				default_value: 5
 			}
 		],
@@ -4228,34 +4246,34 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'playback',
-		display_name: 'Playback',
-		description: '指定された間隔で連続したデータを再生します。オブジェクトの配列を含む有効なJSONファイルを受信します。',
+		display_name: $.i18n.t('plugins_ds.playback.display_name'),
+		description: $.i18n.t('plugins_ds.playback.description'),
 		settings: [
 			{
 				name: 'datafile',
-				display_name: 'データファイルURL',
+				display_name: $.i18n.t('plugins_ds.playback.datafile'),
 				validate: 'required,custom[url]',
 				type: 'text',
-				description: 'JSON配列データへのリンク'
+				description: $.i18n.t('plugins_ds.playback.datafile_desc')
 			},
 			{
 				name: 'is_jsonp',
-				display_name: 'JSONP使用',
+				display_name: $.i18n.t('plugins_ds.playback.is_jsonp'),
 				type: 'boolean'
 			},
 			{
 				name: 'loop',
-				display_name: 'ループ再生',
+				display_name: $.i18n.t('plugins_ds.playback.loop'),
 				type: 'boolean',
-				description: '巻戻しとループ再生時終了'
+				description: $.i18n.t('plugins_ds.playback.loop_desc'),
 			},
 			{
 				name: 'refresh',
-				display_name: '更新頻度',
+				display_name: $.i18n.t('plugins_ds.playback.refresh'),
 				validate: 'required,custom[integer],min[1]',
 				style: 'width:100px',
 				type: 'number',
-				suffix: '秒',
+				suffix: $.i18n.t('plugins_ds.playback.refresh_suffix'),
 				default_value: 5
 			}
 		],
@@ -4346,22 +4364,21 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'websocket',
-		display_name: 'WebSocket',
-		description: 'WebSocket APIを使用し、JSONデータを受信します。',
+		display_name: $.i18n.t('plugins_ds.websocket.display_name'),
+		description: $.i18n.t('plugins_ds.websocket.description'),
 		settings: [
 			{
 				name: 'uri',
-				display_name: 'サーバーURI',
+				display_name: $.i18n.t('plugins_ds.websocket.uri'),
 				validate: 'required,maxSize[1000]',
 				type: 'text',
-				description: '最大1000文字 例: ws://server:port/path '
+				description: $.i18n.t('plugins_ds.websocket.uri_desc'),
 			},
 			{
 				name: 'reconnect',
-				display_name: '自動再接続',
+				display_name: $.i18n.t('plugins_ds.websocket.reconnect'),
 				type: 'boolean',
-				default_value: true,
-				description: '接続が切れた際自動的に再接続します。'
+				default_value: true
 			}
 		],
 		newInstance: function(settings, newInstanceCallback, updateCallback) {
@@ -4390,54 +4407,54 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 		// condition code
 		var conditionMap = [
-			'竜巻',                     // 0   tornado
-			'台風',                     // 1   tropical storm
-			'ハリケーン',               // 2   hurricane
-			'激しい雷雨',               // 3   severe thunderstorms
-			'雷雨',                     // 4   thunderstorms
-			'雪混じりの雨',             // 5   mixed rain and snow
-			'みぞれ混じりの雨',         // 6   mixed rain and sleet
-			'みぞれ混じりの雪',         // 7   mixed snow and sleet
-			'着氷性の霧雨',             // 8   freezing drizzle
-			'霧雨',                     // 9   drizzle
-			'着氷性の雨',               // 10  freezing rain
-			'にわか雨',                 // 11  showers
-			'にわか雨',                 // 12  showers
-			'雪の突風',                 // 13  snow flurries
-			'時々雪',                   // 14  light snow showers
-			'吹雪',                     // 15  blowing snow
-			'雪',                       // 16  snow
-			'雹',                       // 17  hail
-			'みぞれ',                   // 18  sleet
-			'ほこり',                   // 19  dust
-			'霧',                       // 20  foggy
-			'靄',                       // 21  haze
-			'埃っぽい',                 // 22  smoky
-			'荒れ模様',                 // 23  blustery
-			'強風',                     // 24  windy
-			'寒い',                     // 25  cold
-			'曇り',                     // 26  cloudy
-			'おおむね曇り(夜)',         // 27  mostly cloudy (night)
-			'おおむね曇り(昼)',         // 28  mostly cloudy (day)
-			'ところにより曇り(夜)',     // 29  partly cloudy (night)
-			'ところにより曇り(昼)',     // 30  partly cloudy (day)
-			'快晴(夜)',                 // 31  clear (night)
-			'陽気な晴れ',               // 32  sunny
-			'晴れ(夜)',                 // 33  fair (night)
-			'晴れ(昼)',                 // 34  fair (day)
-			'雨と雹',                   // 35  mixed rain and hail
-			'暑い',                     // 36  hot
-			'局地的に雷雨',             // 37  isolated thunderstorms
-			'ところにより雷雨',         // 38  scattered thunderstorms
-			'ところにより雷雨',         // 39  scattered thunderstorms
-			'ところによりにわか雨',     // 40  scattered showers
-			'大雪',                     // 41  heavy snow
-			'吹雪',                     // 42  scattered snow showers
-			'大雪',                     // 43  heavy snow
-			'ところにより曇り',         // 44  partly cloudy
-			'雷雨',                     // 45  thundershowers
-			'吹雪',                     // 46  snow showers
-			'ところにより雷雨'          // 47  isolated thundershowers
+			$.i18n.t('plugins_ds.yahooweather.cond_0'),     // 0   tornado
+			$.i18n.t('plugins_ds.yahooweather.cond_1'),     // 1   tropical storm
+			$.i18n.t('plugins_ds.yahooweather.cond_2'),     // 2   hurricane
+			$.i18n.t('plugins_ds.yahooweather.cond_3'),     // 3   severe thunderstorms
+			$.i18n.t('plugins_ds.yahooweather.cond_4'),     // 4   thunderstorms
+			$.i18n.t('plugins_ds.yahooweather.cond_5'),     // 5   mixed rain and snow
+			$.i18n.t('plugins_ds.yahooweather.cond_6'),     // 6   mixed rain and sleet
+			$.i18n.t('plugins_ds.yahooweather.cond_7'),     // 7   mixed snow and sleet
+			$.i18n.t('plugins_ds.yahooweather.cond_8'),     // 8   freezing drizzle
+			$.i18n.t('plugins_ds.yahooweather.cond_9'),     // 9   drizzle
+			$.i18n.t('plugins_ds.yahooweather.cond_10'),    // 10  freezing rain
+			$.i18n.t('plugins_ds.yahooweather.cond_11'),    // 11  showers
+			$.i18n.t('plugins_ds.yahooweather.cond_12'),    // 12  showers
+			$.i18n.t('plugins_ds.yahooweather.cond_13'),    // 13  snow flurries
+			$.i18n.t('plugins_ds.yahooweather.cond_14'),    // 14  light snow showers
+			$.i18n.t('plugins_ds.yahooweather.cond_15'),    // 15  blowing snow
+			$.i18n.t('plugins_ds.yahooweather.cond_16'),    // 16  snow
+			$.i18n.t('plugins_ds.yahooweather.cond_17'),    // 17  hail
+			$.i18n.t('plugins_ds.yahooweather.cond_18'),    // 18  sleet
+			$.i18n.t('plugins_ds.yahooweather.cond_19'),    // 19  dust
+			$.i18n.t('plugins_ds.yahooweather.cond_20'),    // 20  foggy
+			$.i18n.t('plugins_ds.yahooweather.cond_21'),    // 21  haze
+			$.i18n.t('plugins_ds.yahooweather.cond_22'),    // 22  smoky
+			$.i18n.t('plugins_ds.yahooweather.cond_23'),    // 23  blustery
+			$.i18n.t('plugins_ds.yahooweather.cond_24'),    // 24  windy
+			$.i18n.t('plugins_ds.yahooweather.cond_25'),    // 25  cold
+			$.i18n.t('plugins_ds.yahooweather.cond_26'),    // 26  cloudy
+			$.i18n.t('plugins_ds.yahooweather.cond_27'),    // 27  mostly cloudy (night)
+			$.i18n.t('plugins_ds.yahooweather.cond_28'),    // 28  mostly cloudy (day)
+			$.i18n.t('plugins_ds.yahooweather.cond_29'),    // 29  partly cloudy (night)
+			$.i18n.t('plugins_ds.yahooweather.cond_30'),    // 30  partly cloudy (day)
+			$.i18n.t('plugins_ds.yahooweather.cond_31'),    // 31  clear (night)
+			$.i18n.t('plugins_ds.yahooweather.cond_32'),    // 32  sunny
+			$.i18n.t('plugins_ds.yahooweather.cond_33'),    // 33  fair (night)
+			$.i18n.t('plugins_ds.yahooweather.cond_34'),    // 34  fair (day)
+			$.i18n.t('plugins_ds.yahooweather.cond_35'),    // 35  mixed rain and hail
+			$.i18n.t('plugins_ds.yahooweather.cond_36'),    // 36  hot
+			$.i18n.t('plugins_ds.yahooweather.cond_37'),    // 37  isolated thunderstorms
+			$.i18n.t('plugins_ds.yahooweather.cond_38'),    // 38  scattered thunderstorms
+			$.i18n.t('plugins_ds.yahooweather.cond_39'),    // 39  scattered thunderstorms
+			$.i18n.t('plugins_ds.yahooweather.cond_40'),    // 40  scattered showers
+			$.i18n.t('plugins_ds.yahooweather.cond_41'),    // 41  heavy snow
+			$.i18n.t('plugins_ds.yahooweather.cond_42'),    // 42  scattered snow showers
+			$.i18n.t('plugins_ds.yahooweather.cond_43'),    // 43  heavy snow
+			$.i18n.t('plugins_ds.yahooweather.cond_44'),    // 44  partly cloudy
+			$.i18n.t('plugins_ds.yahooweather.cond_45'),    // 45  thundershowers
+			$.i18n.t('plugins_ds.yahooweather.cond_46'),    // 46  snow showers
+			$.i18n.t('plugins_ds.yahooweather.cond_47')     // 47  isolated thundershowers
 		];
 
 		function updateRefresh(refreshTime) {
@@ -4509,40 +4526,40 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'yahooweather',
-		display_name: 'Yahoo Weather API',
-		description: '<a href="https://developer.yahoo.com/weather/documentation.html" target="_blank">Yahoo Weather API</a>を使用し、天候や予測含む各種気象データを受信します。',
+		display_name: $.i18n.t('plugins_ds.yahooweather.display_name'),
+		description: $.i18n.t('plugins_ds.yahooweather.description'),
 		settings: [
 			{
 				name: 'location',
-				display_name: 'ロケーション郵便番号',
+				display_name: $.i18n.t('plugins_ds.yahooweather.location'),
 				validate: 'required,maxSize[100]',
 				type: 'text',
-				description: '最大100文字 半角英字の地名でも可'
+				description: $.i18n.t('plugins_ds.yahooweather.location_desc')
 			},
 			{
 				name: 'units',
-				display_name: '単位',
+				display_name: $.i18n.t('plugins_ds.yahooweather.units'),
 				style: 'width:200px',
 				type: 'option',
 				default_value: 'metric',
 				options: [
 					{
-						name: 'メトリック',
+						name: $.i18n.t('plugins_ds.yahooweather.units_metric'),
 						value: 'metric'
 					},
 					{
-						name: 'インペリアル',
+						name: $.i18n.t('plugins_ds.yahooweather.units_imperial'),
 						value: 'imperial'
 					}
 				]
 			},
 			{
 				name: 'refresh',
-				display_name: '更新頻度',
+				display_name: $.i18n.t('plugins_ds.yahooweather.refresh'),
 				validate: 'required,custom[integer],min[30]',
 				style: 'width:100px',
 				type: 'number',
-				suffix: '秒',
+				suffix: $.i18n.t('plugins_ds.yahooweather.refresh_suffix'),
 				default_value: 30
 			}
 		],
@@ -4609,7 +4626,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 						return ret;
 					});
 				} catch (e) {
-					alert('チャートオプションが不正です。 ' + e);
+					alert($.i18n.t('plugins_wd.c3js.options_invalid') + e);
 					console.error(e);
 					return;
 				}
@@ -4767,38 +4784,38 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'c3js',
-		display_name: 'C3チャート',
-		description: '様々な形式のチャートを表示するウィジェットです。詳細は <a href="http://c3js.org/" target="_blank">http://c3js.org/</a>',
+		display_name: $.i18n.t('plugins_wd.c3js.display_name'),
+		description: $.i18n.t('plugins_wd.c3js.description'),
 		external_scripts : [
 			'plugins/thirdparty/c3.min.js'
 		],
 		settings: [
 			{
 				name: 'title',
-				display_name: 'タイトル',
+				display_name: $.i18n.t('plugins_wd.c3js.title'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字'
+				description: $.i18n.t('plugins_wd.c3js.title_desc'),
 			},
 			{
 				name: 'blocks',
-				display_name: '高さ (ブロック数)',
+				display_name: $.i18n.t('plugins_wd.c3js.blocks'),
 				validate: 'required,custom[integer],min[2],max[20]',
 				type: 'number',
 				style: 'width:100px',
 				default_value: 4,
-				description: '1ブロック60ピクセル。20ブロックまで'
+				description: $.i18n.t('plugins_wd.c3js.blocks_desc')
 			},
 			{
 				name: 'value',
-				display_name: '値',
+				display_name: $.i18n.t('plugins_wd.c3js.value'),
 				validate: 'optional,maxSize[5000]',
 				type: 'calculated',
-				description: '最大5000文字'
+				description: $.i18n.t('plugins_wd.c3js.value_desc')
 			},
 			{
 				name: 'options',
-				display_name: 'チャートオプション',
+				display_name: $.i18n.t('plugins_wd.c3js.options'),
 				validate: 'optional,maxSize[5000]',
 				type: 'json',
 				default_value: '{\n\
@@ -4806,7 +4823,7 @@ $.extend(freeboard, jQuery.eventEmitter);
 		"type": "line"\n\
 	}\n\
 }',
-				description: '最大5000文字 JSON形式文字列。'
+				description: $.i18n.t('plugins_wd.c3js.options_desc')
 			}
 		],
 
@@ -4961,89 +4978,89 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'gauge',
-		display_name: 'ゲージ',
-		description: 'ゲージを表示するウィジェットです。',
+		display_name: $.i18n.t('plugins_wd.gauge.display_name'),
+		description: $.i18n.t('plugins_wd.gauge.description'),
 		external_scripts : [
 			'plugins/thirdparty/gauged3.min.js'
 		],
 		settings: [
 			{
 				name: 'title',
-				display_name: 'タイトル',
+				display_name: $.i18n.t('plugins_wd.gauge.title'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字'
+				description: $.i18n.t('plugins_wd.gauge.title_desc')
 			},
 			{
 				name: 'blocks',
-				display_name: '高さ (ブロック数)',
+				display_name: $.i18n.t('plugins_wd.gauge.blocks'),
 				validate: 'required,custom[integer],min[4],max[10]',
 				type: 'number',
 				style: 'width:100px',
 				default_value: 4,
-				description: '1ブロック60ピクセル。10ブロックまで'
+				description: $.i18n.t('plugins_wd.gauge.blocks_desc')
 			},
 			{
 				name: 'type',
-				display_name: '型',
+				display_name: $.i18n.t('plugins_wd.gauge.type'),
 				type: 'option',
 				options: [
 					{
-						name: 'ハーフ',
+						name: $.i18n.t('plugins_wd.gauge.type_options.half'),
 						value: 'half'
 					},
 					{
-						name: 'クオーター 左上',
+						name: $.i18n.t('plugins_wd.gauge.type_options.quarter-left-top'),
 						value: 'quarter-left-top'
 					},
 					{
-						name: 'クオーター 右上',
+						name: $.i18n.t('plugins_wd.gauge.type_options.quarter-right-top'),
 						value: 'quarter-right-top'
 					},
 					{
-						name: 'クオーター 左下',
+						name: $.i18n.t('plugins_wd.gauge.type_options.quarter-left-bottom'),
 						value: 'quarter-left-bottom'
 					},
 					{
-						name: 'クオーター 右下',
+						name: $.i18n.t('plugins_wd.gauge.type_options.quarter-right-bottom'),
 						value: 'quarter-right-bottom'
 					},
 					{
-						name: 'スリークオーター 左上',
+						name: $.i18n.t('plugins_wd.gauge.type_options.threequarter-left-top'),
 						value: 'threequarter-left-top'
 					},
 					{
-						name: 'スリークオーター 右上',
+						name: $.i18n.t('plugins_wd.gauge.type_options.threequarter-right-top'),
 						value: 'threequarter-right-top'
 					},
 					{
-						name: 'スリークオーター 左下',
+						name: $.i18n.t('plugins_wd.gauge.type_options.threequarter-left-bottom'),
 						value: 'threequarter-left-bottom'
 					},
 					{
-						name: 'スリークオーター 右下',
+						name: $.i18n.t('plugins_wd.gauge.type_options.threequarter-right-bottom'),
 						value: 'threequarter-right-bottom'
 					},
 					{
-						name: 'スリークオーター 下',
+						name: $.i18n.t('plugins_wd.gauge.type_options.threequarter-bottom'),
 						value: 'threequarter-bottom'
 					},
 					{
-						name: 'ドーナッツ',
+						name: $.i18n.t('plugins_wd.gauge.type_options.donut'),
 						value: 'donut'
 					}
 				]
 			},
 			{
 				name: 'value',
-				display_name: '値',
+				display_name: $.i18n.t('plugins_wd.gauge.value'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.gauge.value_desc')
 			},
 			{
 				name: 'decimal',
-				display_name: '表示小数点以下桁数',
+				display_name: $.i18n.t('plugins_wd.gauge.decimal'),
 				type: 'number',
 				validate: 'required,custom[integer],min[0],max[4]',
 				style: 'width:100px',
@@ -5051,103 +5068,102 @@ $.extend(freeboard, jQuery.eventEmitter);
 			},
 			{
 				name: 'comma',
-				display_name: 'カンマ表示',
+				display_name: $.i18n.t('plugins_wd.gauge.comma'),
 				type: 'boolean',
 				default_value: false,
 			},
 			{
 				name: 'metric_prefix',
-				display_name: '国際単位系表示',
+				display_name: $.i18n.t('plugins_wd.gauge.metric_prefix'),
 				type: 'boolean',
 				default_value: false,
-				description: '1000なら1Kのように値を短縮します。'
+				description: $.i18n.t('plugins_wd.gauge.metric_prefix_desc'),
 			},
 			{
 				name: 'animate',
-				display_name: '値変化アニメーション',
+				display_name: $.i18n.t('plugins_wd.gauge.animate'),
 				type: 'boolean',
 				default_value: true
 			},
 			{
 				name: 'units',
-				display_name: '単位',
+				display_name: $.i18n.t('plugins_wd.gauge.units'),
 				validate: 'optional,maxSize[20],custom[illegalEscapeChar]',
 				style: 'width:150px',
 				type: 'text',
-				description: '最大20文字'
+				description: $.i18n.t('plugins_wd.gauge.units_desc')
 			},
 			{
 				name: 'value_fontcolor',
-				display_name: '値フォント色',
+				display_name: $.i18n.t('plugins_wd.gauge.value_fontcolor'),
 				type: 'color',
 				validate: 'required,custom[hexcolor]',
 				default_value: '#d3d4d4',
-				description: 'デフォルト色: #d3d4d4'
+				description: $.i18n.t('plugins_wd.gauge.value_fontcolor_desc')
 			},
 			{
 				name: 'gauge_upper_color',
-				display_name: 'ゲージ色 Upper',
+				display_name: $.i18n.t('plugins_wd.gauge.gauge_upper_color'),
 				type: 'color',
 				validate: 'required,custom[hexcolor]',
 				default_value: '#ff0000',
-				description: 'デフォルト色: #ff0000'
+				description: $.i18n.t('plugins_wd.gauge.gauge_upper_color_desc')
 			},
 			{
 				name: 'gauge_mid_color',
-				display_name: 'ゲージ色 Mid',
+				display_name: $.i18n.t('plugins_wd.gauge.gauge_mid_color'),
 				type: 'color',
 				validate: 'required,custom[hexcolor]',
 				default_value: '#f9c802',
-				description: 'デフォルト色: #f9c802'
+				description: $.i18n.t('plugins_wd.gauge.gauge_mid_color_desc')
 			},
 			{
 				name: 'gauge_lower_color',
-				display_name: 'ゲージ色 Lower',
+				display_name: $.i18n.t('plugins_wd.gauge.gauge_lower_color'),
 				type: 'color',
 				validate: 'required,custom[hexcolor]',
 				default_value: '#a9d70b',
-				description: 'デフォルト色: #a9d70b'
+				description: $.i18n.t('plugins_wd.gauge.gauge_lower_color_desc')
 			},
 			{
 				name: 'gauge_color',
-				display_name: 'ゲージ背景色',
+				display_name: $.i18n.t('plugins_wd.gauge.gauge_color'),
 				type: 'color',
 				validate: 'required,custom[hexcolor]',
 				default_value: '#edebeb',
-				description: 'デフォルト色: #edebeb'
+				description: $.i18n.t('plugins_wd.gauge.gauge_color_desc')
 			},
 			{
 				name: 'gauge_width',
-				display_name: 'ゲージ太さ',
+				display_name: $.i18n.t('plugins_wd.gauge.gauge_width'),
 				type: 'number',
 				style: 'width:100px',
 				validate: 'required,custom[integer],min[0],max[100]',
 				default_value: 50,
-				description: '0から100まで'
+				description: $.i18n.t('plugins_wd.gauge.gauge_width_desc')
 			},
 			{
 				name: 'show_minmax',
-				display_name: '最小最大値表示',
+				display_name: $.i18n.t('plugins_wd.gauge.show_minmax'),
 				type: 'boolean',
 				default_value: true
 			},
 			{
 				name: 'min_value',
-				display_name: '最小値',
+				display_name: $.i18n.t('plugins_wd.gauge.min_value'),
 				type: 'number',
 				style: 'width:100px',
 				validate: 'required,custom[number],min[-100000000000],max[100000000000]',
-				default_value: 0,
-				description: '数値のみ'
+				default_value: 0
 			},
 			{
 				name: 'max_value',
-				display_name: '最大値',
+				display_name: $.i18n.t('plugins_wd.gauge.max_value'),
 				type: 'number',
 				style: 'width:100px',
 				validate: 'required,custom[number],min[-100000000000],max[100000000000]',
 				default_value: 100,
-				description: '最小値以上'
+				description: $.i18n.t('plugins_wd.gauge.max_value_desc')
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {
@@ -5311,36 +5327,36 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'google_map',
-		display_name: 'Google Map',
-		description: 'GoogleMapを表示するウィジェットです。緯度経度に値を設定するとその周辺の地図が表示されます。',
+		display_name: $.i18n.t('plugins_wd.gmap.display_name'),
+		description: $.i18n.t('plugins_wd.gmap.description'),
 		fill_size: true,
 		settings: [
 			{
 				name: 'blocks',
-				display_name: '高さ (ブロック数)',
+				display_name: $.i18n.t('plugins_wd.gmap.blocks'),
 				validate: 'required,custom[integer],min[4],max[20]',
 				type: 'number',
 				style: 'width:100px',
 				default_value: 4,
-				description: '1ブロック60ピクセル。20ブロックまで'
+				description: $.i18n.t('plugins_wd.gmap.blocks_desc')
 			},
 			{
 				name: 'lat',
-				display_name: '緯度',
+				display_name: $.i18n.t('plugins_wd.gmap.lat'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.gmap.lat_desc')
 			},
 			{
 				name: 'lon',
-				display_name: '経度',
+				display_name: $.i18n.t('plugins_wd.gmap.lon'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.gmap.lon_desc')
 			},
 			{
 				name: 'drawpath',
-				display_name: '移動経路の表示',
+				display_name: $.i18n.t('plugins_wd.gmap.drawpath'),
 				type: 'boolean',
 				default_value: false
 			}
@@ -5418,36 +5434,36 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'indicator',
-		display_name: '点灯ライト',
-		description: '指定した値の条件でライトが点灯するウィジェットです。ONにするには 1 を、OFFにするには 0 を値に設定して下さい。',
+		display_name: $.i18n.t('plugins_wd.indicator.display_name'),
+		description: $.i18n.t('plugins_wd.indicator.description.display_name'),
 		settings: [
 			{
 				name: 'title',
-				display_name: 'タイトル',
+				display_name: $.i18n.t('plugins_wd.indicator.title'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字'
+				description: $.i18n.t('plugins_wd.indicator.title_desc')
 			},
 			{
 				name: 'value',
-				display_name: '値',
+				display_name: $.i18n.t('plugins_wd.indicator.value'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.indicator.value_desc')
 			},
 			{
 				name: 'on_text',
-				display_name: 'ON時テキスト',
+				display_name: $.i18n.t('plugins_wd.indicator.on_text'),
 				validate: 'optional,maxSize[500]',
 				type: 'calculated',
-				description: '最大500文字'
+				description: $.i18n.t('plugins_wd.indicator.on_text_desc')
 			},
 			{
 				name: 'off_text',
-				display_name: 'OFF時テキスト',
+				display_name: $.i18n.t('plugins_wd.indicator.off_text'),
 				validate: 'optional,maxSize[500]',
 				type: 'calculated',
-				description: '最大500文字'
+				description: $.i18n.t('plugins_wd.indicator.off_text_desc')
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {
@@ -5555,40 +5571,40 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'picture',
-		display_name: '画像',
-		description: '画像を表示するウィジェットです。Webカメラなどの映像を表示する事に使用します。',
+		display_name: $.i18n.t('plugins_wd.picture.display_name'),
+		description: $.i18n.t('plugins_wd.picture.description'),
 		settings: [
 			{
 				name: 'title',
-				display_name: 'タイトル',
+				display_name: $.i18n.t('plugins_wd.picture.title'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字'
+				description: $.i18n.t('plugins_wd.picture.title_desc')
 			},
 			{
 				name: 'blocks',
-				display_name: '高さ (ブロック数)',
+				display_name: $.i18n.t('plugins_wd.picture.blocks'),
 				validate: 'required,custom[integer],min[4],max[20]',
 				type: 'number',
 				style: 'width:100px',
 				default_value: 4,
-				description: '1ブロック60ピクセル。20ブロックまで'
+				description: $.i18n.t('plugins_wd.picture.blocks_desc'),
 			},
 			{
 				name: 'src',
-				display_name: '画像URL',
+				display_name: $.i18n.t('plugins_wd.picture.src'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.picture.src_desc')
 			},
 			{
 				name: 'refresh',
-				display_name: '更新頻度',
+				display_name: $.i18n.t('plugins_wd.picture.refresh'),
 				validate: 'optional,custom[integer],min[1]',
 				type: 'number',
 				style: 'width:100px',
-				suffix: '秒',
-				description:'更新する必要がない場合は空白のまま'
+				suffix: $.i18n.t('plugins_wd.picture.refresh_suffix'),
+				description: $.i18n.t('plugins_wd.picture.refresh_desc')
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {
@@ -5826,62 +5842,62 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'pointer',
-		display_name: 'ポインタ',
-		description: '方角と値を表示するウィジェットです。',
+		display_name: $.i18n.t('plugins_wd.pointer.display_name'),
+		description: $.i18n.t('plugins_wd.pointer.description'),
 		settings: [
 			{
 				name: 'title',
-				display_name: 'タイトル',
+				display_name: $.i18n.t('plugins_wd.pointer.title'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字'
+				description: $.i18n.t('plugins_wd.pointer.title_desc')
 			},
 			{
 				name: 'blocks',
-				display_name: '高さ (ブロック数)',
+				display_name: $.i18n.t('plugins_wd.pointer.blocks'),
 				validate: 'required,custom[integer],min[4],max[10]',
 				type: 'number',
 				style: 'width:100px',
 				default_value: 4,
-				description: '1ブロック60ピクセル。10ブロックまで'
+				description: $.i18n.t('plugins_wd.pointer.blocks_desc')
 			},
 			{
 				name: 'direction',
-				display_name: '方向',
+				display_name: $.i18n.t('plugins_wd.pointer.direction'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字<br>角度を入力して下さい。'
+				description: $.i18n.t('plugins_wd.pointer.direction_desc')
 			},
 			{
 				name: 'value_text',
-				display_name: '値テキスト',
+				display_name: $.i18n.t('plugins_wd.pointer.value_text'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.pointer.value_text_desc')
 			},
 			{
 				name: 'units',
-				display_name: '単位',
+				display_name: $.i18n.t('plugins_wd.pointer.units'),
 				validate: 'optional,maxSize[20]',
 				style: 'width:150px',
 				type: 'text',
-				description: '最大20文字'
+				description: $.i18n.t('plugins_wd.pointer.units_desc')
 			},
 			{
 				name: 'circle_color',
-				display_name: 'サークル色',
+				display_name: $.i18n.t('plugins_wd.pointer.circle_color'),
 				validate: 'required,custom[hexcolor]',
 				type: 'color',
 				default_value: '#ff9900',
-				description: 'デフォルト色: #ff9900'
+				description: $.i18n.t('plugins_wd.pointer.circle_color_desc')
 			},
 			{
 				name: 'pointer_color',
-				display_name: 'ポインタ色',
+				display_name: $.i18n.t('plugins_wd.pointer.pointer_color'),
 				validate: 'required,custom[hexcolor]',
 				type: 'color',
 				default_value: '#fff',
-				description: 'デフォルト色: #fff'
+				description: $.i18n.t('plugins_wd.pointer.pointer_color_desc')
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {
@@ -6498,41 +6514,41 @@ $.extend(freeboard, jQuery.eventEmitter);
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'text_widget',
-		display_name: 'テキスト',
-		description: 'テキストと簡易チャートが表示できるウィジェットです。',
+		display_name: $.i18n.t('plugins_wd.text.display_name'),
+		description: $.i18n.t('plugins_wd.text.description'),
 		settings: [
 			{
 				name: 'title',
-				display_name: 'タイトル',
+				display_name: $.i18n.t('plugins_wd.text.title'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字'
+				description: $.i18n.t('plugins_wd.text.title_desc')
 			},
 			{
 				name: 'size',
-				display_name: 'テキストサイズ',
+				display_name: $.i18n.t('plugins_wd.text.size'),
 				type: 'option',
 				options: [
 					{
-						name: 'レギュラー',
+						name: $.i18n.t('plugins_wd.text.size_options.regular'),
 						value: 'regular'
 					},
 					{
-						name: 'ビッグ',
+						name: $.i18n.t('plugins_wd.text.size_options.big'),
 						value: 'big'
 					}
 				]
 			},
 			{
 				name: 'value',
-				display_name: '値',
+				display_name: $.i18n.t('plugins_wd.text.value'),
 				validate: 'optional,maxSize[2000]',
 				type: 'calculated',
-				description: '最大2000文字'
+				description: $.i18n.t('plugins_wd.text.value_desc')
 			},
 			{
 				name: 'decimal',
-				display_name: '表示小数点以下桁数',
+				display_name: $.i18n.t('plugins_wd.text.decimal'),
 				type: 'number',
 				validate: 'required,custom[integer],min[0],max[20]',
 				style: 'width:100px',
@@ -6540,66 +6556,66 @@ $.extend(freeboard, jQuery.eventEmitter);
 			},
 			{
 				name: 'comma',
-				display_name: 'カンマ表示',
+				display_name: $.i18n.t('plugins_wd.text.comma'),
 				type: 'boolean',
 				default_value: false,
 			},
 			{
 				name: 'metric_prefix',
-				display_name: '国際単位系表示',
+				display_name: $.i18n.t('plugins_wd.text.metric_prefix'),
 				type: 'boolean',
 				default_value: false,
-				description: '1000なら1Kのように値を短縮します。'
+				description: $.i18n.t('plugins_wd.text.metric_prefix_desc')
 			},
 			{
 				name: 'units',
-				display_name: '単位',
+				display_name: $.i18n.t('plugins_wd.text.units'),
 				validate: 'optional,maxSize[20]',
 				type: 'text',
 				style: 'width:150px',
-				description: '最大20文字'
+				description: $.i18n.t('plugins_wd.text.units_desc')
 			},
 			{
 				name: 'animate',
-				display_name: '値変化アニメーション',
+				display_name: $.i18n.t('plugins_wd.text.animate'),
 				type: 'boolean',
 				default_value: true
 			},
 			{
 				name: 'chart',
-				display_name: '簡易チャートを含む',
+				display_name: $.i18n.t('plugins_wd.text.chart'),
 				type: 'boolean'
 			},
 			{
 				name: 'chart_type',
-				display_name: 'チャートタイプ',
+				display_name: $.i18n.t('plugins_wd.text.chart_type'),
 				type: 'option',
 				options: [
 					{
-						name: 'ライン',
+						name: $.i18n.t('plugins_wd.text.chart_type_options.line'),
 						value: 'line'
 					},
 					{
-						name: 'エリア',
+						name: $.i18n.t('plugins_wd.text.chart_type_options.area'),
 						value: 'area'
 					}
 				]
 			},
 			{
 				name: 'chart_color',
-				display_name: 'チャート色',
+				display_name: $.i18n.t('plugins_wd.text.chart_color'),
 				validate: 'required,custom[hexcolor]',
 				type: 'color',
 				default_value: '#ff9900',
-				description: 'デフォルト色: #ff9900'
+				description: $.i18n.t('plugins_wd.text.chart_color_desc')
 			},
 			{
 				name: 'chart_minmax_color',
-				display_name: 'チャート最大最小値色',
+				display_name: $.i18n.t('plugins_wd.text.chart_minmax_color'),
 				validate: 'required,custom[hexcolor]',
 				type: 'color',
 				default_value: '#0496ff',
-				description: 'デフォルト色: #0496ff'
+				description: $.i18n.t('plugins_wd.text.chart_minmax_color_desc')
 			}
 		],
 		newInstance: function (settings, newInstanceCallback) {

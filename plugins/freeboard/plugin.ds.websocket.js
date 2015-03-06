@@ -80,22 +80,21 @@
 
 	freeboard.loadDatasourcePlugin({
 		type_name: 'websocket',
-		display_name: 'WebSocket',
-		description: 'WebSocket APIを使用し、JSONデータを受信します。',
+		display_name: $.i18n.t('plugins_ds.websocket.display_name'),
+		description: $.i18n.t('plugins_ds.websocket.description'),
 		settings: [
 			{
 				name: 'uri',
-				display_name: 'サーバーURI',
+				display_name: $.i18n.t('plugins_ds.websocket.uri'),
 				validate: 'required,maxSize[1000]',
 				type: 'text',
-				description: '最大1000文字 例: ws://server:port/path '
+				description: $.i18n.t('plugins_ds.websocket.uri_desc'),
 			},
 			{
 				name: 'reconnect',
-				display_name: '自動再接続',
+				display_name: $.i18n.t('plugins_ds.websocket.reconnect'),
 				type: 'boolean',
-				default_value: true,
-				description: '接続が切れた際自動的に再接続します。'
+				default_value: true
 			}
 		],
 		newInstance: function(settings, newInstanceCallback, updateCallback) {

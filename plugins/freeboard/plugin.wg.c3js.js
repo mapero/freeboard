@@ -56,7 +56,7 @@
 						return ret;
 					});
 				} catch (e) {
-					alert('チャートオプションが不正です。 ' + e);
+					alert($.i18n.t('plugins_wd.c3js.options_invalid') + e);
 					console.error(e);
 					return;
 				}
@@ -214,38 +214,38 @@
 
 	freeboard.loadWidgetPlugin({
 		type_name: 'c3js',
-		display_name: 'C3チャート',
-		description: '様々な形式のチャートを表示するウィジェットです。詳細は <a href="http://c3js.org/" target="_blank">http://c3js.org/</a>',
+		display_name: $.i18n.t('plugins_wd.c3js.display_name'),
+		description: $.i18n.t('plugins_wd.c3js.description'),
 		external_scripts : [
 			'plugins/thirdparty/c3.min.js'
 		],
 		settings: [
 			{
 				name: 'title',
-				display_name: 'タイトル',
+				display_name: $.i18n.t('plugins_wd.c3js.title'),
 				validate: 'optional,maxSize[100]',
 				type: 'text',
-				description: '最大100文字'
+				description: $.i18n.t('plugins_wd.c3js.title_desc'),
 			},
 			{
 				name: 'blocks',
-				display_name: '高さ (ブロック数)',
+				display_name: $.i18n.t('plugins_wd.c3js.blocks'),
 				validate: 'required,custom[integer],min[2],max[20]',
 				type: 'number',
 				style: 'width:100px',
 				default_value: 4,
-				description: '1ブロック60ピクセル。20ブロックまで'
+				description: $.i18n.t('plugins_wd.c3js.blocks_desc')
 			},
 			{
 				name: 'value',
-				display_name: '値',
+				display_name: $.i18n.t('plugins_wd.c3js.value'),
 				validate: 'optional,maxSize[5000]',
 				type: 'calculated',
-				description: '最大5000文字'
+				description: $.i18n.t('plugins_wd.c3js.value_desc')
 			},
 			{
 				name: 'options',
-				display_name: 'チャートオプション',
+				display_name: $.i18n.t('plugins_wd.c3js.options'),
 				validate: 'optional,maxSize[5000]',
 				type: 'json',
 				default_value: '{\n\
@@ -253,7 +253,7 @@
 		"type": "line"\n\
 	}\n\
 }',
-				description: '最大5000文字 JSON形式文字列。'
+				description: $.i18n.t('plugins_wd.c3js.options_desc')
 			}
 		],
 
