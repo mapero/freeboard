@@ -51,6 +51,7 @@
 			chart: {
 				type: 'line',
 				margin: { left: 3, right: 3, bottom: 5 },
+				xTickcount: 100,
 				transition: {
 					type: 'circle-out',
 					duration: 500
@@ -78,7 +79,6 @@
 				highlightIndex: -1,
 				height: 0,
 				width: 0,
-				xTickcount: 100,
 				xScale: null,
 				xRevScale: null,
 				yScale: null,
@@ -433,7 +433,10 @@
 						fill: 'none'
 					});
 
-			if (d3var.chart.data.length > d3var.chart.xTickcount) {
+			if (d3var.chart.data.length > option.chart.xTickcount) {
+				// remove first circle
+				d3var.gChart.select('circle').remove();
+
 				d3.transition()
 					.duration(option.chart.transition.duration)
 					.ease(option.chart.transition.type)
@@ -443,9 +446,6 @@
 								.attr('transform', null)
 							.transition()
 								.attr('transform', 'translate(' + d3var.chart.xScale(-1) + ')');
-
-						// remove first circle
-						d3var.gChart.select('circle').remove();
 
 						d3var.gChart.selectAll('circle')
 								.style('display', function(d, i) {
@@ -458,6 +458,9 @@
 							.transition()
 								.attr('cx', function(d, i) { return d3var.chart.xScale(i); });
 					});
+
+				if (d3var.chart.data.length > option.chart.xTickcount)
+					d3var.chart.data.shift();
 			} else {
 				d3.transition()
 					.duration(option.chart.transition.duration)
@@ -478,9 +481,6 @@
 								.attr('d', getChartForPath());
 					});
 			}
-
-			if (d3var.chart.data.length > d3var.chart.xTickcount)
-				d3var.chart.data.shift();
 		}
 
 		function refresh(value) {
