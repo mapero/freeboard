@@ -2305,8 +2305,6 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 					returnValue = rawValue;
 				else if (e instanceof TypeError && e.message.indexOf('Cannot read property') != -1)
 					;
-				else
-					console.error(e);
 			}
 
 			if (!_.isUndefined(self.widgetInstance) && _.isFunction(self.widgetInstance.onCalculatedValueChanged) && !_.isUndefined(returnValue)) {
