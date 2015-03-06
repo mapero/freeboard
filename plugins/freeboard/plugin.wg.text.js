@@ -81,6 +81,7 @@
 				width: 0,
 				xScale: null,
 				xRevScale: null,
+				xBarScale: null,
 				yScale: null,
 				line: null,
 				area: null,
@@ -101,7 +102,7 @@
 			if (currentSettings.size === 'big')
 				return (currentSettings.chart === true) ? (height/2.5) : height/2;
 			else
-				return (currentSettings.chart === true) ? (height/3) : height/2;
+				return (currentSettings.chart === true) ? (height/4) : height/2;
 		}
 
 		function getText(value) {
@@ -125,7 +126,7 @@
 		}
 
 		function getChartHeight(rc) {
-			return rc.height/3;
+			return (currentSettings.size === 'big') ? rc.height/3.2 : rc.height/1.8;
 		}
 
 		function getChartWidth(rc) {
@@ -139,16 +140,13 @@
 		}
 
 		function getChartForPath() {
-			var chart;
+			var chart = null;
 			switch (option.chart.type) {
 			case 'line':
 				chart = d3var.chart.line;
 				break;
 			case 'area':
 				chart = d3var.chart.area;
-				break;
-			default:
-				chart = d3var.chart.line;
 				break;
 			}
 			return chart;
@@ -176,19 +174,100 @@
 
 				d3var.gChart.attr('transform', getChartTranslateText(rc));
 
-				d3var.gChart.select('path')
-						.attr('d', getChartForPath())
-						.attr('transform', null);
+				switch (option.chart.type) {
+				case 'line':
+				case 'area':
+					d3var.gChart.select('path')
+							.attr('d', getChartForPath())
+							.attr('transform', null);
 
-				d3var.gChart.select('rect')
-						.attr('width', d3var.chart.width)
-						.attr('height', d3var.chart.height);
+					d3var.gChart.select('rect')
+							.attr('width', d3var.chart.width)
+							.attr('height', d3var.chart.height);
 
-				d3var.gChart.selectAll('circle')
-						.attr({
-							cx: function(d, i) { return d3var.chart.xScale(i); },
-							cy: function(d, i) { return d3var.chart.yScale(d); },
-						});
+					d3var.gChart.selectAll('circle')
+							.attr('cx', function(d, i) { return d3var.chart.xScale(i); })
+							.attr('cy', function(d, i) { return d3var.chart.yScale(d); });
+					break;
+				case 'bar':
+					d3var.chart.xBarScale.rangeRoundBands([0, d3var.chart.width], .1);
+					d3var.gChart.selectAll('.bar')
+							.attr('x', function(d, i) { return d3var.chart.xScale(i); })
+							.attr('width', d3var.chart.xBarScale.rangeBand())
+							.attr('y', function(d, i) { return d < 0 ? d3var.chart.yScale(0) : d3var.chart.yScale(d); })
+							.attr('height', function(d, i) { return Math.abs(d3var.chart.yScale(d) - d3var.chart.yScale(0)); });
+					break;
+				}
+			}
+		}
+
+		function showTooltip() {
+			if (d3var.chart.highlightIndex === -1)
+				return;
+			d3var.gChart.gTooltip
+						.style('left', (d3.event.pageX + 10) + 'px')
+						.style('top', (d3.event.pageY - 28) + 'px')
+						.style('display', 'inline');
+		}
+
+		function hideTooltip() {
+			d3var.gChart.gTooltip.style('display', 'none');
+		}
+
+		function updateTooltip() {
+			if (d3var.chart.highlightIndex === -1)
+				return;
+			var val = d3var.chart.data[d3var.chart.highlightIndex];
+			d3var.gChart.gTooltip.html(getText(val) + ' ' + currentSettings.units)
+						.style('left', (d3.event.pageX + 10) + 'px')
+						.style('top', (d3.event.pageY - 28) + 'px');
+		}
+
+		function highlightSpot(x, show) {
+			var _hide = function(idx) {
+				if (d3var.chart.highlightIndex === -1 || idx === -1)
+					return;
+				if (idx === d3var.chart.minValIndex || idx === d3var.chart.maxValIndex) {
+					var clr = (idx === d3var.chart.minValIndex) ? option.chart.spotcolor.min : option.chart.spotcolor.max;
+					d3.select(d3var.gChart.selectAll('circle')[0][idx])
+								.attr('fill', clr);
+					return;
+				}
+				d3.select(d3var.gChart.selectAll('circle')[0][idx]).style('display', 'none');
+			};
+
+			if (show) {
+				_hide(d3var.chart.highlightIndex);
+				d3var.chart.highlightIndex = Math.round(d3var.chart.xRevScale(x));
+				d3.select(d3var.gChart.selectAll('circle')[0][d3var.chart.highlightIndex])
+							.style('display', 'block')
+							.attr('fill', option.chart.spotcolor.def);
+			} else {
+				_hide(d3var.chart.highlightIndex);
+				d3var.chart.highlightIndex = -1;
+			}
+		}
+
+		function highlightBar(x, show) {
+			var _hide = function(idx) {
+				if (d3var.chart.highlightIndex === -1 || idx === -1)
+					return;
+				if (idx === d3var.chart.minValIndex || idx === d3var.chart.maxValIndex) {
+					var clr = (idx === d3var.chart.minValIndex) ? option.chart.spotcolor.min : option.chart.spotcolor.max;
+					d3.select(d3var.gChart.selectAll('.bar')[0][idx]).attr('fill', clr);
+					return;
+				}
+				d3.select(d3var.gChart.selectAll('.bar')[0][idx]).attr('fill', option.chart.color);
+			};
+
+			if (show) {
+				_hide(d3var.chart.highlightIndex);
+				d3var.chart.highlightIndex = Math.round(d3var.chart.xRevScale(x));
+				d3.select(d3var.gChart.selectAll('.bar')[0][d3var.chart.highlightIndex])
+							.attr('fill', option.chart.spotcolor.def);
+			} else {
+				_hide(d3var.chart.highlightIndex);
+				d3var.chart.highlightIndex = -1;
 			}
 		}
 
@@ -198,68 +277,15 @@
 			d3var.chart.height = getChartHeight(rc);
 			d3var.chart.width = getChartWidth(rc);
 
-			var _highlightSpot = function(x, show) {
-				var _hide = function(idx) {
-					if (d3var.chart.highlightIndex === -1)
-						return;
-					if (idx === d3var.chart.minValIndex || idx === d3var.chart.maxValIndex) {
-						var clr = (idx === d3var.chart.minValIndex) ? option.chart.spotcolor.min : option.chart.spotcolor.max;
-						d3.select(d3var.gChart.selectAll('circle')[0][idx])
-									.attr('fill', clr);
-						return;
-					}
-					d3.select(d3var.gChart.selectAll('circle')[0][idx]).style('display', 'none');
-				};
-
-				if (show) {
-					_hide(d3var.chart.highlightIndex);
-					d3var.chart.highlightIndex = Math.round(d3var.chart.xRevScale(x));
-
-					d3.select(d3var.gChart.selectAll('circle')[0][d3var.chart.highlightIndex])
-									.style('display', 'block')
-									.attr('fill', option.chart.spotcolor.def);
-				} else {
-					_hide(d3var.chart.highlightIndex);
-					d3var.chart.highlightIndex = -1;
-				}
-			};
-
-			var _showTooltip = function() {
-				if (d3var.chart.highlightIndex === -1)
-					return;
-				d3var.gChart.gTooltip
-							.style('left', (d3.event.pageX + 10) + 'px')
-							.style('top', (d3.event.pageY - 28) + 'px')
-							.style('display', 'inline');
-			};
-
-			var _hideTooltip = function() {
-				d3var.gChart.gTooltip.style('display', 'none');
-			};
-
-			var _updateTooltip = function() {
-				if (d3var.chart.highlightIndex === -1)
-					return;
-
-				var val = d3var.chart.data[d3var.chart.highlightIndex];
-
-				d3var.gChart.gTooltip.html(getText(val) + ' ' + currentSettings.units)
-							.style('left', (d3.event.pageX + 10) + 'px')
-							.style('top', (d3.event.pageY - 28) + 'px');
-			};
-
 			d3var.chart.data = [];
 
 			d3var.chart.xScale = d3.scale.linear()
-				.domain([0, 1])
 				.range([0, d3var.chart.width]);
 
 			d3var.chart.xRevScale = d3.scale.linear()
-				.domain(d3var.chart.xScale.range())
 				.range(d3var.chart.xScale.domain());
 
 			d3var.chart.yScale = d3.scale.linear()
-				.domain([0, 1])
 				.range([d3var.chart.height, 0]);
 
 			d3var.gChart = d3var.svg.insert('g', 'g')
@@ -272,11 +298,11 @@
 					.x(function(d, i) { return d3var.chart.xScale(i); })
 					.y(function(d, i) { return d3var.chart.yScale(d); });
 				d3var.gChart.append('path')
-						.datum(d3var.chart.data)
-						.attr('d', d3var.chart.line)
-						.attr('fill', 'none')
-						.attr('stroke', option.chart.color)
-						.attr('stroke-width', option.chart.lineWidth + 'px');
+					.datum(d3var.chart.data)
+					.attr('d', d3var.chart.line)
+					.attr('fill', 'none')
+					.attr('stroke', option.chart.color)
+					.attr('stroke-width', option.chart.lineWidth + 'px');
 				break;
 			case 'area':
 				d3var.chart.area = d3.svg.area()
@@ -284,32 +310,42 @@
 					.y0(function(d, i) { return d3var.chart.yScale(0); })
 					.y1(function(d, i) { return d3var.chart.yScale(d); });
 				d3var.gChart.append('path')
-							.datum(d3var.chart.data)
-							.attr('d', d3var.chart.area)
-							.attr('fill', option.chart.color);
+					.datum(d3var.chart.data)
+					.attr('d', d3var.chart.area)
+					.attr('fill', option.chart.color);
+				break;
+			case 'bar':
+				d3var.chart.xBarScale = d3.scale.ordinal()
+					.rangeRoundBands([0, d3var.chart.width], 0.05);
 				break;
 			}
 
-			d3var.gChart.append('rect')
+			switch (option.chart.type) {
+			case 'line':
+			case 'area':
+				// overlay for tooltip
+				d3var.gChart.append('rect')
 					.attr('fill', 'none')
 					.attr('pointer-events', 'all')
 					.attr('width', d3var.chart.width)
 					.attr('height', d3var.chart.height)
 					.on('mousemove', function() {
 						var m = d3.mouse(this);
-						_highlightSpot(m[0], true);
-						_updateTooltip();
+						highlightSpot(m[0], true);
+						updateTooltip();
 					})
 					.on('mouseover', function() {
 						var m = d3.mouse(this);
-						_highlightSpot(m[0], true);
-						_showTooltip();
+						highlightSpot(m[0], true);
+						showTooltip();
 					})
 					.on('mouseout', function() {
 						var m = d3.mouse(this);
-						_highlightSpot(m[0], false);
-						_hideTooltip();
+						highlightSpot(m[0], false);
+						hideTooltip();
 					});
+				break;
+			}
 
 			d3var.gChart.gTooltip = d3.select('body').append('div')
 						.attr('class', 'tw-tooltip')
@@ -379,46 +415,38 @@
 				});
 		}
 
-		function chartTransition(val) {
-			d3var.chart.data.push(val);
-
-			var minval = d3.min(d3var.chart.data);
-			var maxval = d3.max(d3var.chart.data);
-
-			d3var.chart.xScale
-				.domain([0, d3var.chart.data.length-1]);
-			d3var.chart.yScale
-				.domain([minval, maxval])
-				.range([d3var.chart.height, 0]);
-			d3var.chart.xRevScale
-				.range(d3var.chart.xScale.domain());
-
+		function lineAreaChartTransition(min, max) {
 			var _getSpotColor = function(d, i) {
 				if (d3var.chart.highlightIndex === i)
 					return option.chart.spotcolor.def;
 
-				if (minval === d && d3var.chart.minValIndex === i)
+				if (min === d) {
+					if (d3var.chart.minValIndex > -1) {
+						if (d3var.chart.minValIndex > i)
+							return 'none';
+					}
+					d3var.chart.minValIndex = i;
 					return option.chart.spotcolor.min;
-				else if (maxval === d && d3var.chart.maxValIndex === i)
+				}
+
+				if (max === d) {
+					if (d3var.chart.maxValIndex > -1) {
+						if (d3var.chart.maxValIndex > i)
+							return 'none';
+					}
+					d3var.chart.maxValIndex = i;
 					return option.chart.spotcolor.max;
+				}
 				return 'none';
 			};
 
 			var _getSpotDisplay = function(d, i) {
 				if (d3var.chart.highlightIndex === i)
 					return 'block';
-
-				if (minval === maxval)
+				if (min === max)
 					return 'none';
-
-				if (minval === d) {
-					d3var.chart.minValIndex = i;
+				if (min === d || max === d)
 					return 'block';
-				}
-				if (maxval === d) {
- 					d3var.chart.maxValIndex = i;
- 					return 'block';
-				}
 				return 'none';
 			};
 
@@ -436,6 +464,8 @@
 			if (d3var.chart.data.length > option.chart.xTickcount) {
 				// remove first circle
 				d3var.gChart.select('circle').remove();
+				d3var.chart.minValIndex--;
+				d3var.chart.maxValIndex--;
 
 				d3.transition()
 					.duration(option.chart.transition.duration)
@@ -448,12 +478,8 @@
 								.attr('transform', 'translate(' + d3var.chart.xScale(-1) + ')');
 
 						d3var.gChart.selectAll('circle')
-								.style('display', function(d, i) {
-									return _getSpotDisplay(d, i);
-								})
-								.attr('fill', function(d, i) {
-									return _getSpotColor(d, i);
-								})
+								.style('display', function(d, i) { return _getSpotDisplay(d, i); })
+								.attr('fill', function(d, i) { return _getSpotColor(d, i); })
 								.attr('cy', function(d, i) { return d3var.chart.yScale(d); })
 							.transition()
 								.attr('cx', function(d, i) { return d3var.chart.xScale(i); });
@@ -467,12 +493,8 @@
 					.ease(option.chart.transition.type)
 					.each(function () {
 						d3var.gChart.selectAll('circle')
-							.style('display', function(d, i) {
-								return _getSpotDisplay(d, i);
-							})
-							.attr('fill', function(d, i) {
-								return _getSpotColor(d, i);
-							})
+							.style('display', function(d, i) { return _getSpotDisplay(d, i); })
+							.attr('fill', function(d, i) { return _getSpotColor(d, i); })
 							.transition()
 								.attr('cx', function(d, i) { return d3var.chart.xScale(i); })
 								.attr('cy', function(d, i) { return d3var.chart.yScale(d); });
@@ -480,6 +502,110 @@
 						d3var.gChart.select('path').transition()
 								.attr('d', getChartForPath());
 					});
+			}
+		}
+
+		function barChartTransition(min, max) {
+			var _getBarColor = function(d, i) {
+				if (d3var.chart.highlightIndex === i)
+					return option.chart.spotcolor.def;
+
+				if (min === max)
+					return option.chart.color;
+
+				if (min === d) {
+					if (d3var.chart.minValIndex > -1) {
+						if (d3var.chart.minValIndex > i)
+							return option.chart.color;
+					}
+					d3var.chart.minValIndex = i;
+					return option.chart.spotcolor.min;
+				}
+
+				if (max === d) {
+					if (d3var.chart.maxValIndex > -1) {
+						if (d3var.chart.maxValIndex > i)
+							return option.chart.color;
+					}
+					d3var.chart.maxValIndex = i;
+					return option.chart.spotcolor.max;
+				}
+				return option.chart.color;
+			};
+
+			d3var.chart.xBarScale
+				.domain(d3.range(d3var.chart.data.length));
+
+			d3var.gChart.selectAll('.bar')
+					.data(d3var.chart.data)
+				.enter().append('rect')
+					.attr('class', 'bar')
+					.attr('fill', function(d, i) { return _getBarColor(d, i); })
+					.attr('x', function(d, i) { return d3var.chart.xScale(i); })
+					.attr('width', d3var.chart.xBarScale.rangeBand())
+					.attr('y', function(d, i) { return d < 0 ? d3var.chart.yScale(0) : d3var.chart.yScale(d); })
+					.attr('height', function(d, i) { return Math.abs(d3var.chart.yScale(d) - d3var.chart.yScale(0)); })
+					.on('mousemove', function() {
+						var m = d3.mouse(this);
+						highlightBar(m[0], true);
+						updateTooltip();
+					})
+					.on('mouseover', function() {
+						var m = d3.mouse(this);
+						highlightBar(m[0], true);
+						showTooltip();
+					})
+					.on('mouseout', function() {
+						var m = d3.mouse(this);
+						highlightBar(m[0], false);
+						hideTooltip();
+					});
+
+			// remove first bar
+			if (d3var.chart.data.length > option.chart.xTickcount) {
+				d3var.gChart.select('.bar').remove();
+				d3var.chart.minValIndex--;
+				d3var.chart.maxValIndex--;
+			}
+
+				d3.transition()
+					.duration(option.chart.transition.duration)
+					.ease(option.chart.transition.type)
+					.each(function () {
+						d3var.gChart.selectAll('.bar')
+							.transition()
+								.attr('fill', function(d, i) { return _getBarColor(d, i); })
+								.attr('x', function(d, i) { return d3var.chart.xScale(i); })
+								.attr('width', d3var.chart.xBarScale.rangeBand())
+								.attr('y', function(d, i) { return d < 0 ? d3var.chart.yScale(0) : d3var.chart.yScale(d); })
+								.attr('height', function(d, i) { return Math.abs(d3var.chart.yScale(d) - d3var.chart.yScale(0)); });
+					});
+
+			if (d3var.chart.data.length > option.chart.xTickcount)
+				d3var.chart.data.shift();
+		}
+
+		function chartTransition(val) {
+			d3var.chart.data.push(val);
+
+			var minmax = d3.extent(d3var.chart.data);
+
+			d3var.chart.xScale
+				.domain([0, d3var.chart.data.length-1]);
+			d3var.chart.yScale
+				.domain(minmax)
+				.range([d3var.chart.height, 0]);
+			d3var.chart.xRevScale
+				.range(d3var.chart.xScale.domain());
+
+			switch (option.chart.type) {
+			case 'line':
+			case 'area':
+				lineAreaChartTransition(minmax[0], minmax[1]);
+				break;
+			case 'bar':
+				barChartTransition(minmax[0], minmax[1]);
+				break;
 			}
 		}
 
@@ -556,25 +682,32 @@
 			moveTextUnits();
 
 			if (currentSettings.chart) {
+				var selItem;
+
 				switch (option.chart.type) {
 				case 'line':
+					selItem = 'circle';
 					d3var.gChart.select('path').attr('stroke', option.chart.color);
 					break;
 				case 'area':
+					selItem = 'circle';
 					d3var.gChart.select('path').attr('fill', option.chart.color);
+					break;
+				case 'bar':
+					selItem = '.bar';
+					d3var.gChart.selectAll('.bar').attr('fill', option.chart.color);
 					break;
 				}
 
 				if (d3var.chart.minValIndex !== -1) {
-					d3.select(d3var.gChart.selectAll('circle')[0][d3var.chart.minValIndex])
+					d3.select(d3var.gChart.selectAll(selItem)[0][d3var.chart.minValIndex])
 								.attr('fill', option.chart.spotcolor.min);
 				}
 				if (d3var.chart.maxValIndex !== -1) {
-					d3.select(d3var.gChart.selectAll('circle')[0][d3var.chart.maxValIndex])
+					d3.select(d3var.gChart.selectAll(selItem)[0][d3var.chart.maxValIndex])
 								.attr('fill', option.chart.spotcolor.max);
 				}
 			}
-
 			return updateCalculate;
 		};
 
@@ -690,6 +823,10 @@
 					{
 						name: $.i18n.t('plugins_wd.text.chart_type_options.area'),
 						value: 'area'
+					},
+					{
+						name: $.i18n.t('plugins_wd.text.chart_type_options.bar'),
+						value: 'bar'
 					}
 				]
 			},

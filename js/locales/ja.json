@@ -21,7 +21,7 @@
 
     "JSEditor": {
         "javascript": {
-            "exampleText": "// 例// 例: return datasouces[\"test\"][\"value\"];",
+            "exampleText": "// 例: return datasouces[\"test\"][\"value\"];",
             "codeWindowHeader": "このこのJavaScriptは、参照データソースが更新されるたびに再評価され、<span class=\"cm-keyword\">戻り値</span>がウィジェットに表示されます。関数 <code><span class=\"cm-keyword\">function</span>(<span class=\"cm-def\">datasources</span>)</code> の内部をJavaScriptで記述することができます。引数 <span class=\"cm-def\">datasources</span> は追加したデータソースの配列です。また引数 <span class=\"cm-def\">_global</span> へスクリプト外スコープの変数を格納することができます。(注:異なるスクリプト間では共有できません。)"
 
         },
@@ -89,7 +89,8 @@
             "chart_type": "チャートタイプ",
             "chart_type_options": {
                 "line": "ライン",
-                "area": "エリア"
+                "area": "エリア",
+                "bar": "バー"
             },
             "chart_color": "チャート色",
             "chart_color_desc": "デフォルト色: #ff9900",
