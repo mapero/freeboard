@@ -12,7 +12,7 @@
 	var c3jsWidget = function (settings) {
 		var self = this;
 		var BLOCK_HEIGHT = 60;
-		var TITLE_MARGIN = 7;
+		var PADDING = 10;
 
 		var currentID = _.uniqueId('c3js_');
 		var titleElement = $('<h2 class="section-title"></h2>');
@@ -23,7 +23,9 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
-			var height = BLOCK_HEIGHT * blocks - titleElement.outerHeight() - TITLE_MARGIN;
+
+			var titlemargin = (titleElement.css('display') === 'none') ? 0 : titleElement.outerHeight();
+			var height = (BLOCK_HEIGHT) * blocks - PADDING - titlemargin;
 			chartElement.css({
 				'max-height': height + 'px',
 				'height': height + 'px',
@@ -170,7 +172,12 @@
 				currentSettings = newSettings;
 				return;
 			}
+
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+			if (_.isUndefined(newSettings.title) || newSettings.title === '')
+				titleElement.css('display', 'none');
+			else
+				titleElement.css('display', 'block');
 
 			setBlocks(newSettings.blocks);
 

@@ -16,7 +16,7 @@
 	var pictureWidget = function(settings) {
 		var self = this;
 		var BLOCK_HEIGHT = 60;
-		var TITLE_MARGIN = 7;
+		var PADDING = 10;
 
 		var widgetElement = $('<div class="picture-widget"></div>');
 		var titleElement = $('<h2 class="section-title"></h2>');
@@ -27,7 +27,8 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
-			var height = BLOCK_HEIGHT * blocks - titleElement.outerHeight() - TITLE_MARGIN;
+			var titlemargin = (titleElement.css('display') === 'none') ? 0 : titleElement.outerHeight();
+			var height = (BLOCK_HEIGHT) * blocks - PADDING - titlemargin;
 			widgetElement.css({
 				'height': height + 'px',
 				'width': '100%'
@@ -68,6 +69,10 @@
 				timer = setInterval(updateImage, Number(newSettings.refresh) * 1000);
 
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+			if (_.isUndefined(newSettings.title) || newSettings.title === '')
+				titleElement.css('display', 'none');
+			else
+				titleElement.css('display', 'block');
 
 			setBlocks(newSettings.blocks);
 			var updateCalculate = false;

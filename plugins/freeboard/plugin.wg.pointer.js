@@ -18,7 +18,7 @@
 
 		var CIRCLE_WIDTH = 3;
 		var BLOCK_HEIGHT = 60;
-		var TITLE_MARGIN = 7;
+		var PADDING = 10;
 
 		var currentID = _.uniqueId('pointer_');
 		var titleElement = $('<h2 class="section-title"></h2>');
@@ -36,7 +36,8 @@
 		function setBlocks(blocks) {
 			if (_.isUndefined(blocks))
 				return;
-			var height = BLOCK_HEIGHT * blocks - titleElement.outerHeight() - TITLE_MARGIN;
+			var titlemargin = (titleElement.css('display') === 'none') ? 0 : titleElement.outerHeight();
+			var height = (BLOCK_HEIGHT) * blocks - PADDING - titlemargin;
 			widgetElement.css({
 				height: height + 'px',
 				width: '100%'
@@ -172,6 +173,11 @@
 			}
 
 			titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+			if (_.isUndefined(newSettings.title) || newSettings.title === '')
+				titleElement.css('display', 'none');
+			else
+				titleElement.css('display', 'block');
+
 			circle.style('stroke', newSettings.circle_color);
 			pointer.style('fill', newSettings.pointer_color);
 			textUnits.text((_.isUndefined(newSettings.units) ? '' : newSettings.units));
@@ -211,7 +217,12 @@
 		};
 
 		this.onDispose = function () {
-			svg = circle = center = pointer = textValue = textUnits = null;
+			if (!_.isNull(svg)) {
+				center.remove();
+				center = null;
+				svg.remove();
+				svg = null;
+			}
 		};
 
 		this.onSizeChanged = function () {

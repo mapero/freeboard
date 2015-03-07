@@ -471,8 +471,8 @@
 					.ease(option.chart.transition.type)
 					.each(function () {
 						d3var.gChart.selectAll('.spot')
-							.style('display', function(d, i) { return _getSpotDisplay(d, i); })
-							.attr('fill', function(d, i) { return _getSpotColor(d, i); })
+								.style('display', function(d, i) { return _getSpotDisplay(d, i); })
+								.attr('fill', function(d, i) { return _getSpotColor(d, i); })
 							.transition()
 								.attr('cx', function(d, i) { return d3var.chart.xScale(i); })
 								.attr('cy', function(d, i) { return d3var.chart.yScale(d); });
