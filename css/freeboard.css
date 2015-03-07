@@ -2,7 +2,7 @@
 
 .c3 svg {
 /*  font: 10px sans-serif;*/
-  font: 12px "Helvetica Neue", Helvetica, "Open Sans", Meiryo, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, Arial, sans-serif;
+  font: 12px "Helvetica Neue", Helvetica, "Open Sans", Meiryo, "Hiragino Kaku Gothic Pro", Osaka, Arial, sans-serif;
 
 }
 .c3 path, .c3 line {
@@ -10,7 +10,7 @@
   stroke: #8b8b8b;
 }
 .c3 text {
-  fill: #8b8b8b;
+  fill: #adadad;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
