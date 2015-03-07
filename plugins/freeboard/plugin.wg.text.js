@@ -181,16 +181,16 @@
 							.attr('d', getChartForPath())
 							.attr('transform', null);
 
-					d3var.gChart.select('rect')
+					d3var.gChart.select('.overlay')
 							.attr('width', d3var.chart.width)
 							.attr('height', d3var.chart.height);
 
-					d3var.gChart.selectAll('circle')
+					d3var.gChart.selectAll('.spot')
 							.attr('cx', function(d, i) { return d3var.chart.xScale(i); })
 							.attr('cy', function(d, i) { return d3var.chart.yScale(d); });
 					break;
 				case 'bar':
-					d3var.chart.xBarScale.rangeRoundBands([0, d3var.chart.width], .1);
+					d3var.chart.xBarScale.rangeRoundBands([0, d3var.chart.width], 0.1);
 					d3var.gChart.selectAll('.bar')
 							.attr('x', function(d, i) { return d3var.chart.xScale(i); })
 							.attr('width', d3var.chart.xBarScale.rangeBand())
@@ -201,22 +201,18 @@
 			}
 		}
 
-		function showTooltip() {
-			if (d3var.chart.highlightIndex === -1)
-				return;
-			d3var.gChart.gTooltip
-						.style('left', (d3.event.pageX + 10) + 'px')
-						.style('top', (d3.event.pageY - 28) + 'px')
-						.style('display', 'inline');
+		function showTooltip(x) {
+			updateTooltip(x);
+			d3var.gChart.gTooltip.style('display', 'inline');
+
 		}
 
 		function hideTooltip() {
 			d3var.gChart.gTooltip.style('display', 'none');
 		}
 
-		function updateTooltip() {
-			if (d3var.chart.highlightIndex === -1)
-				return;
+		function updateTooltip(x) {
+			d3var.chart.highlightIndex = Math.round(d3var.chart.xRevScale(x));
 			var val = d3var.chart.data[d3var.chart.highlightIndex];
 			d3var.gChart.gTooltip.html(getText(val) + ' ' + currentSettings.units)
 						.style('left', (d3.event.pageX + 10) + 'px')
@@ -225,45 +221,22 @@
 
 		function highlightSpot(x, show) {
 			var _hide = function(idx) {
-				if (d3var.chart.highlightIndex === -1 || idx === -1)
+				if (idx === -1)
 					return;
 				if (idx === d3var.chart.minValIndex || idx === d3var.chart.maxValIndex) {
 					var clr = (idx === d3var.chart.minValIndex) ? option.chart.spotcolor.min : option.chart.spotcolor.max;
-					d3.select(d3var.gChart.selectAll('circle')[0][idx])
+					d3.select(d3var.gChart.selectAll('.spot')[0][idx])
 								.attr('fill', clr);
 					return;
 				}
-				d3.select(d3var.gChart.selectAll('circle')[0][idx]).style('display', 'none');
+				d3.select(d3var.gChart.selectAll('.spot')[0][idx]).style('display', 'none');
 			};
 
 			if (show) {
 				_hide(d3var.chart.highlightIndex);
 				d3var.chart.highlightIndex = Math.round(d3var.chart.xRevScale(x));
-				d3.select(d3var.gChart.selectAll('circle')[0][d3var.chart.highlightIndex])
+				d3.select(d3var.gChart.selectAll('.spot')[0][d3var.chart.highlightIndex])
 							.style('display', 'block')
-							.attr('fill', option.chart.spotcolor.def);
-			} else {
-				_hide(d3var.chart.highlightIndex);
-				d3var.chart.highlightIndex = -1;
-			}
-		}
-
-		function highlightBar(x, show) {
-			var _hide = function(idx) {
-				if (d3var.chart.highlightIndex === -1 || idx === -1)
-					return;
-				if (idx === d3var.chart.minValIndex || idx === d3var.chart.maxValIndex) {
-					var clr = (idx === d3var.chart.minValIndex) ? option.chart.spotcolor.min : option.chart.spotcolor.max;
-					d3.select(d3var.gChart.selectAll('.bar')[0][idx]).attr('fill', clr);
-					return;
-				}
-				d3.select(d3var.gChart.selectAll('.bar')[0][idx]).attr('fill', option.chart.color);
-			};
-
-			if (show) {
-				_hide(d3var.chart.highlightIndex);
-				d3var.chart.highlightIndex = Math.round(d3var.chart.xRevScale(x));
-				d3.select(d3var.gChart.selectAll('.bar')[0][d3var.chart.highlightIndex])
 							.attr('fill', option.chart.spotcolor.def);
 			} else {
 				_hide(d3var.chart.highlightIndex);
@@ -325,6 +298,7 @@
 			case 'area':
 				// overlay for tooltip
 				d3var.gChart.append('rect')
+					.attr('class', 'overlay')
 					.attr('fill', 'none')
 					.attr('pointer-events', 'all')
 					.attr('width', d3var.chart.width)
@@ -332,18 +306,21 @@
 					.on('mousemove', function() {
 						var m = d3.mouse(this);
 						highlightSpot(m[0], true);
-						updateTooltip();
+						updateTooltip(m[0]);
 					})
 					.on('mouseover', function() {
 						var m = d3.mouse(this);
 						highlightSpot(m[0], true);
-						showTooltip();
+						showTooltip(m[0]);
 					})
 					.on('mouseout', function() {
 						var m = d3.mouse(this);
 						highlightSpot(m[0], false);
 						hideTooltip();
 					});
+				break;
+			case 'bar':
+				freeboard.addStyle('.bar:hover', 'fill: ' + option.chart.spotcolor.def);
 				break;
 			}
 
@@ -450,9 +427,10 @@
 				return 'none';
 			};
 
-			d3var.gChart.selectAll('circle')
+			d3var.gChart.selectAll('.spot')
 					.data(d3var.chart.data)
-				.enter().insert('circle', 'rect')
+				.enter().insert('circle', '.overlay')
+					.attr('class', 'spot')
 					.style('display', 'none')
 					.attr({
 						cx: function(d, i) { return d3var.chart.xScale(i); },
@@ -463,7 +441,7 @@
 
 			if (d3var.chart.data.length > option.chart.xTickcount) {
 				// remove first circle
-				d3var.gChart.select('circle').remove();
+				d3var.gChart.select('.spot').remove();
 				d3var.chart.minValIndex--;
 				d3var.chart.maxValIndex--;
 
@@ -477,7 +455,7 @@
 							.transition()
 								.attr('transform', 'translate(' + d3var.chart.xScale(-1) + ')');
 
-						d3var.gChart.selectAll('circle')
+						d3var.gChart.selectAll('.spot')
 								.style('display', function(d, i) { return _getSpotDisplay(d, i); })
 								.attr('fill', function(d, i) { return _getSpotColor(d, i); })
 								.attr('cy', function(d, i) { return d3var.chart.yScale(d); })
@@ -492,7 +470,7 @@
 					.duration(option.chart.transition.duration)
 					.ease(option.chart.transition.type)
 					.each(function () {
-						d3var.gChart.selectAll('circle')
+						d3var.gChart.selectAll('.spot')
 							.style('display', function(d, i) { return _getSpotDisplay(d, i); })
 							.attr('fill', function(d, i) { return _getSpotColor(d, i); })
 							.transition()
@@ -507,9 +485,6 @@
 
 		function barChartTransition(min, max) {
 			var _getBarColor = function(d, i) {
-				if (d3var.chart.highlightIndex === i)
-					return option.chart.spotcolor.def;
-
 				if (min === max)
 					return option.chart.color;
 
@@ -545,21 +520,9 @@
 					.attr('width', d3var.chart.xBarScale.rangeBand())
 					.attr('y', function(d, i) { return d < 0 ? d3var.chart.yScale(0) : d3var.chart.yScale(d); })
 					.attr('height', function(d, i) { return Math.abs(d3var.chart.yScale(d) - d3var.chart.yScale(0)); })
-					.on('mousemove', function() {
-						var m = d3.mouse(this);
-						highlightBar(m[0], true);
-						updateTooltip();
-					})
-					.on('mouseover', function() {
-						var m = d3.mouse(this);
-						highlightBar(m[0], true);
-						showTooltip();
-					})
-					.on('mouseout', function() {
-						var m = d3.mouse(this);
-						highlightBar(m[0], false);
-						hideTooltip();
-					});
+					.on('mousemove', function() { updateTooltip(d3.mouse(this)[0]); })
+					.on('mouseover', function() { showTooltip(d3.mouse(this)[0]); })
+					.on('mouseout', function() { hideTooltip(); });
 
 			// remove first bar
 			if (d3var.chart.data.length > option.chart.xTickcount) {
@@ -686,11 +649,11 @@
 
 				switch (option.chart.type) {
 				case 'line':
-					selItem = 'circle';
+					selItem = '.spot';
 					d3var.gChart.select('path').attr('stroke', option.chart.color);
 					break;
 				case 'area':
-					selItem = 'circle';
+					selItem = '.spot';
 					d3var.gChart.select('path').attr('fill', option.chart.color);
 					break;
 				case 'bar':
