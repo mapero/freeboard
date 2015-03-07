@@ -88,7 +88,8 @@
             "chart_type": "Chart Type",
             "chart_type_options": {
                 "line": "Line",
-                "area": "Area"
+                "area": "Area",
+                "bar": "Bar"
             },
             "chart_color": "Chart Color",
             "chart_color_desc": "Default: #ff9900",
