@@ -3,7 +3,7 @@
         "menu": "",
         "load": "LOAD",
         "save": "SAVE",
-        "add_panel": "Add Panel",
+        "add_panel": "Add Pane",
         "datasource": "DataSources"
     },
 
