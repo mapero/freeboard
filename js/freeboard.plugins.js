@@ -3169,7 +3169,7 @@
 				break;
 			case 'bar':
 				d3var.chart.xBarScale = d3.scale.ordinal()
-					.rangeRoundBands([0, d3var.chart.width], 0.05);
+					.rangeRoundBands([0, d3var.chart.width], 0.1);
 				break;
 			}
 
@@ -3212,7 +3212,10 @@
 		function destroyChart() {
 			if (_.isNull(d3var.gChart))
 				return;
-			d3var.chart.data = null;
+			d3var.chart.data = d3var.chart.line = d3var.chart.area = null;
+			d3var.chart.xScale = d3var.chart.xRevScale = d3var.chart.xBarScale = null;
+			d3var.chart.minValIndex = d3var.chart.maxValIndex = -1;
+			d3var.chart.highlightIndex = -1;
 			d3var.gChart.gTooltip.remove();
 			d3var.gChart.remove();
 			d3var.gChart = null;
@@ -3389,7 +3392,7 @@
 			};
 
 			d3var.chart.xBarScale
-				.domain(d3.range(d3var.chart.data.length));
+				.domain(d3.range(d3var.chart.data.length-1));
 
 			d3var.gChart.selectAll('.bar')
 					.data(d3var.chart.data)
