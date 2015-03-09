@@ -1239,6 +1239,20 @@ JSEditor = function() {
 					lint: true
 				};
 				break;
+			case 'htmlmixed':
+				exampleText = '';
+				codeWindowHeader = $('<div class="code-window-header cm-s-ambiance">' + $.i18n.t('JSEditor.htmlmixed.codeWindowHeader') + '</div>');
+
+				config = {
+					value: value,
+					mode: 'htmlmixed',
+					theme: 'ambiance',
+					indentUnit: 4,
+					lineNumbers: true,
+					matchBrackets: true,
+					autoCloseBrackets: true
+				};
+				break;
 		}
 
 		codeWindow.append([codeWindowHeader, codeMirrorWrapper, codeWindowFooter]);
@@ -1276,7 +1290,6 @@ JSEditor = function() {
 		displayJSEditor: function (value, mode, callback) {
 			displayJSEditor(value, mode, callback);
 		},
-
 		setAssetRoot: function (assetRoot) {
 			setAssetRoot(assetRoot);
 		}
@@ -1708,6 +1721,35 @@ PluginEditor = function(jsEditor, valueEditor) {
 		$(valueCell).append(datasourceToolbox.append(jsEditorTool));
 	}
 
+	function appendHtmlMixedCell(form, valueCell, settingDef, currentSettingsValues, newSettings) {
+		newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
+
+		var input = $('<textarea class="calculated-value-input" style="z-index: 3000"></textarea>')
+				.addClass(_toValidateClassString(settingDef.validate, 'text-input'))
+				.attr('style', settingDef.style)
+				.appendTo(valueCell).change(function() {
+			newSettings.settings[settingDef.name] = $(this).val();
+		});
+
+		if(settingDef.name in currentSettingsValues)
+			input.val(currentSettingsValues[settingDef.name]);
+
+		valueEditor.createValueEditor(input);
+
+		var datasourceToolbox = $('<ul class="board-toolbar datasource-input-suffix"></ul>');
+
+		var jsEditorTool = $('<li><i class="fa-w fa-edit"></i><label>.HTML EDITOR</label></li>').mousedown(function(e) {
+			e.preventDefault();
+
+			jsEditor.displayJSEditor(input.val(), 'htmlmixed', function(result){
+				input.val(result);
+				input.change();
+			});
+		});
+
+		$(valueCell).append(datasourceToolbox.append(jsEditorTool));
+	}
+
 	function appendTextCell(form, valueCell, settingDef, currentSettingsValues, newSettings) {
 		newSettings.settings[settingDef.name] = currentSettingsValues[settingDef.name];
 
@@ -1806,6 +1848,9 @@ PluginEditor = function(jsEditor, valueEditor) {
 						break;
 					case 'color':
 						appendColorCell(form, valueCell, settingDef, currentSettingsValues, newSettings);
+						break;
+					case 'htmlmixed':
+						appendHtmlMixedCell(form, valueCell, settingDef, currentSettingsValues, newSettings);
 						break;
 					case 'json':
 						appendJsonCell(form, valueCell, settingDef, currentSettingsValues, newSettings);
@@ -2613,27 +2658,27 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 	};
 }(jQuery));
 
+// i18next initialize
+(function($) {
+	var lang = $.i18n.detectLanguage().split('-');
+	var path = 'js/locales/' + lang[0] + '.json';
+
+	$.i18n.debug = true;
+
+	var options = {
+		resGetPath: path,
+		lowerCaseLng: true,
+		fallbackLng: 'en',
+		getAsync: false,
+		lng: lang[0]
+	};
+	$.i18n.init(options, function(t) {
+		$('html').i18n();
+	});
+})(jQuery);
+
 var freeboard = (function() {
 	'use strict';
-
-	// i18next initialize
-	(function() {
-		var lang = $.i18n.detectLanguage().split('-');
-		var path = 'js/locales/' + lang[0] + '.json';
-
-		$.i18n.debug = true;
-
-		var options = {
-			resGetPath: path,
-			lowerCaseLng: true,
-			fallbackLng: 'en',
-			getAsync: false,
-			lng: lang[0]
-		};
-		$.i18n.init(options, function(t) {
-			$('html').i18n();
-		});
-	})();
 
 	var datasourcePlugins = {};
 	var widgetPlugins = {};
