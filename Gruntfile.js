@@ -15,7 +15,6 @@ module.exports = function(grunt) {
                         'lib/js/thirdparty/head.js',
                         'lib/js/thirdparty/knockout.js',
                         'lib/js/thirdparty/jquery.js',
-                        'lib/js/thirdparty/jquery-ui.js',
                         'lib/js/thirdparty/i18next-1.7.7.min.js',
                         'lib/js/thirdparty/lodash.js',
                         'lib/js/thirdparty/jquery.gridster.js',
@@ -54,7 +53,22 @@ module.exports = function(grunt) {
             },
             plugins : {
                 src : [
-                    'plugins/freeboard/*.js'
+                    'plugins/freeboard/plugin.ds.clock.js',
+                    'plugins/freeboard/plugin.ds.json.js',
+                    'plugins/freeboard/plugin.ds.yahoow.js',
+                    'plugins/freeboard/plugin.ds.owm.js',
+                    'plugins/freeboard/plugin.ds.playback.js',
+                    'plugins/freeboard/plugin.ds.websocket.js',
+                    'plugins/freeboard/plugin.ds.nodejs.js',
+                    'plugins/freeboard/plugin.ds.mqtt.js',
+                    'plugins/freeboard/plugin.wg.text.js',
+                    'plugins/freeboard/plugin.wg.gmap.js',
+                    'plugins/freeboard/plugin.wg.pointer.js',
+                    'plugins/freeboard/plugin.wg.gauge.js',
+                    'plugins/freeboard/plugin.wg.c3js.js',
+                    'plugins/freeboard/plugin.wg.indicator.js',
+                    'plugins/freeboard/plugin.wg.picture.js',
+                    'plugins/freeboard/plugin.wg.html.js'
                 ],
                 dest : 'js/freeboard.plugins.js'
             },
