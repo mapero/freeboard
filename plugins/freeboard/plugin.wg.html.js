@@ -11,7 +11,7 @@
 (function() {
 	'use strict';
 
-	freeboard.addStyle('.htmlwidget', 'white-space:normal;');
+	freeboard.addStyle('.htmlwidget', 'white-space:normal;display:table;');
 
 	var htmlWidget = function (settings) {
 		var self = this;
