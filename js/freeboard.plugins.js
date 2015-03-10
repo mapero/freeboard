@@ -1533,13 +1533,12 @@
 	freeboard.addStyle('.tw-tooltip',
 			'position: absolute;' +
 			'font-size: 0.7em;' +
-			'color: white;' +
+			'color: black;' +
 			'text-align: center;' +
 			'height: 20px;' +
 			'padding: 2px 8px 2px 8px;' +
-			'background: black;' +
+			'background: white;' +
 			'opacity: 0.8;' +
-			'border: solid 1px #fff;' +
 			'pointer-events: none;' +
 			'-webkit-box-shadow: 0 0 5px #000;' +
 			'-moz-box-shadow: 0 0 5px #000;' +
@@ -1558,6 +1557,7 @@
 		var widgetElement = $('<div class="text-widget" id="' + currentID + '"></div>');
 
 		var option = {
+			class: 'ultralight-text',
 			fontColor: '#d3d4d4',
 			decimal: 0,
 			comma: 0,
@@ -1878,7 +1878,7 @@
 				.attr('text-anchor', 'center')
 				.attr('dy', '.3em')
 				.attr('font-size', getFontSize())
-				.attr('class', 'ultralight-text');
+				.attr('class', option.class);
 
 			d3var.textUnits = d3var.gText.append('text')
 				.text(currentSettings.units)
@@ -1886,7 +1886,7 @@
 				.attr('text-anchor', 'central')
 				.attr('dy', getUnitDy())
 				.attr('font-size', '1em')
-				.attr('class', 'ultralight-text');
+				.attr('class', option.class);
 
 			moveTextUnits();
 
@@ -2883,7 +2883,7 @@
 				title: {
 					text: currentSettings.title,
 					color: currentSettings.value_fontcolor,
-					class: 'ultralight-text'
+					class: 'normal-text'
 				},
 				value: {
 					val: 0,
@@ -2907,7 +2907,7 @@
 				label: {
 					text: currentSettings.units,
 					color: currentSettings.value_fontcolor,
-					class: 'ultralight-text'
+					class: 'normal-text'
 				},
 				level: {
 					colors: [ currentSettings.gauge_lower_color, currentSettings.gauge_mid_color, currentSettings.gauge_upper_color ]

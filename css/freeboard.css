@@ -3,7 +3,8 @@
 .c3 svg {
 /*  font: 10px sans-serif;*/
   font: 12px "Helvetica Neue", Helvetica, "Open Sans", Meiryo, "Hiragino Kaku Gothic Pro", Osaka, Arial, sans-serif;
-
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
 }
 .c3 path, .c3 line {
   fill: none;
@@ -303,6 +304,8 @@
   /* Set height, width, borders, and global font properties here */
   font-family: Consolas, Monaco, 'Andale Mono', 'Lucida Console', 'Bitstream Vera Sans Mono', 'Courier New', Courier, monospace;
   height: 300px;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* PADDING */
@@ -1484,8 +1487,6 @@ html {
 	font-family: sans-serif; /* 1 */
 	-ms-text-size-adjust: 100%; /* 2 */
 	-webkit-text-size-adjust: 100%; /* 2 */
-	-moz-osx-font-smoothing: auto | grayscale;
-	-webkit-font-smoothing: subpixel-antialiased;
 }
 
 /**
@@ -1840,6 +1841,26 @@ body {
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: scroll;
+	-moz-osx-font-smoothing: auto | grayscale;
+	-webkit-font-smoothing: subpixel-antialiased;
+}
+
+.normal-text {
+	color: #d3d4d4;
+	font-weight: 100;
+	font-family: "Helvetica Neue", "Open Sans", Meiryo, "Hiragino Kaku Gothic Pro", Osaka, Arial, sans-serif;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	letter-spacing: 1px;
+}
+
+.ultralight-text {
+	color: #d3d4d4;
+	font-weight: 100;
+	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Helvetica Neue", "Open Sans", Meiryo, "Hiragino Kaku Gothic Pro", Osaka, Arial, sans-serif;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	letter-spacing: 1px;
 }
 
 .modal {
@@ -1977,6 +1998,8 @@ input[type="color"],
 	-moz-border-radius: 0px;
 	border-radius: -px;
 	width: 400px;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
 }
 
 input,
@@ -2064,6 +2087,8 @@ h6 {
 	line-height: 20px;
 	color: inherit;
 	text-rendering: optimizelegibility;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
 }
 
 h1,
@@ -2123,6 +2148,9 @@ table {
 
 .table thead th {
 	vertical-align: bottom;
+	text-transform: uppercase;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
 }
 
 .table caption + thead tr:first-child th,
@@ -2496,25 +2524,6 @@ header h1 {
 
 .section-title {
 	min-height: 7px;
-}
-
-.small-text {
-	color: #d3d4d4;
-	font-size: 20px;
-	font-weight: 100;
-	font-family: "Helvetica Neue", Helvetica, "Open Sans", Meiryo, "Hiragino Kaku Gothic Pro", Osaka, Arial, sans-serif;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	letter-spacing: 1px;
-}
-
-.ultralight-text {
-	color: #d3d4d4;
-	font-weight: 100;
-	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Helvetica Neue", "Open Sans", Meiryo, "Hiragino Kaku Gothic Pro", Osaka, Arial, sans-serif;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	letter-spacing: 1px;
 }
 
 ul, ol {
@@ -3118,7 +3127,7 @@ html.boardtools-opening #hamburger:after
 	#board-actions ul > li:hover {
 		float: none;
 		margin: 0px;
-		border-color: #FF9900;
+		border-color: #B88F51;
 	}
 
 	#board-configs {
@@ -3486,7 +3495,7 @@ input:-moz-placeholder, textarea:-moz-placeholder {
 
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
 	right: 0px;
-	background-color: #FF9900;
+	background-color: #B88F51;
 }
 
 .code-window {
