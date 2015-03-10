@@ -3,7 +3,8 @@
 .c3 svg {
 /*  font: 10px sans-serif;*/
   font: 12px "Helvetica Neue", Helvetica, "Open Sans", Meiryo, "Hiragino Kaku Gothic Pro", Osaka, Arial, sans-serif;
-
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
 }
 .c3 path, .c3 line {
   fill: none;

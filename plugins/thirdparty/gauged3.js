@@ -761,7 +761,7 @@ GaugeD3 = function(_option) {
                 .attr('dy', attributes.minmax.min_dy)
                 .attr('x', attributes.minmax.min_x)
                 .attr('font-size', attributes.minmax.fontsize)
-                .attr('class', option.label.class);
+                .attr('class', option.value.class);
 
             d3var.max = d3var.gCenter.append('text')
                 .text(getMaxValueText())
@@ -770,7 +770,7 @@ GaugeD3 = function(_option) {
                 .attr('dy', attributes.minmax.max_dy)
                 .attr('x', attributes.minmax.max_x)
                 .attr('font-size', attributes.minmax.fontsize)
-                .attr('class', option.label.class);
+                .attr('class', option.value.class);
         }
 
         // need to relayout

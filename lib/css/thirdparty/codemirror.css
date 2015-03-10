@@ -4,6 +4,8 @@
   /* Set height, width, borders, and global font properties here */
   font-family: Consolas, Monaco, 'Andale Mono', 'Lucida Console', 'Bitstream Vera Sans Mono', 'Courier New', Courier, monospace;
   height: 300px;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* PADDING */

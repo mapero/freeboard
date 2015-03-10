@@ -44,7 +44,7 @@
 				title: {
 					text: currentSettings.title,
 					color: currentSettings.value_fontcolor,
-					class: 'ultralight-text'
+					class: 'normal-text'
 				},
 				value: {
 					val: 0,
@@ -68,7 +68,7 @@
 				label: {
 					text: currentSettings.units,
 					color: currentSettings.value_fontcolor,
-					class: 'ultralight-text'
+					class: 'normal-text'
 				},
 				level: {
 					colors: [ currentSettings.gauge_lower_color, currentSettings.gauge_mid_color, currentSettings.gauge_upper_color ]

@@ -56,7 +56,7 @@
         },
         "delete": {
             "title": "削除確認",
-            "text": " を削除してもよろしいですか?"
+            "text": " を削除してもよろしいですか"
         },
         "datasource_tool": "データソース",
         "table_operation": "追加",
