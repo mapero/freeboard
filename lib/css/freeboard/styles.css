@@ -1506,7 +1506,8 @@ textarea.calculated-value-input {
 	height: 20px;
 	resize: none;
 	white-space: nowrap;
-	overflow: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
 	Z-index: 3000;
 }
 
