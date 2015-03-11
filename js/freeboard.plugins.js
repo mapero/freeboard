@@ -3740,8 +3740,13 @@
 		this.onSettingsChanged = function (newSettings) {
 			setBlocks(newSettings.blocks);
 			htmlElement.html(newSettings.contents);
+
+			var updateCalculate = false;
+			if (currentSettings.value != newSettings.value)
+				updateCalculate = true;
+
 			currentSettings = newSettings;
-			return false;
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -3770,6 +3775,13 @@
 				type: 'htmlmixed',
 				validate: 'optional,maxSize[5000]',
 				description: $.i18n.t('plugins_wd.html.contents_desc')
+			},
+			{
+				name: 'value',
+				display_name: $.i18n.t('plugins_wd.html.value'),
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: $.i18n.t('plugins_wd.html.value_desc')
 			},
 			{
 				name: 'blocks',

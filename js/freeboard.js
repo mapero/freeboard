@@ -2660,6 +2660,8 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 
 // i18next initialize
 (function($) {
+	'use strict';
+
 	var lang = $.i18n.detectLanguage().split('-');
 	var path = 'js/locales/' + lang[0] + '.json';
 

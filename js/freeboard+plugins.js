@@ -2660,6 +2660,8 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
 
 // i18next initialize
 (function($) {
+	'use strict';
+
 	var lang = $.i18n.detectLanguage().split('-');
 	var path = 'js/locales/' + lang[0] + '.json';
 
@@ -6834,8 +6836,13 @@ $.extend(freeboard, jQuery.eventEmitter);
 		this.onSettingsChanged = function (newSettings) {
 			setBlocks(newSettings.blocks);
 			htmlElement.html(newSettings.contents);
+
+			var updateCalculate = false;
+			if (currentSettings.value != newSettings.value)
+				updateCalculate = true;
+
 			currentSettings = newSettings;
-			return false;
+			return updateCalculate;
 		};
 
 		this.onCalculatedValueChanged = function (settingName, newValue) {
@@ -6864,6 +6871,13 @@ $.extend(freeboard, jQuery.eventEmitter);
 				type: 'htmlmixed',
 				validate: 'optional,maxSize[5000]',
 				description: $.i18n.t('plugins_wd.html.contents_desc')
+			},
+			{
+				name: 'value',
+				display_name: $.i18n.t('plugins_wd.html.value'),
+				validate: 'optional,maxSize[2000]',
+				type: 'calculated',
+				description: $.i18n.t('plugins_wd.html.value_desc')
 			},
 			{
 				name: 'blocks',
