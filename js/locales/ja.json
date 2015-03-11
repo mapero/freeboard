@@ -226,6 +226,8 @@
             "description": "HTMLを表示するウィジェットです。",
             "contents": "HTMLコンテンツ",
             "contents_desc": "最大5000文字<br />HTML文字列、JavaScriptを記述できます。",
+            "value": "値",
+            "value_desc": "最大2000文字",
             "blocks": "高さ (ブロック数)",
             "blocks_desc": "1ブロック60ピクセル。10ブロックまで"
         }

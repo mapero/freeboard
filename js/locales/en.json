@@ -225,6 +225,8 @@
             "description": "This is a widget that displays the HTML.",
             "contents": "HTML Contents",
             "contents_desc": "A maximum of 5000 characters.<br />Can be literal HTML, or JavaScript that outputs HTML.",
+            "value": "Value",
+            "value_desc": "A maximum of 2000 characters.",
             "blocks": "Height",
             "blocks_desc": "Number of blocks. 1 block 60 pixels. 10 to block."
         }
