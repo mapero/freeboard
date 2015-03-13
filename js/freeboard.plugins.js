@@ -3713,6 +3713,10 @@
 	'use strict';
 
 	freeboard.addStyle('.htmlwidget', 'white-space:normal;display:table;');
+	freeboard.addStyle('.htmlwidget > *',
+		'-moz-box-sizing: border-box;' +
+		'-webkit-box-sizing: border-box;' +
+		'box-sizing: border-box;');
 
 	var htmlWidget = function (settings) {
 		var self = this;
