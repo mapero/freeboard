@@ -1,0 +1,481 @@
+{
+    "menu": {
+        "menu": "",
+        "load": "LOAD",
+        "save": "SAVE",
+        "add_panel": "Add Pane",
+        "datasource": "DataSources"
+    },
+
+    "global": {
+        "yes": "Yes",
+        "no": "No"
+    },
+
+    "datasource_panel": {
+        "title": "DataSources",
+        "given_name": "Given Name",
+        "lastupdated": "Last Updated",
+        "add": "Add"
+    },
+
+    "JSEditor": {
+        "javascript": {
+            "exampleText": "// Example: Convert from Celsius to Fahrenheit, Truncation point two digits below",
+            "codeWindowHeader": "This JavaScript will be re-evaluated each time reference data source is updated. And <span class='cm-keyword'> return value </span> will be displayed in the widget. You function <code> <span class='cm-keyword'> function </span> (<span class='cm-def'> datasources </span>) </code> can be used to describe the contents in JavaScript of argument datasources is an array of the added data source. <br />The argument <span class = \"cm-def \"> _ global </span> It is possible to store a variable of the script out of scope to. (Note: You can not be shared between different script.) <br />The following library functions you can use. jQuery 2.1.3, lodash 3.4.0, moment 2.9.0, moment-timezone 0.3.0."
+        },
+        "json": {
+            "exampleText": "// Example: {title '\n //' value ': 10 \n} ';",
+            "codeWindowHeader": " Among the string enclosed in use the appropriate escape sequence. <br> example: 'function (label, series) {return (\" ID: \"+ label);}'",
+            "error": "Please correct the json error."
+        },
+        "htmlmixed": {
+            "codeWindowHeader": "<span class=\"cm-keyword\">HTML</span> and <span class=\"cm-keyword\">CSS</span>, <span class=\"cm-keyword\">javascript</span> can be described.(Note:The Datasources variable in the javascript code <span class=\"cm-def\">datasources</span> is not evaluated from the system.)"
+        },
+        "cancel": "Close"
+    },
+
+    "PluginEditor": {
+        "pane": {
+            "title": "Pane",
+            "edit": {
+                "title": "Title",
+                "title_desc": "A maximum of 20 characters",
+                "colwidth": "Column Width",
+                "colwidth_desc": "Up to 10 block"
+            }
+        },
+        "datasource": {
+            "title": "DataSource",
+            "given_name": "Given Name",
+            "given_name_desc": "A maximum of 20 characters"
+        },
+        "widget": {
+            "title": "Widget"
+        },
+        "delete": {
+            "title": "Delete confirmation",
+            "text": "Are you sure you want to delete"
+        },
+        "datasource_tool": "DataSource",
+        "table_operation": "Add",
+        "dialog": {
+            "yes": "Save",
+            "no": "Cancel"
+        },
+        "type": "Type",
+        "first_option": "Please select the type"
+    },
+
+    "plugins_wd": {
+        "text": {
+            "display_name": "Text",
+            "description": "This is a widget that can display text and sparkline chart.",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "size": "TextSize",
+            "size_options": {
+                "regular": "Regular",
+                "big": "Big"
+            },
+            "value": "Value",
+            "value_desc": "A maximum of 2000 characters",
+            "decimal": "Decimal",
+            "comma": "Comma",
+            "metric_prefix": "Metric Prefix",
+            "metric_prefix_desc": "A metric prefix is a unit prefix that precedes a basic unit of measure to indicate a decadic multiple or fraction of the unit. Each prefix has a unique symbol that is prepended to the unit symbol.",
+            "units": "Units",
+            "units_desc": "A maximum of 20 characters",
+            "animate": "Animate Value Changes",
+            "chart": "Include Sparkline",
+            "chart_type": "Chart Type",
+            "chart_type_options": {
+                "line": "Line",
+                "area": "Area",
+                "bar": "Bar"
+            },
+            "chart_color": "Chart Color",
+            "chart_color_desc": "Default: #ff9900",
+            "chart_minmax_color": "MinMax Spot Color",
+            "chart_minmax_color_desc": "Default: #0496ff"
+        },
+
+        "pointer": {
+            "display_name": "Pointer",
+            "description": "This is a widget that displays the direction and value.",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "blocks": "Height",
+            "blocks_desc": "Number of blocks. 1 block 60 pixels. 10 to block.",
+            "direction": "Direction",
+            "direction_desc": "A maximum of 2000 characters<br />Enter the angle.",
+            "value_text": "Value Text",
+            "value_text_desc": "A maximum of 2000 characters",
+            "units": "Units",
+            "units_desc": "A maximum of 20 characters",
+            "circle_color": "Circle color",
+            "circle_color_desc": "Default: #ff9900",
+            "pointer_color": "Pointer color",
+            "pointer_color_desc": "Default: #fff"
+        },
+
+        "picture": {
+            "display_name": "Picture",
+            "description": "This is a widget that displays the image. It is used to be used to display an image, such as a Web camera.",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "blocks": "Height",
+            "blocks_desc": "Number of blocks. 1 block 60 pixels. 20 to block.",
+            "src": "Image URL",
+            "src_desc": "A maximum of 2000 characters",
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds",
+            "refresh_desc": "Leave blank if the image doesn't need to be refreshed."
+        },
+
+        "indicator": {
+            "display_name": "Indicator Light",
+            "description": "This widget is lit under the conditions of the specified value. 1 is turned on, should the value is set to 0 to OFF.",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "value": "Value",
+            "value_desc": "A maximum of 2000 characters",
+            "on_text": "On Text",
+            "on_text_desc": "A maximum of 500 characters",
+            "off_text": "Off Text",
+            "off_text_desc": "A maximum of 500 characters"
+        },
+
+        "gmap": {
+            "display_name": "Google Map",
+            "description": "This widget displays a GoogleMap. When the value is set to latitude longitude map of its surroundings will be displayed.",
+            "blocks": "Height",
+            "blocks_desc": "Number of blocks. 1 block 60 pixels. 20 to block.",
+            "lat": "Latitude",
+            "lat_desc": "A maximum of 2000 characters",
+            "lon": "Longitude",
+            "lon_desc": "A maximum of 2000 characters",
+            "drawpath": "Draw path"
+        },
+
+        "gauge": {
+            "display_name": "Gauge",
+            "description": "This widget displays a gauge.",
+            "blocks": "Height",
+            "blocks_desc": "Number of blocks. 1 block 60 pixels. 20 to block.",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "type": "Type",
+            "type_options": {
+                "half": "Half",
+                "quarter-left-top": "Quarter Left Top",
+                "quarter-right-top": "Quarter Right Top",
+                "quarter-left-bottom": "Quarter Left Bottom",
+                "quarter-right-bottom": "Quarter Right Bottom",
+                "threequarter-left-top": "ThreeQuarter Left Top",
+                "threequarter-right-top": "ThreeQuarter Right Top",
+                "threequarter-left-bottom": "ThreeQuarter Left Bottom",
+                "threequarter-right-bottom": "ThreeQuarter Right Bottom",
+                "threequarter-bottom": "ThreeQuarter Bottom",
+                "donut": "Donut"
+            },
+            "value": "Value",
+            "value_desc": "A maximum of 2000 characters",
+            "decimal": "Decimal",
+            "comma": "Comma",
+            "metric_prefix": "Metric Prefix",
+            "metric_prefix_desc": "A metric prefix is a unit prefix that precedes a basic unit of measure to indicate a decadic multiple or fraction of the unit. Each prefix has a unique symbol that is prepended to the unit symbol.",
+            "animate": "Animate Value Changes",
+            "units": "Units",
+            "units_desc": "A maximum of 20 characters",
+            "value_fontcolor": "Value FontColor",
+            "value_fontcolor_desc": "Default: #d3d4d4",
+            "gauge_upper_color": "Upper GaugeColor",
+            "gauge_upper_color_desc": "Default: #ff0000",
+            "gauge_mid_color": "Mid GaugeColor",
+            "gauge_mid_color_desc": "Default: #f9c802",
+            "gauge_lower_color": "Lower GaugeColor",
+            "gauge_lower_color_desc": "Default: #a9d70b",
+            "gauge_color": "Gauge BackgroundColor",
+            "gauge_color_desc": "Default: #edebeb",
+            "gauge_width": "Gauge Width",
+            "gauge_width_desc": "Between 0-100",
+            "show_minmax": "Show MinMax Value",
+            "min_value": "Min Value",
+            "max_value": "Max Value",
+            "max_value_desc": "Minimum value or more."
+        },
+
+        "c3js": {
+            "display_name": "C3 Chart",
+            "description": "This widget will display a variety of formats chart. For more information <a href=\"http://c3js.org/\" target=\"_blank\">http://c3js.org/</a>",
+            "title": "Title",
+            "title_desc": "A maximum of 100 characters",
+            "blocks": "Height",
+            "blocks_desc": "Number of blocks. 1 block 60 pixels. 20 to block.",
+            "value": "Value",
+            "value_desc": "A maximum of 5000 characters.",
+            "options": "Chart Options",
+            "options_desc": "A maximum of 5000 characters. JSON format string.",
+            "options_invalid": "Invalid chart options."
+        },
+
+        "html": {
+            "display_name": "HTML",
+            "description": "This is a widget that displays the HTML.",
+            "contents": "HTML Contents",
+            "contents_desc": "A maximum of 5000 characters.<br />Can be literal HTML, or JavaScript that outputs HTML.",
+            "value": "Value",
+            "value_desc": "A maximum of 2000 characters.",
+            "blocks": "Height",
+            "blocks_desc": "Number of blocks. 1 block 60 pixels. 10 to block."
+        }
+    },
+
+    "plugins_ds": {
+        "clock": {
+            "display_name": "Clock",
+            "description": "This data source is updated at specified intervals, returns the current time in a different format.You can display a timer on the screen, the widget will be able to use in order to refresh at regular intervals.",
+            "timezone": "Time Zone",
+            "timezone_options": {
+                "Etc/GMT+12": "(UTC-12:00) Etc/GMT+12",
+                "Etc/GMT+11": "(UTC-11:00) Etc/GMT+11",
+                "Pacific/Honolulu": "(UTC-10:00) Pacific/Honolulu",
+                "America/Anchorage": "(UTC-09:00) America/Anchorage",
+                "America/Santa_Isabel": "(UTC-08:00) America/Santa_Isabel",
+                "America/Los_Angeles": "(UTC-08:00) America/Los_Angeles",
+                "America/Chihuahua": "(UTC-07:00) America/Chihuahua",
+                "America/Phoenix": "(UTC-07:00) America/Phoenix",
+                "America/Denver": "(UTC-07:00) America/Denver",
+                "America/Guatemala": "(UTC-06:00) America/Guatemala",
+                "America/Chicago": "(UTC-06:00) America/Chicago",
+                "America/Regina": "(UTC-06:00) America/Regina",
+                "America/Mexico_City": "(UTC-06:00) America/Mexico_City",
+                "America/Bogota": "(UTC-05:00) America/Bogota",
+                "America/Indiana/Indianapolis": "(UTC-05:00) America/Indiana/Indianapolis",
+                "America/New_York": "(UTC-05:00) America/New_York",
+                "America/Caracas": "(UTC-04:30) America/Caracas",
+                "America/Halifax": "(UTC-04:00) America/Halifax",
+                "America/Asuncion": "(UTC-04:00) America/Asuncion",
+                "America/La_Paz": "(UTC-04:00) America/La_Paz",
+                "America/Cuiaba": "(UTC-04:00) America/Cuiaba",
+                "America/Santiago": "(UTC-04:00) America/Santiago",
+                "America/St_Johns": "(UTC-03:30) America/St_Johns",
+                "America/Sao_Paulo": "(UTC-03:00) America/Sao_Paulo",
+                "America/Godthab": "(UTC-03:00) America/Godthab",
+                "America/Cayenne": "(UTC-03:00) America/Cayenne",
+                "America/Argentina/Buenos_Aires": "(UTC-03:00) America/Argentina/Buenos_Aires",
+                "America/Montevideo": "(UTC-03:00) America/Montevideo",
+                "Etc/GMT+2": "(UTC-02:00) Etc/GMT+2",
+                "America/Cape_Verde": "(UTC-01:00) America/Cape_Verde",
+                "Atlantic/Azores": "(UTC-01:00) Atlantic/Azores",
+                "America/Casablanca": "(UTC+00:00) America/Casablanca",
+                "Atlantic/Reykjavik": "(UTC+00:00) Atlantic/Reykjavik",
+                "Europe/London": "(UTC+00:00) Europe/London",
+                "Etc/GMT": "(UTC+00:00) Etc/GMT",
+                "Europe/Berlin": "(UTC+01:00) Europe/Berlin",
+                "Europe/Paris": "(UTC+01:00) Europe/Paris",
+                "Africa/Lagos": "(UTC+01:00) Africa/Lagos",
+                "Europe/Budapest": "(UTC+01:00) Europe/Budapest",
+                "Europe/Warsaw": "(UTC+01:00) Europe/Warsaw",
+                "Africa/Windhoek": "(UTC+01:00) Africa/Windhoek",
+                "Europe/Istanbul": "(UTC+02:00) Europe/Istanbul",
+                "Europe/Kiev": "(UTC+02:00) Europe/Kiev",
+                "Africa/Cairo": "(UTC+02:00) Africa/Cairo",
+                "Asia/Damascus": "(UTC+02:00) Asia/Damascus",
+                "Asia/Amman": "(UTC+02:00) Asia/Amman",
+                "Africa/Johannesburg": "(UTC+02:00) Africa/Johannesburg",
+                "Asia/Jerusalem": "(UTC+02:00) Asia/Jerusalem",
+                "Asia/Beirut": "(UTC+02:00) Asia/Beirut",
+                "Asia/Baghdad": "(UTC+03:00) Asia/Baghdad",
+                "Europe/Minsk": "(UTC+03:00) Europe/Minsk",
+                "Asia/Riyadh": "(UTC+03:00) Asia/Riyadh",
+                "Africa/Nairobi": "(UTC+03:00) Africa/Nairobi",
+                "Asia/Tehran": "(UTC+03:30) Asia/Tehran",
+                "Europe/Moscow": "(UTC+04:00) Europe/Moscow",
+                "Asia/Tbilisi": "(UTC+04:00) Asia/Tbilisi",
+                "Asia/Yerevan": "(UTC+04:00) Asia/Yerevan",
+                "Asia/Dubai": "(UTC+04:00) Asia/Dubai",
+                "Asia/Baku": "(UTC+04:00) Asia/Baku",
+                "Indian/Mauritius": "(UTC+04:00) Indian/Mauritius",
+                "Asia/Kabul": "(UTC+04:30) Asia/Kabul",
+                "Asia/Tashkent": "(UTC+05:00) Asia/Tashkent",
+                "Asia/Karachi": "(UTC+05:00) Asia/Karachi",
+                "Asia/Colombo": "(UTC+05:30) Asia/Colombo",
+                "Indian/Kolkata": "(UTC+05:30) Indian/Kolkata",
+                "Asia/Kathmandu": "(UTC+05:45) Asia/Kathmandu",
+                "Asia/Almaty": "(UTC+06:00) Asia/Almaty",
+                "Asia/Dhaka": "(UTC+06:00) Asia/Dhaka",
+                "Asia/Yekaterinburg": "(UTC+06:00) Asia/Yekaterinburg",
+                "Asia/Rangoon": "(UTC+06:30) Asia/Rangoon",
+                "Asia/Bangkok": "(UTC+07:00) Asia/Bangkok",
+                "Asia/Novosibirsk": "(UTC+07:00) Asia/Novosibirsk",
+                "Asia/Krasnoyarsk": "(UTC+08:00) Asia/Krasnoyarsk",
+                "Asia/Ulaanbaatar": "(UTC+08:00) Asia/Ulaanbaatar",
+                "Asia/Shanghai": "(UTC+08:00) Asia/Shanghai",
+                "Australia/Perth": "(UTC+08:00) Australia/Perth",
+                "Asia/Singapore": "(UTC+08:00) Asia/Singapore",
+                "Asia/Taipei": "(UTC+08:00) Asia/Taipei",
+                "Asia/Irkutsk": "(UTC+09:00) Asia/Irkutsk",
+                "Asia/Seoul": "(UTC+09:00) Asia/Seoul",
+                "Asia/Tokyo": "(UTC+09:00) Asia/Tokyo",
+                "Australia/Darwin": "(UTC+09:30) Australia/Darwin",
+                "Australia/Adelaide": "(UTC+09:30) Australia/Adelaide",
+                "Australia/Hobart": "(UTC+10:00) Australia/Hobart",
+                "Asia/Yakutsk": "(UTC+10:00) Asia/Yakutsk",
+                "Australia/Brisbane": "(UTC+10:00) Australia/Brisbane",
+                "Pacific/Port_Moresby": "(UTC+10:00) Pacific/Port_Moresby",
+                "Australia/Sydney": "(UTC+10:00) Australia/Sydney",
+                "Asia/Vladivostok": "(UTC+11:00) Asia/Vladivostok",
+                "Pacific/Guadalcanal": "(UTC+11:00) Pacific/Guadalcanal",
+                "Etc/GMT-12": "(UTC+12:00) Etc/GMT-12",
+                "Pacific/Fiji": "(UTC+12:00) Pacific/Fiji",
+                "Asia/Magadan": "(UTC+12:00) Asia/Magadan",
+                "Pacific/Auckland": "(UTC+12:00) Pacific/Auckland",
+                "Pacific/Tongatapu": "(UTC+13:00) Pacific/Tongatapu",
+                "Pacific/Apia": "(UTC+13:00) Pacific/Apia"
+            },
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds"
+        },
+
+        "json": {
+            "display_name": "JSON",
+            "description": "This datasource will receive the JSON data from the specified URL.",
+            "url": "URL",
+            "use_thingproxy": "Try thingproxy",
+            "use_thingproxy_desc": "A direct JSON connection will be tried first, if that fails, a JSONP connection will be tried. If that fails, you can use thingproxy, which can solve many connection problems to APIs. <a href=\"https://github.com/Freeboard/thingproxy\" target=\"_blank\">More information</a>.",
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds",
+            "method": "Method",
+            "body": "Body",
+            "body_desc": "The body of the request. Normally only used if method is POST.",
+            "headers": "Header",
+            "headers_name": "Name",
+            "headers_value": "Value"
+        },
+
+        "mqtt": {
+            "display_name": "MQTT over Websocket",
+            "description": "The <a href=\" http://mqtt.org/\", target=\"_blank\">MQTT</a> protocol through the WebSocket, you will receive a JSON data from MQTT broker server.",
+            "hostname": "Hostname",
+            "hostname_desc": "A maximum of 1000 characters<br />Set the hostname of the MQTT broker server.<br />ex: location.hostname",
+            "port": "Port Number",
+            "clientID": "Client ID",
+            "clientID_desc": "A maximum of 23 characters<br />Any client ID string.",
+            "topic": "Topic",
+            "topic_desc": "A maximum of 500 characters<br />Set the topic name to subscribe.<br />ex: my/topic",
+            "username": "(optional) UserName",
+            "username_desc": "A maximum of 100 characters<br />If you do not need it to blank.",
+            "password": "(optional) Password",
+            "password_desc": "A maximum of 100 characters<br />If you do not need it to blank.",
+            "reconnect": "Automatic Reconnection"
+        },
+
+        "node_js": {
+            "display_name": "Node.js (Socket.io)",
+            "description": "This datasource will receive the JSON data from node.js (<a href=\"http://socket.io/\", target=\"_blank\">Socket.io</a>) server.",
+            "url": "URL",
+            "url_desc": "A maximum of 1000 characters (optional) If you use a custom namespace, add the last name space of URL.<br />ex: http://localhost/chat",
+            "events": "Events",
+            "events_desc": "Please specify the event name to be added to the data source.",
+            "event_name": "Event Name",
+            "rooms": "(optional) Rooms",
+            "rooms_desc": "If you want to use the room, you must specify the room name you want to add. Leave blank otherwise.",
+            "room_name": "Room Name",
+            "room_event": "Room Event Name"
+        },
+
+        "owm": {
+            "display_name": "Open Weather Map API",
+            "description": "This datasource will receive a variety of weather data, including the weather and forecasts history.",
+            "location": "Location",
+            "location_desc": "A maximum of 200 characters<br />ex: London, UK",
+            "units": "Units",
+            "units_metric": "Metric",
+            "units_imperial": "Imperial",
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds"
+        },
+
+        "playback": {
+            "display_name": "Playback",
+            "description": "Play the continuous data at a specified interval. It will receive a valid JSON file that contains an array of objects.",
+            "datafile": "Data File URL",
+            "datafile_desc": "A link to a JSON array of data.",
+            "is_jsonp": "Is JSONP",
+            "loop": "Loop",
+            "loop_desc": "Rewind and loop when finished",
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds"
+        },
+
+        "websocket": {
+            "display_name": "WebSocket",
+            "description": "This datasources will receive a JSON data by using the WebSocket API.",
+            "uri": "URI",
+            "uri_desc": "A maximum of 1000 characters ex: ws://server:port/path",
+            "reconnect": "Automatic Reconnection"
+        },
+
+        "yahooweather": {
+            "display_name": "Yahoo Weather API",
+            "description": "This datasources will receive a JSON data by using the <a href=\"https://developer.yahoo.com/weather/documentation.html\" target=\"_blank\">Yahoo Weather API</a>.",
+            "location": "Location ZipCode",
+            "location_desc": "A maximum of 100 characters. And also acceptable place name",
+            "units": "Units",
+            "units_metric": "Metric",
+            "units_imperial": "Imperial",
+            "refresh": "Refresh Every",
+            "refresh_suffix": "seconds",
+            "cond_0": "Tornado",
+            "cond_1": "Tropical storm",
+            "cond_2": "Hurricane",
+            "cond_3": "Severe thunderstorms",
+            "cond_4": "Thunderstorms",
+            "cond_5": "Mixed rain and snow",
+            "cond_6": "Mixed rain and sleet",
+            "cond_7": "Mixed snow and sleet",
+            "cond_8": "Freezing drizzle",
+            "cond_9": "Drizzle",
+            "cond_10": "Freezing rain",
+            "cond_11": "Showers",
+            "cond_12": "Showers",
+            "cond_13": "Snow flurries",
+            "cond_14": "Light snow showers",
+            "cond_15": "Blowing snow",
+            "cond_16": "Snow",
+            "cond_17": "Hail",
+            "cond_18": "Sleet",
+            "cond_19": "Dust",
+            "cond_20": "Foggy",
+            "cond_21": "Haze",
+            "cond_22": "Smoky",
+            "cond_23": "Blustery",
+            "cond_24": "Windy",
+            "cond_25": "Cold",
+            "cond_26": "Cloudy",
+            "cond_27": "Mostly cloudy (night)",
+            "cond_28": "Mostly cloudy (day)",
+            "cond_29": "Partly cloudy (night)",
+            "cond_30": "Partly cloudy (day)",
+            "cond_31": "Clear (night)",
+            "cond_32": "Sunny",
+            "cond_33": "Fair (night)",
+            "cond_34": "Fair (day)",
+            "cond_35": "Mixed rain and hail",
+            "cond_36": "Hot",
+            "cond_37": "Isolated thunderstorms",
+            "cond_38": "Scattered thunderstorms",
+            "cond_39": "Scattered thunderstorms",
+            "cond_40": "Scattered showers",
+            "cond_41": "Heavy snow",
+            "cond_42": "Scattered snow showers",
+            "cond_43": "Heavy snow",
+            "cond_44": "Heavy snow",
+            "cond_45": "Scattered snow showers",
+            "cond_46": "Heavy snow",
+            "cond_47": "Isolated thundershowers"
+        }
+    }
+}
