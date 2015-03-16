@@ -70,6 +70,7 @@
                             "plugins/freeboard/plugin.wg.c3js.js",
                             "plugins/freeboard/plugin.wg.indicator.js",
                             "plugins/freeboard/plugin.wg.picture.js",
+                            "plugins/freeboard/plugin.wg.button.js",
                             "plugins/freeboard/plugin.wg.html.js");
 
                     $(function()
@@ -80,6 +81,13 @@
                         var hashpattern = window.location.hash.match(/(&|#)source=([^&]+)/);
                         if (hashpattern !== null) {
                             $.getJSON(hashpattern[2], function(data) {
+                                freeboard.loadDashboard(data, function() {
+                                    freeboard.setEditing(false);
+                                });
+                            });
+                        }
+                        else {
+                            $.getJSON("dashboard.json", function(data)  {
                                 freeboard.loadDashboard(data, function() {
                                     freeboard.setEditing(false);
                                 });
